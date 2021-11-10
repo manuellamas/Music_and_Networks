@@ -1,5 +1,6 @@
 import networkx as nx
 import mido
+import Plotting
 
 G = nx.DiGraph() # Creating a directed multigraph
 
@@ -39,6 +40,24 @@ for i in range(len(notes)-1):
 for pair in note_pairs:
     G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
 
+total_in_degree = 0
+total_out_degree = 0
+for node in G.nodes:
+    total_in_degree += G.in_degree(node)
+    total_out_degree += G.out_degree(node)
 
-print(G.in_degree[45])
-print(G.out_degree[45])
+total_weight = 0
+for u, v, weight in G.edges(data="weight"):
+    total_weight += weight
+
+# Just a simple information "check"
+
+print("Number of nodes: ", len(G.nodes))
+print("Number of edges: ", len(G.edges))
+print("Total sum weight: ", total_weight) 
+print("Total sum in-degree: ", total_in_degree)
+print("Total sum out-degree: ", total_out_degree)
+
+# Degree Distribution (Histogram)
+Plotting.DegreeDistribution(G)
+
