@@ -1,12 +1,18 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def DegreeDistribution(G):
-    degree_sequence = sorted([d for n, d in G.degree()], reverse = True)
+    degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
+    degree_sequence = np.array(degree_sequence_list)
 
+    labels, counts = np.unique(degree_sequence, return_counts=True)
+
+    print(degree_sequence)
     fig1, ax1 = plt.subplots()
-    
-    # plt.plot(k, degree_sequence)
-    plt.hist(degree_sequence)
+
+    # Bar Plot
+    plt.bar(labels, counts, width=1) # The width allows to erase the space between each bar
+    plt.gca().set_xticks(labels) # Sets the x-axis labels to show all values that the array has
 
     # Design
     title = "Degree Distribution"
