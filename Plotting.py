@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def DegreeDistribution(G):
+def DegreeDistributionHistogram(G):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -12,7 +12,8 @@ def DegreeDistribution(G):
 
     # Bar Plot
     plt.bar(labels, counts, width=1) # The width allows to erase the space between each bar
-    plt.gca().set_xticks(labels) # Sets the x-axis labels to show all values that the array has
+    # plt.gca().set_xticks(labels) # Sets the x-axis labels to show all values that the array has
+    # Might be interesting to define number of ticks (equally spaced) regardless of the amplitude. So say show 5 x-axix labels on every graph for example
 
     # Design
     title = "Degree Distribution"
@@ -27,3 +28,5 @@ def DegreeDistribution(G):
 
     plt.savefig("Plots/Degree_Distribution_Histogram.png")
     # plt.show()
+
+# def DegreeDistributionScatterPlot(G):
