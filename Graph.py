@@ -1,14 +1,22 @@
 import networkx as nx
 import mido
+import sys
 import Plotting
 
 G = nx.DiGraph() # Creating a directed multigraph
 
-# mid = mido.MidiFile("MIDI_files/MIDI_sample.mid", clip = True)
-# mid = mido.MidiFile("MIDI_files/tank.mid", clip = True)
-mid = mido.MidiFile("MIDI_files/LegendsNeverDie.mid", clip = True)
+# Original File Input
+if len(sys.argv) == 1:
+    print("Running sample file")
+    file_path = "MIDI_files/LegendsNeverDie.mid"
+    # file_path = "MIDI_files/MIDI_sample.mid"
+    # file_path = "MIDI_files/tank.mid"
+else:
+    file_path = sys.argv[-1]
+mid = mido.MidiFile(file_path, clip = True)
 
 
+# Separate the info function as a separate file.
 # Display basic info of the MIDI file
 def midi_file_overview(mid_file):
     # Information on the MIDI file type
