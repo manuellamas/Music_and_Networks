@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def DegreeDistributionHistogram(G):
+def DegreeDistributionHistogram(G, file):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -26,7 +26,8 @@ def DegreeDistributionHistogram(G):
     # Legend
     # plt.legend(loc="upper left")
 
-    plt.savefig("Plots/Degree_Distribution_Histogram.png")
+    plt.savefig("Plots/Degree_Distribution_" + file + ".png")
+    # plt.savefig("../Plots/Degree_Distribution_" + file + ".png")
     # plt.show()
 
 # def DegreeDistributionScatterPlot(G):

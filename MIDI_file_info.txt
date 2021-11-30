@@ -1,0 +1,5 @@
+MIDI file of type 1, synchronous
+Number of tracks: 2
+----------
+
+0: 21: 2

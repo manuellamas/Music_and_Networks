@@ -22,17 +22,12 @@ def midi_program_switch(mid_file):
         else: # Leaving everything else as it is
             track.append(msg)
 
-    # original_file = "MIDI_files/created/" + original_file[0:len(mid_file.filename)-4] + "_adapted_program.mid"
-    # mid_adapted.save(original_file)
-    # original_file = "MIDI_files/created/" + mid_file.filename + "_adapted_program.mid"
-
     # ---------- SAVING THE FILE ----------
-    # Getting just the file name without the path
+    # Getting just the file name (without the path)
     original_file = mid_file.filename
     start = 0
-    end = len(original_file)-1
+    end = len(original_file) - 1
     for i , s in enumerate(original_file): # It might make more sense using Regex here
-
         if s == "/": # Catches the last '/'
             start = i + 1 # Exactly where the Filename starts
         elif s == ".":
