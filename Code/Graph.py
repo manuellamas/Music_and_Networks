@@ -6,8 +6,10 @@ import Plotting
 
 # Separate the info function as a separate file.
 # Display basic info of the MIDI file
-def midi_file_overview(mid_file):
+def midi_file_overview(mid_file,filename):
     file = open("MIDI_file_info.txt", "w")
+
+    file.write(filename+"\n")
 
     # Information on the MIDI file type
     if mid_file.length == ValueError:
@@ -29,7 +31,7 @@ def midi_file_overview(mid_file):
 
     # Lists all the tracks 'main info'
     for i, track in enumerate(mid_file.tracks):
-        file.write("{}: {}" .format(i,len(mid_file.tracks)))
+        file.write("{}: {}" .format(i,track))
         # file.write(i, track)
         # file.write(track[2])
     
@@ -37,7 +39,7 @@ def midi_file_overview(mid_file):
 
 def get_notes(mid_file):
     # Dealing with just one track for now, so we automatically pick just the first one (that isn't only MetaMessages)
-    if mid_file == "MIDI_files/MIDI_sample.mid":
+    if mid_file == "MIDI_files\\MIDI_sample.mid":
         first_track = mid_file.tracks[1] # Starting with 1, not sure what 0 has yet (at least on this Wikipedia sample)
     else:
         first_track = mid_file.tracks[0]
@@ -113,7 +115,7 @@ def midi_filename(mid_file):
     start = 0
     end = len(original_file) - 1
     for i , s in enumerate(original_file): # It might make more sense using Regex here
-        if s == "\\": # Catches the last '/'
+        if s == "\\": # Catches the last '\\'
             start = i + 1 # Exactly where the Filename starts
         elif s == ".":
             end = i # One index after the Filename ends
@@ -123,23 +125,21 @@ def midi_filename(mid_file):
 # ----- Main ----- #
 if __name__ == "__main__":
     # Original File Input
-    current_directory = sys.path[0]
-    parent_directory = os.path.split(current_directory)[0] # Repeat as needed
-
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
 
     if len(sys.argv) == 1:
         print("Running sample file")
-        current_directory = os.path.dirname(__file__)
-        file_path = current_directory + "/../MIDI_files/LegendsNeverDie.mid"
-        # file_path = "MIDI_files/MIDI_sample.mid"
-        # file_path = "MIDI_files/tank.mid"
+        file_path = parent_directory + "\\MIDI_files\\LegendsNeverDie.mid"
+        # file_path = parent_directory + "\\MIDI_files\\Wikipedia_MIDI_sample.mid"
+        # file_path = parent_directory + "\\MIDI_files\\tank.mid"
     else:
         file_path = sys.argv[-1]
     mid_file = mido.MidiFile(file_path, clip = True)
     # --------------------
 
-    midi_file_overview(mid_file) # Writing basic info of the midi file to a .txt
     original_file = midi_filename(mid_file) # Getting just the file name (without the path)
+    midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
     # Obtain the notes and create the graph
     notes = get_notes(mid_file)
@@ -147,4 +147,4 @@ if __name__ == "__main__":
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
-    nx.write_graphml(G,"graphml_files/Song_Graph.graphml") # Exporting graph to a graphml file
+    nx.write_graphml(G,"graphml_files\\Song_Graph.graphml") # Exporting graph to a graphml file

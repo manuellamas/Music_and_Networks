@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os.path
 
 def DegreeDistributionHistogram(G, file):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
@@ -26,7 +27,11 @@ def DegreeDistributionHistogram(G, file):
     # Legend
     # plt.legend(loc="upper left")
 
-    plt.savefig("Plots/Degree_Distribution_" + file + ".png")
+    # Getting the correct path for the Plot folder
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
+
+    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + file + ".png")
     # plt.savefig("../Plots/Degree_Distribution_" + file + ".png")
     # plt.show()
 
