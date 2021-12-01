@@ -2,11 +2,12 @@ import networkx as nx
 import mido
 import sys
 import os.path
+import Music_Mapping
 import Plotting
 
 # Separate the info function as a separate file.
 # Display basic info of the MIDI file
-def midi_file_overview(mid_file,filename):
+def midi_file_overview(mid_file, filename):
     file = open("MIDI_file_info.txt", "w")
 
     file.write(filename+"\n")
@@ -31,66 +32,11 @@ def midi_file_overview(mid_file,filename):
 
     # Lists all the tracks 'main info'
     for i, track in enumerate(mid_file.tracks):
-        file.write("{}: {}" .format(i,track))
-        # file.write(i, track)
-        # file.write(track[2])
-    
+        file.write("{}: {}\n\n" .format(i,track))
+
     file.close()
 
-def get_notes(mid_file):
-    # Dealing with just one track for now, so we automatically pick just the first one (that isn't only MetaMessages)
-    if mid_file == "MIDI_files\\MIDI_sample.mid":
-        first_track = mid_file.tracks[1] # Starting with 1, not sure what 0 has yet (at least on this Wikipedia sample)
-    else:
-        first_track = mid_file.tracks[0]
 
-    non_meta_track = 0 # Assuming that the first track isn't only MetaMessages before we check it
-    non_meta_track_found = False
-
-    while not non_meta_track_found:
-        print(non_meta_track)
-        track_is_only_meta = True
-        for msg in mid_file.tracks[non_meta_track]:
-            if not msg.is_meta:
-                track_is_only_meta = False
-                break
-        if track_is_only_meta:
-            non_meta_track += 1
-        else:
-            non_meta_track_found = True
-
-
-    first_track = mid_file.tracks[non_meta_track]
-
-    # Add each note to a list by order of "occurrence". For now I'm just using time of "note_on" of the note
-    notes = []
-
-    for msg in first_track:
-        # print("Checking a message")
-        if msg.type == "note_on" and msg.velocity != 0:
-            notes.append(msg.note)
-    return notes
-
-def create_graph_from_notes(notes, file):
-    G = nx.DiGraph() # Creating a directed multigraph
-
-    # Count the occurences of pairs of sequential notes
-    note_pairs = [] # Elements such as [note1, note2, frequency]
-    for i in range(len(notes)-1):
-        pair_found = False
-        for pair in note_pairs:
-            if notes[i] == pair[0] and notes[i+1] == pair[1]: # If the pair has already occurred increased the count
-                pair[2] += 1
-                pair_found = True
-                break
-        if not pair_found: # If that pair occurred yet add it to the list
-            note_pairs.append([notes[i],notes[i+1],1])
-
-    # Add edges to the graph from the list of pairs that occurred
-    for pair in note_pairs:
-        G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
-
-    return G
 
 def graph_display_info(G):
     total_in_degree = 0
@@ -99,14 +45,17 @@ def graph_display_info(G):
         total_in_degree += G.in_degree(node)
         total_out_degree += G.out_degree(node)
 
-    total_weight = 0
-    for u, v, weight in G.edges(data="weight"):
-        total_weight += weight
 
     # Just a simple information "check"
     print("Number of nodes: ", len(G.nodes))
     print("Number of edges: ", len(G.edges))
-    print("Total sum weight: ", total_weight) 
+    
+    if nx.is_weighted(G,weight="weight"):
+        total_weight = 0
+        for u, v, weight in G.edges(data="weight"):
+            total_weight += weight
+        print("Total sum weight: ", total_weight) 
+    
     print("Total sum in-degree: ", total_in_degree)
     print("Total sum out-degree: ", total_out_degree)
 
@@ -142,8 +91,14 @@ if __name__ == "__main__":
     midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
     # Obtain the notes and create the graph
-    notes = get_notes(mid_file)
-    G = create_graph_from_notes(notes, original_file)
+    graph_option = input("Simple timestamped or Weighted? S/W\n").lower()
+
+    if graph_option in ["s",""]: # Simple (Default value)
+        notes = Music_Mapping.get_notes_simple(mid_file)
+        G = Music_Mapping.graph_adjacent_notes_simple(notes)
+    elif graph_option == "w": # Weighted
+        notes = Music_Mapping.get_notes_weighted(mid_file)
+        G = Music_Mapping.graph_adjacent_notes_weighted(notes)
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
