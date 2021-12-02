@@ -4,6 +4,7 @@ import sys
 import os.path
 import Music_Mapping
 import Plotting
+import Graph_metrics
 
 # Separate the info function as a separate file.
 # Display basic info of the MIDI file
@@ -49,6 +50,10 @@ def graph_display_info(G):
     # Just a simple information "check"
     print("Number of nodes: ", len(G.nodes))
     print("Number of edges: ", len(G.edges))
+    if isinstance(G,nx.multidigraph.MultiDiGraph):
+        # Show number "unique" edges. I.e., how many tuples of notes that are edges exist
+        print("Number of 'unique' edges: ", Graph_metrics.multidigraph_unique_edges(G))
+        pass
     
     if nx.is_weighted(G,weight="weight"):
         total_weight = 0
@@ -102,4 +107,4 @@ if __name__ == "__main__":
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
-    nx.write_graphml(G,"graphml_files\\Song_Graph.graphml") # Exporting graph to a graphml file
+    nx.write_graphml(G,"graphml_files\\" + original_file + "_Graph.graphml") # Exporting graph to a graphml file

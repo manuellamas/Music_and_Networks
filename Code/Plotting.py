@@ -8,7 +8,7 @@ def DegreeDistributionHistogram(G, file):
 
     labels, counts = np.unique(degree_sequence, return_counts=True)
 
-    print(degree_sequence)
+    print("Degree sequence: ", degree_sequence)
     fig1, ax1 = plt.subplots()
 
     # Bar Plot
