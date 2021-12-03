@@ -97,14 +97,15 @@ if __name__ == "__main__":
     midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
     # Obtain the notes and create the graph
-    graph_option = input("Simple timestamped or Weighted? S/W\n").lower()
+    graph_option = input("MultiDiGraph (timestamped and unweighted) or Digraph Weighted? M/W\n").lower()
+    while graph_option not in ["m", "w", ""]: # Only accept valid types (or empty)
+        graph_option = input("Simple timestamped or Weighted? M/W\n").lower()
 
-    if graph_option in ["s",""]: # Simple (Default value)
-        notes = Music_Mapping.get_notes_simple(mid_file)
-        G = Music_Mapping.graph_adjacent_notes_simple(notes)
+    notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
+    if graph_option in ["m",""]: # Simple (Default value)
+        G = Music_Mapping.graph_note_pairs_multidigraph(notes)
     elif graph_option == "w": # Weighted
-        notes = Music_Mapping.get_notes_weighted(mid_file)
-        G = Music_Mapping.graph_adjacent_notes_weighted(notes)
+        G = Music_Mapping.graph_note_pairs_weighted(notes)
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
