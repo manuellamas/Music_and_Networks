@@ -49,7 +49,8 @@ def graph_display_info(G):
 
     # Just a simple information "check"
     print("Number of nodes: ", len(G.nodes))
-    print("Number of edges: ", len(G.edges))
+    print("Number of edges: ", G.number_of_edges())
+
     if isinstance(G,nx.multidigraph.MultiDiGraph):
         # Show number "unique" edges. I.e., how many tuples of notes that are edges exist
         print("Number of 'unique' edges: ", Graph_metrics.multidigraph_unique_edges(G))
