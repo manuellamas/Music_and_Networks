@@ -18,6 +18,14 @@ Another possibility could be to just have a time rank (`order`), 1 for the first
 Running `Graph.py` file from the project root folder (`<root>`).
 This will work on a sample MIDI file.
 
+You'll be prompted with *"MultiDiGraph (timestamped and unweighted) or Digraph Weighted? M/W"*.
+- `m` will create a MultiDiGraph where each instance of pair of notes found will form an edge with two timestamp attributes (`start` and `end`, the starting time of the first note and end time of the second note).
+- `w` will create a DiGraph where between two (ordered) nodes (and thus notes) there can only be at most one edge
+
+The reply is case-insensitive, `m` and `M` will give the same result.
+An empty reply defaults to the `m` case.
+
+
 It'll:
 - Create a (NetworkX) `graph` object
 - Export `graph` to a `<root>\graphml_files\Song_Graph.graphml` file, to be used with Gephi (for example)

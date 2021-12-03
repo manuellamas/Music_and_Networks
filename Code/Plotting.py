@@ -17,7 +17,7 @@ def DegreeDistributionHistogram(G, file):
     # Might be interesting to define number of ticks (equally spaced) regardless of the amplitude. So say show 5 x-axix labels on every graph for example
 
     # Design
-    title = "Degree Distribution"
+    title = "Degree Distribution" + " " + file
     plt.title(title)
 
     # Axis Labels
