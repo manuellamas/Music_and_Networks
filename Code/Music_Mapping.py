@@ -35,10 +35,12 @@ def get_note_pairs(mid_file, type):
         for msg in first_track:
             if msg.type == "note_on" and msg.velocity != 0: # Creating a node because a note starts
                 notes.append([msg.note,total_time,0]) # [note, start_time, end_time]
+            
             elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0): # Editing an existing node to add its "end" timestamp
                 for i in range(len(notes)):
                     if notes[i][0] == msg.note and notes[i][2] == 0:
                         notes[i][2] = total_time
+
             if not msg.is_meta:
                 total_time += msg.time
 
@@ -82,10 +84,20 @@ def graph_note_pairs_weighted(notes):
     return G
 
 # ---------- Note Interval ----------
-def get_note_interval(mid_file, eps, type):
+def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
+    G = nx.MultiDiGraph() # Creating a directed multigraph
 
+    # Calculate how long is a tick.
+    # ticks_per_beat
+    # print("One tick is:",)
 
-    return notes
+    # List of notes with entries as [note, start_time, end_time]
+    for i in range(len(notes)-1):
+        if notes[i+1][1] - notes[i][1] <= 1 and notes[i+1][1] - notes[i][1] > 0:
+            print(notes[i], notes[i+1])
+        if notes[i+1][1] - notes[i][1] < eps: # Only notes that are separated by at most epsilon ticks
+            G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
+    return G
 
 # --------------------
 

@@ -97,13 +97,22 @@ if __name__ == "__main__":
     midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
     # Obtain the notes and create the graph
-    graph_option = input("MultiDiGraph (timestamped and unweighted) or Digraph Weighted? M/W\n").lower()
-    while graph_option not in ["m", "w", ""]: # Only accept valid types (or empty)
-        graph_option = input("Simple timestamped or Weighted? M/W\n").lower()
+    prompt_question = "Simple timestamped, Interval (same as simple but with max difference interval) or Weighted? M/I/W\n"
+    command = input(prompt_question)
+    graph_option = command[0].lower()
+    while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
+        # The above while needs improvement, for "m" case it needs to only be able to receive an integer after it
+        # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
+        command = input(prompt_question)
+        graph_option = command[0].lower()
 
     notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
     if graph_option in ["m",""]: # Simple (Default value)
-        G = Music_Mapping.graph_note_pairs_multidigraph(notes)
+        if len(command) == 1:
+            G = Music_Mapping.graph_note_pairs_multidigraph(notes)
+        else: # Same as Simple but with a maximum interval difference between notes
+            eps = int(command[2:len(command)])
+            G = Music_Mapping.graph_note_interval(notes, eps, mid_file.ticks_per_beat)
     elif graph_option == "w": # Weighted
         G = Music_Mapping.graph_note_pairs_weighted(notes)
 
