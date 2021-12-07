@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 import numpy as np
 import os.path
 
@@ -32,7 +33,31 @@ def DegreeDistributionHistogram(G, file):
     parent_directory = os.path.split(current_directory)[0]
 
     plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + file + ".png")
-    # plt.savefig("../Plots/Degree_Distribution_" + file + ".png")
     # plt.show()
 
-# def DegreeDistributionScatterPlot(G):
+def DegreeDistributionScatterPlot(G, file):
+    degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
+    degree_sequence = np.array(degree_sequence_list)
+
+    labels, counts = np.unique(degree_sequence, return_counts=True)
+
+    fig1, ax1 = plt.subplots()
+
+    # Design
+    title = "Degree Distribution" + " " + file
+    plt.title(title)
+
+    # Axis Labels
+    ax1.set_xlabel('Degree')
+    ax1.set_ylabel('#Nodes')
+
+    # Axis Ticks
+    # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
+    ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+
+    # Getting the correct path for the Plot folder
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
+    
+    plt.scatter(labels, counts, s=10)
+    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_Scatter_" + file + ".png")

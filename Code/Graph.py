@@ -97,18 +97,23 @@ if __name__ == "__main__":
     midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
     # Obtain the notes and create the graph
-    prompt_question = "Simple timestamped, Interval (same as simple but with max difference interval) or Weighted? M/I/W\n"
+    prompt_question = "Simple timestamped (with set interval or not) or Weighted? M/W\n"
     command = input(prompt_question)
-    graph_option = command[0].lower()
-    while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
-        # The above while needs improvement, for "m" case it needs to only be able to receive an integer after it
-        # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
-        command = input(prompt_question)
+    if len(command) != 0:
         graph_option = command[0].lower()
+        while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
+            # The above while needs improvement, for "m" case it needs to only be able to receive an integer after it
+            # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
+            command = input(prompt_question)
+            graph_option = command[0].lower()
+    else:
+        # Default
+        graph_option = "m"
+        default_option = True
 
     notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
-    if graph_option in ["m",""]: # Simple (Default value)
-        if len(command) == 1:
+    if graph_option in ["m", "", "d"]: # Simple (Default value)
+        if len(command) == 1 or default_option:
             G = Music_Mapping.graph_note_pairs_multidigraph(notes)
         else: # Same as Simple but with a maximum interval difference between notes
             eps = int(command[2:len(command)])
@@ -117,5 +122,6 @@ if __name__ == "__main__":
         G = Music_Mapping.graph_note_pairs_weighted(notes)
 
     graph_display_info(G) # Display basic info of the obtained graph
-    Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
+    # Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
+    Plotting.DegreeDistributionScatterPlot(G, original_file) # Degree Distribution (Scatter Plot)
     nx.write_graphml(G,"graphml_files\\" + original_file + "_Graph.graphml") # Exporting graph to a graphml file

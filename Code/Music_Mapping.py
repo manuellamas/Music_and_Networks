@@ -53,7 +53,7 @@ def get_note_pairs(mid_file, type):
 
 # --------------------
 
-# ---------- Note Pairs - Graph Creation ----------
+# ---------- Graph Creation ----------
 # MultiDiGraph (non-weighted)
 def graph_note_pairs_multidigraph(notes):
     G = nx.MultiDiGraph() # Creating a directed multigraph
@@ -83,7 +83,7 @@ def graph_note_pairs_weighted(notes):
         G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
     return G
 
-# ---------- Note Interval ----------
+# Note Interval
 def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
     G = nx.MultiDiGraph() # Creating a directed multigraph
 
@@ -100,5 +100,3 @@ def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
     return G
 
 # --------------------
-
-# ---------- Note Interval - Graph Creation ----------
