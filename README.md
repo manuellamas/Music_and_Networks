@@ -15,7 +15,7 @@ Another possibility could be to just have a time rank (`order`), 1 for the first
 **Note** 30/11/2021: As of now, it'll probably not work on all files. And even in those that it does the created graph is still crude. It only looks at a single track and therefore the graph isn't by any means a faithful representation of the song.
 
 ### Basic Usage
-Running `Graph.py` file from the project root folder (`<root>`).
+Running `Graph.py` file from the project root folder (`<root>`). (So `py Code/Graph.py`)
 This will work on a sample MIDI file.
 
 You'll be prompted with *"MultiDiGraph (timestamped and unweighted) or Digraph Weighted? M/W"*.

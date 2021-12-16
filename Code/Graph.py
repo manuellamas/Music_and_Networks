@@ -7,8 +7,8 @@ import Plotting
 import Graph_metrics
 
 # Separate the info function as a separate file.
-# Display basic info of the MIDI file
 def midi_file_overview(mid_file, filename):
+    """ Exports into a txt file type, number of tracks, and the MIDI Messages themselves """
     file = open("MIDI_file_info.txt", "w")
 
     file.write(filename+"\n")
@@ -38,8 +38,8 @@ def midi_file_overview(mid_file, filename):
     file.close()
 
 
-
 def graph_display_info(G):
+    """ Displays basic info of the created network """
     total_in_degree = 0
     total_out_degree = 0
     for node in G.nodes:
@@ -65,7 +65,9 @@ def graph_display_info(G):
     print("Total sum in-degree: ", total_in_degree)
     print("Total sum out-degree: ", total_out_degree)
 
+
 def midi_filename(mid_file):
+    """ A function that takes a path to midi file and returns just the file's name """
     original_file = mid_file.filename
     start = 0
     end = len(original_file) - 1
@@ -77,26 +79,27 @@ def midi_filename(mid_file):
     original_file = original_file[start:end]
     return original_file
 
+
 # ----- Main ----- #
 if __name__ == "__main__":
-    # Original File Input
+    # Python File (Project) Location
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
 
+
+    # Input
     if len(sys.argv) == 1:
         print("Running sample file")
         file_path = parent_directory + "\\MIDI_files\\LegendsNeverDie.mid"
-        # file_path = parent_directory + "\\MIDI_files\\Wikipedia_MIDI_sample.mid"
-        # file_path = parent_directory + "\\MIDI_files\\tank.mid"
     else:
         file_path = sys.argv[-1]
     mid_file = mido.MidiFile(file_path, clip = True)
     # --------------------
-
     original_file = midi_filename(mid_file) # Getting just the file name (without the path)
     midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
 
-    # Obtain the notes and create the graph
+
+    # Parsing Input - Command
     prompt_question = "Simple timestamped (with set interval or not) or Weighted? M/W\n"
     command = input(prompt_question)
     if len(command) != 0:
@@ -106,11 +109,13 @@ if __name__ == "__main__":
             # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
             command = input(prompt_question)
             graph_option = command[0].lower()
-    else:
-        # Default
+    else: # Default
         graph_option = "m"
         default_option = True
+    # --------------------
 
+
+    # Obtain the notes and create the graph
     notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
     if graph_option in ["m", "", "d"]: # Simple (Default value)
         if len(command) == 1 or default_option:
@@ -120,8 +125,9 @@ if __name__ == "__main__":
             G = Music_Mapping.graph_note_interval(notes, eps, mid_file.ticks_per_beat)
     elif graph_option == "w": # Weighted
         G = Music_Mapping.graph_note_pairs_weighted(notes)
+    # --------------------
+
 
     graph_display_info(G) # Display basic info of the obtained graph
-    # Plotting.DegreeDistributionHistogram(G, original_file) # Degree Distribution (Histogram)
     Plotting.DegreeDistributionScatterPlot(G, original_file) # Degree Distribution (Scatter Plot)
     nx.write_graphml(G,"graphml_files\\" + original_file + "_Graph.graphml") # Exporting graph to a graphml file

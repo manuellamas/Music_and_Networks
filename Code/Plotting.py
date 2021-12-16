@@ -60,4 +60,4 @@ def DegreeDistributionScatterPlot(G, file):
     parent_directory = os.path.split(current_directory)[0]
     
     plt.scatter(labels, counts, s=10)
-    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_Scatter_" + file + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_ScatterPlot_" + file + ".png")
