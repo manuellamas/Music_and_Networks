@@ -117,12 +117,18 @@ if __name__ == "__main__":
 
     # Obtain the notes and create the graph
     notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
-    if graph_option in ["m", "", "d"]: # Simple (Default value)
-        if len(command) == 1 or default_option:
+    if graph_option in ["m", ""]: # Simple (Default value)
+
+        if (len(command) == 1 and command.isalpha()) or default_option:
             G = Music_Mapping.graph_note_pairs_multidigraph(notes)
+
         else: # Same as Simple but with a maximum interval difference between notes
-            eps = int(command[2:len(command)])
+            if len(command) > 1:
+                eps = int(command[2:len(command)])
+            else:
+                eps = int(command)
             G = Music_Mapping.graph_note_interval(notes, eps, mid_file.ticks_per_beat)
+
     elif graph_option == "w": # Weighted
         G = Music_Mapping.graph_note_pairs_weighted(notes)
     # --------------------

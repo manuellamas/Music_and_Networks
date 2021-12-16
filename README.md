@@ -14,6 +14,13 @@ Another possibility could be to just have a time rank (`order`), 1 for the first
 # Usage
 **Note** 30/11/2021: As of now, it'll probably not work on all files. And even in those that it does the created graph is still crude. It only looks at a single track and therefore the graph isn't by any means a faithful representation of the song.
 
+File Input Style:
+- `py Code/Graph.py <file>`
+
+Command Input Style:
+- `[m/M] <max_time_between_notes>` where `<max_time_between_notes>` is optional
+- `[w/W]`
+
 ### Basic Usage
 Running `Graph.py` file from the project root folder (`<root>`). (So `py Code/Graph.py`)
 This will work on a sample MIDI file.
@@ -30,7 +37,7 @@ It'll:
 - Create a (NetworkX) `graph` object
 - Export `graph` to a `<root>\graphml_files\Song_Graph.graphml` file, to be used with Gephi (for example)
 - Create a `<root>\MIDI_file_info.txt` which contains basic MIDI file info as well as all the tracks and messages
-- Create a `<root>\Plots\Degree_Distribution_<file_name>.png` image which contains the degree distribution of the created `graph` object
+- Create a `<root>\Plots\Degree_Distribution_ScatterPlot_<file_name>.png` image which contains the degree distribution of the created `graph` object
 
 #### Other files
 If an argument is given, it'll create the graph for the specified MIDI file
