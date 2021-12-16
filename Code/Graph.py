@@ -83,8 +83,8 @@ def midi_filename(mid_file):
 # ----- Main ----- #
 if __name__ == "__main__":
     # Python File (Project) Location
-    current_directory = os.path.dirname(__file__)
-    parent_directory = os.path.split(current_directory)[0]
+    program_directory = os.path.dirname(__file__) # Where the Python script being ran is
+    parent_directory = os.path.split(program_directory)[0]
 
 
     # Input
