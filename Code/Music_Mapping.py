@@ -1,6 +1,7 @@
 import mido
 import networkx as nx
 
+# This might not be needed now that melody_track() exists
 def first_non_meta_track(mid_file):
     # Ignoring the tracks that only have MetaMessages
     non_meta_track = 0 # Assuming that the first track isn't only MetaMessages before we check it
@@ -18,13 +19,26 @@ def first_non_meta_track(mid_file):
             non_meta_track_found = True
     return non_meta_track
 
+def melody_track(mid_file):
+    """ Returns track with most notes (if multiple chooses the first in file) """
+    num_nodes = []
+    for track in mid_file.file.tracks:
+        count = 0
+        for msg in track:
+            if msg.type == "note_on" and msg.velocity != 0: # If a message is "starting" a note
+                count += 1
+        num_nodes.append(count)
+    
+    return num_nodes.index(max(num_nodes)) # Returns the first track with the most number of notes
+
+
 # ---------- Main functions ----------
 
 # ---------- Note Pairs ----------
 def get_note_pairs(mid_file, type):
     # Dealing with just one track for now, so we automatically pick just the first one
     # (that isn't only MetaMessages)
-    non_meta_track = first_non_meta_track(mid_file)
+    non_meta_track = melody_track(mid_file)
     first_track = mid_file.tracks[non_meta_track]
 
     # Add each note to a list by order of "occurrence". For now I'm just using time of "note_on" of the note
