@@ -35,7 +35,7 @@ def melody_track(mid_file):
 # ---------- Main functions ----------
 
 # ---------- Note Pairs ----------
-def get_note_pairs(mid_file, type):
+def get_note_pairs(mid_file, type = "m"):
     # Dealing with just one track for now, so we automatically pick just the first one
     # (that isn't only MetaMessages)
     non_meta_track = melody_track(mid_file)
@@ -68,14 +68,6 @@ def get_note_pairs(mid_file, type):
 # --------------------
 
 # ---------- Graph Creation ----------
-# MultiDiGraph (non-weighted)
-def graph_note_pairs_multidigraph(notes):
-    G = nx.MultiDiGraph() # Creating a directed multigraph
-
-    for i in range(len(notes)-1):
-        G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
-    return G
-
 # DiGraph weighted
 def graph_note_pairs_weighted(notes):
     G = nx.DiGraph() # Creating a directed graph
@@ -97,20 +89,39 @@ def graph_note_pairs_weighted(notes):
         G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
     return G
 
-# Note Interval
-def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
+
+# MultiDiGraph (non-weighted)
+# This became the default of the graph_notes_interval. Not defining an eps defaults to this graph creation
+""" TO BE DELETED """
+def graph_note_pairs_multidigraph(notes):
+    G = nx.MultiDiGraph() # Creating a directed multigraph
+
+    for i in range(len(notes)-1):
+        G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
+    return G
+
+# MultiDiGraph (non-weighted) with maximum interval eps between notes
+def graph_note_interval(notes, eps = -1): # MultiDiGraph
+    """ Creates a Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
+    # def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
     G = nx.MultiDiGraph() # Creating a directed multigraph
 
     # Calculate how long is a tick.
     # ticks_per_beat
     # print("One tick is:",)
 
-    # List of notes with entries as [note, start_time, end_time]
-    for i in range(len(notes)-1):
-        if notes[i+1][1] - notes[i][1] <= 1 and notes[i+1][1] - notes[i][1] > 0:
-            print(notes[i], notes[i+1])
-        if notes[i+1][1] - notes[i][1] < eps: # Only notes that are separated by at most epsilon ticks
+    if eps == -1:
+        for i in range(len(notes)-1):
             G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
+
+    else:
+        # List of notes with entries as [note, start_time, end_time]
+        for i in range(len(notes)-1):
+            if notes[i+1][1] - notes[i][1] <= 1 and notes[i+1][1] - notes[i][1] > 0:
+                print(notes[i], notes[i+1])
+            if notes[i+1][1] - notes[i][1] < eps: # Only notes that are separated by at most epsilon ticks
+                G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
+
     return G
 
 # --------------------
