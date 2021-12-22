@@ -14,6 +14,8 @@ Another possibility could be to just have a time rank (`order`), 1 for the first
 # Usage
 **Note** 30/11/2021: As of now, it'll probably not work on all files. And even in those that it does the created graph is still crude. It only looks at a single track and therefore the graph isn't by any means a faithful representation of the song.
 
+It currently only looks at the track with the most nodes (if there are multiple tracks with that number of notes then it chooses the first)
+
 File Input Style:
 - `py Code/Graph.py <file>`
 
