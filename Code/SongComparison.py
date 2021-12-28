@@ -21,15 +21,18 @@ if __name__ == "__main__":
     # Create the Graphs
     networks = []
     for mid in list_files:
+        mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
+    
         # Graph creation
-        note_pairs = Music_Mapping.get_note_pairs(mid)
+        note_pairs = Music_Mapping.get_note_pairs(mid_file)
         network = Music_Mapping.graph_note_interval(note_pairs)
 
-        filename = MIDI_general.midi_filename(mid)
-        networks.append([network, filename])
+        filename = MIDI_general.midi_filename(mid_file)
+        networks.append([network, mid_file, filename])
 
 
     # Plot the Degree Distribution Scatterplot
-    
+    Plotting.DegreeDistributionComparison(networks)
+    Plotting.DegreeDistributionComparisonLogLog(networks)
 
     # SongComparisonOutputFiles

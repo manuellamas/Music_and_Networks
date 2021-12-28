@@ -22,7 +22,7 @@ def first_non_meta_track(mid_file):
 def melody_track(mid_file):
     """ Returns track with most notes (if multiple chooses the first in file) """
     num_nodes = []
-    for track in mid_file.file.tracks:
+    for track in mid_file.tracks:
         count = 0
         for msg in track:
             if msg.type == "note_on" and msg.velocity != 0: # If a message is "starting" a note

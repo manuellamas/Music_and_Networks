@@ -13,5 +13,8 @@ Plots
 # graphml files
 graphml_files
 
+# Log file
+MIDI_file_info.txt
+
 # SongArena - Used to place two files so that they can be compared
 SongArena
