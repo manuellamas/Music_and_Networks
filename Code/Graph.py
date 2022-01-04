@@ -67,14 +67,14 @@ if __name__ == "__main__":
             command = input(prompt_question)
             graph_option = command[0].lower()
     else: # Default
-        graph_option = "m"
+        graph_option = "w"
         default_option = True
     # --------------------
 
 
     # Obtain the notes and create the graph
     notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
-    if graph_option in ["m", ""]: # Simple (Default value)
+    if graph_option == "m": # MultiDigraph
 
         if (len(command) == 1 and command.isalpha()) or default_option:
             G = Music_Mapping.graph_note_interval(notes)
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                 eps = int(command)
             G = Music_Mapping.graph_note_interval(notes, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
-    elif graph_option == "w": # Weighted
+    elif graph_option in ["w", ""]: # Weighted (Default value)
         G = Music_Mapping.graph_note_pairs_weighted(notes)
     # --------------------
 
