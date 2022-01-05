@@ -1,24 +1,6 @@
 import mido
 import networkx as nx
 
-# This might not be needed now that melody_track() exists
-def first_non_meta_track(mid_file):
-    # Ignoring the tracks that only have MetaMessages
-    non_meta_track = 0 # Assuming that the first track isn't only MetaMessages before we check it
-    non_meta_track_found = False
-
-    while not non_meta_track_found:
-        track_is_only_meta = True
-        for msg in mid_file.tracks[non_meta_track]:
-            if not msg.is_meta:
-                track_is_only_meta = False
-                break
-        if track_is_only_meta:
-            non_meta_track += 1
-        else:
-            non_meta_track_found = True
-    return non_meta_track
-
 def melody_track(mid_file):
     """ Returns track with most notes (if multiple chooses the first in file) """
     num_nodes = []
@@ -34,8 +16,8 @@ def melody_track(mid_file):
 
 # ---------- Main functions ----------
 
-# ---------- Note Pairs ----------
-def get_note_pairs(mid_file, type = "m"):
+# ---------- Note Pairs Occurrences ----------
+def get_note_pairs(mid_file, type = "w"):
     # Dealing with just one track for now, so we automatically pick just the first one
     # (that isn't only MetaMessages)
     non_meta_track = melody_track(mid_file)
@@ -59,9 +41,24 @@ def get_note_pairs(mid_file, type = "m"):
                 total_time += msg.time
 
     elif type == "w": # Weighted
+        total_time = 0 # Total time since the start of the track. Because 'msg.time' holds only the delta_time (time that passed since last message)
+
         for msg in first_track:
-            if msg.type == "note_on" and msg.velocity != 0:
-                notes.append(msg.note)
+            # This was the entirety of the previous function
+            # if msg.type == "note_on" and msg.velocity != 0:
+            #     notes.append(msg.note)
+            # ----------------------------------------------
+
+            if msg.type == "note_on" and msg.velocity != 0: # Creating a node because a note starts
+                notes.append([msg.note,total_time,0]) # [note, start_time, end_time]
+            
+            elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0): # Editing an existing node to add its "end" timestamp
+                for i in range(len(notes)):
+                    if notes[i][0] == msg.note and notes[i][2] == 0:
+                        notes[i][2] = total_time
+
+            if not msg.is_meta:
+                total_time += msg.time
 
     return notes
 
@@ -89,18 +86,34 @@ def graph_note_pairs_weighted(notes):
         G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
     return G
 
+# ---------- NEW VERSION ----------
+def graph_note_pairs_weighted2(notes, eps = -1):
+    """ Creates a (Simple) Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
+    G = nx.DiGraph() # Creating a directed graph
 
-# MultiDiGraph (non-weighted)
-# This became the default of the graph_notes_interval. Not defining an eps defaults to this graph creation
-""" TO BE DELETED """
-def graph_note_pairs_multidigraph(notes):
-    G = nx.MultiDiGraph() # Creating a directed multigraph
-
+    # Count the occurences of pairs of sequential notes
+    note_pairs = [] # Elements such as [note1, note2, frequency, times (which will be a list)]
     for i in range(len(notes)-1):
-        G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
-    return G
+        pair_found = False
+        for pair in note_pairs:
+            if notes[i][0] == pair[0] and notes[i+1] == pair[1]: # If the pair has already occurred increased the count
+                pair[2] += 1
+                pair_found = True
+                break
+        if not pair_found: # If that pair has not occurred yet add it to the list
+            note_pairs.append([notes[i], notes[i+1], 1])
 
-# MultiDiGraph (non-weighted) with maximum interval eps between notes
+    # Add edges to the graph from the list of pairs that occurred
+    for pair in note_pairs:
+        G.add_weighted_edges_from([(pair[0],pair[1],pair[2])])
+    return G
+# ------------------------------------------------------------
+
+
+
+
+# -------------------- MultiDiGraph --------------------
+# MultiDiGraph (non-weighted) with an (optional) maximum interval eps between notes
 def graph_note_interval(notes, eps = -1): # MultiDiGraph
     """ Creates a Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
     # def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
@@ -124,4 +137,59 @@ def graph_note_interval(notes, eps = -1): # MultiDiGraph
 
     return G
 
-# --------------------
+# ------------------------------------------------------------
+
+
+
+
+
+
+###########################################################################################
+def get_notes(mid_file):
+    """ Obtaining a list of the notes of the 'melody track' from a MIDI file (MIDI Object) """
+    # Dealing with just one track for now, so we automatically pick the track with the most notes (if there's a tie, the first to occur gets picked)
+    melody_track_index = melody_track(mid_file)
+    first_track = mid_file.tracks[melody_track_index]
+
+    # Add each note to a list by order of "occurrence". For now I'm just using time of "note_on" of the note
+    notes = []
+
+    total_time = 0 # Total time since the start of the track. Because 'msg.time' holds only the delta_time (time that passed since last message)
+    for msg in first_track:
+
+        if msg.type == "note_on" and msg.velocity != 0: # Creating a node because a note starts
+            notes.append([msg.note,total_time,0]) # [note, start_time, end_time]
+        
+        elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0): # Editing an existing node to add its "end" timestamp
+            for i in range(len(notes)):
+                if notes[i][0] == msg.note and notes[i][2] == 0:
+                    notes[i][2] = total_time
+
+        if not msg.is_meta:
+            total_time += msg.time
+
+    return notes # A list with entries as [note, start_time, end_time]
+
+
+
+
+
+def graph_note_pairs_weighted_Alpha(mid_file, eps = -1):
+    """ Creates a (Simple Directed) Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
+    G = nx.DiGraph() # Creating a directed graph
+    notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
+    # [note, start_time, end_time]
+
+    note_pairs = [] # Each entry will be of the form [note_1, note_2, #occurrences, times] where times will be a list of the form [ [start_a, end_a], [start_b, end_b], ...] ] ('a' being the first occurrence, 'b' the second and so on)
+    if eps == -1: # No maximum time established
+        for i in range(len(notes)):
+            pair_found = False
+            for pair in note_pairs:
+                if pair[0] == notes[i][0] and pair[1] == notes[i+1][0]:
+                    pair[2] += 1 # Increasing the frequency count
+                    pair[3].append([notes[i][1], notes[i+1][2]]) # Adding the first note's starting time and last note's ending time, as the start and end of this edge occurrence
+                    pair_found = True
+            if not pair_found: # If that pair doesn't yet exist add it to the list
+                note_pairs.append(notes[i][0], notes[i+1][0], 1, [[notes[i][1], notes[i+1][2]]])
+
+    return G

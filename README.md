@@ -3,13 +3,9 @@
 The graph is being created by looking only at each note's start. Meaning *I'm currently ignoring the velocity and duration*.
 A note x comes after another note y if it's start comes immediately after it. If that happens there will be a directed link from note x -> y.
 
+I'm reverting to using a "Simple" Digraph, meaning not a multidigraph as several algorithms don't work with it.
 #### Timestamps
-I can't see how weighted networks can have timestamps.
-So for now I'm simply adding a `timestamp` attribute to the edges and nodes, where the timestamp is for the:
-- node where the note begins (the total time on that track since the track started)
-- edge the timestamp of its starting node
-
-Another possibility could be to just have a time rank (`order`), 1 for the first node, 2 for the second, ...
+For the use of the "sliding window", I'll have an ordered list of each edge, where each entry will also have when time edge starts and ends. Which will correspond to the first note's starting time and last note's ending time.
 
 # Usage
 **Note** 30/11/2021: As of now, it'll probably not work on all files. And even in those that it does the created graph is still crude. It only looks at a single track and therefore the graph isn't by any means a faithful representation of the song.
@@ -20,7 +16,7 @@ File Input Style:
 - `py Code/Graph.py <file>`
 
 Command Input Style:
-- `[m/M] <max_time_between_notes>` where `<max_time_between_notes>` is optional
+- `[m/M] <max_time_between_notes>` where `<max_time_between_notes>` is optional (and is in *ticks* which is a bit tricky to define in seconds, as the ticks can change throughout the song)
 - `[w/W]`
 
 ### Basic Usage
@@ -43,4 +39,4 @@ It'll:
 
 #### Other files
 If an argument is given, it'll create the graph for the specified MIDI file
-`Graph.py <path_to_file>`
+`py Code/Graph.py <path_to_file>`
