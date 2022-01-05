@@ -57,12 +57,14 @@ if __name__ == "__main__":
 
 
     # Parsing Input - Command
-    prompt_question = "Simple timestamped (with set interval or not) or Weighted? M/W\n"
+    prompt_question = "Weighted or MultiDiGraph? W/M [optional maximum ticks dif]\n"
     command = input(prompt_question)
+    default_option = False
     if len(command) != 0:
         graph_option = command[0].lower()
         while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
-            # The above while needs improvement, for "m" case it needs to only be able to receive an integer after it
+
+            # The above still needs improvement, for the default case "" I can't just receive a number as it is now. Meaning "26" which would default to "w" with eps=26 currently doesn't work
             # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
             command = input(prompt_question)
             graph_option = command[0].lower()
@@ -73,21 +75,29 @@ if __name__ == "__main__":
 
 
     # Obtain the notes and create the graph
-    notes = Music_Mapping.get_note_pairs(mid_file, graph_option)
+    # THIS BELOW NEEDS SOME CLEANING
     if graph_option == "m": # MultiDigraph
 
-        if (len(command) == 1 and command.isalpha()) or default_option:
-            G = Music_Mapping.graph_note_interval(notes)
+        if (len(command) == 1 and command.isalpha()):
+            G = Music_Mapping.graph_note_interval(mid_file)
 
         else: # Same as Simple but with a maximum interval difference between notes
             if len(command) > 1:
                 eps = int(command[2:len(command)])
             else:
                 eps = int(command)
-            G = Music_Mapping.graph_note_interval(notes, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+            G = Music_Mapping.graph_note_interval(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
     elif graph_option in ["w", ""]: # Weighted (Default value)
-        G = Music_Mapping.graph_note_pairs_weighted(notes)
+        if (len(command) == 1 and command.isalpha()) or default_option:
+            G = Music_Mapping.graph_note_pairs_weighted(mid_file)
+
+        else: # Same as Simple but with a maximum interval difference between notes
+            if len(command) > 1:
+                eps = int(command[2:len(command)])
+            else:
+                eps = int(command)
+            G = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
     # --------------------
 
 
