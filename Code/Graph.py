@@ -102,5 +102,17 @@ if __name__ == "__main__":
 
 
     graph_display_info(G) # Display basic info of the obtained graph
-    Plotting.DegreeDistributionScatterPlot(G, original_file) # Degree Distribution (Scatter Plot)
+    Plotting.degree_distribution_scatter_plot(G, original_file) # Degree Distribution (Scatter Plot)
     nx.write_graphml(G,"graphml_files\\" + original_file + "_Graph.graphml") # Exporting graph to a graphml file
+
+
+
+
+
+    bet = nx.betweenness_centrality(G, normalized = True, weight = "weight")
+    print(bet)
+    print(type(bet))
+
+
+
+

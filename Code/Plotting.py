@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 import os.path
+import Graph_metrics
 
-def DegreeDistributionHistogram(G, file):
+def degree_distribution_histogram(G, file):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -35,7 +36,7 @@ def DegreeDistributionHistogram(G, file):
     plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + file + ".png")
     # plt.show()
 
-def DegreeDistributionScatterPlot(G, file):
+def degree_distribution_scatter_plot(G, file):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -63,7 +64,8 @@ def DegreeDistributionScatterPlot(G, file):
     plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_ScatterPlot_" + file + ".png")
 
 
-def DegreeDistributionComparison(networks):
+def degree_distribution_comparison_plot(networks, scale = "linear"):
+    """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
@@ -89,6 +91,11 @@ def DegreeDistributionComparison(networks):
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
     ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
 
+    if scale == "loglog":
+        # Setting LogLog Scale
+        ax1.set_xscale("log", base=10)
+        ax1.set_yscale("log", base=10)
+
     # Getting the correct path for the Plot folder
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
@@ -96,39 +103,43 @@ def DegreeDistributionComparison(networks):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_" + "Song_Arena" + ".png")
+
+    if scale == "loglog":
+        plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + "Song_Arena" + ".png")
+    else:
+        plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_" + "Song_Arena" + ".png")
 
 
-def DegreeDistributionComparisonLogLog(networks):
+
+# Betweenness Centrality
+def betwenness_comparison_plot(networks):
+    """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
         G, midi_file, midi_title = network
 
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G)
 
-        degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
-        degree_sequence = np.array(degree_sequence_list)
+        betweenness_sequence_list = sorted(betwenness_values, reverse = True)
+        betwenness_sequence = np.array(betweenness_sequence_list)
 
-        labels, counts = np.unique(degree_sequence, return_counts=True)
+        labels, counts = np.unique(betwenness_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
 
     # Design
-    title = "Degree Distribution"
+    title = "Betweenness Centrality"
     plt.title(title)
 
     # Axis Labels
-    ax1.set_xlabel('Degree')
+    ax1.set_xlabel('Betweenness')
     ax1.set_ylabel('#Nodes')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
     ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
 
-    # Setting LogLog Scale
-    ax1.set_xscale("log", base=10)
-    ax1.set_yscale("log", base=10)
-
     # Getting the correct path for the Plot folder
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
@@ -136,4 +147,4 @@ def DegreeDistributionComparisonLogLog(networks):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + "Song_Arena" + ".png")
+    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")

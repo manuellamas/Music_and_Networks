@@ -9,6 +9,8 @@ import Music_Mapping
 
 
 
+
+
 if __name__ == "__main__":
     # Python File (Project) Location
     program_directory = os.path.dirname(__file__) # Where the Python script being ran is
@@ -22,17 +24,34 @@ if __name__ == "__main__":
     networks = []
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-    
-        # Graph creation
-        note_pairs = Music_Mapping.get_note_pairs(mid_file)
-        network = Music_Mapping.graph_note_interval(note_pairs)
 
+        network = Music_Mapping.graph_note_pairs_weighted(mid_file)
         filename = MIDI_general.midi_filename(mid_file)
+
         networks.append([network, mid_file, filename])
 
 
-    # Plot the Degree Distribution Scatterplot
-    Plotting.DegreeDistributionComparison(networks)
-    Plotting.DegreeDistributionComparisonLogLog(networks)
+    ########## Plots ##########
+    # Degree Distribution
+    Plotting.degree_distribution_comparison_plot(networks)
+    Plotting.degree_distribution_comparison_plot(networks, "loglog")
+    
+    # Betweenness
+    Plotting.betwenness_comparison_plot(networks)
+
+    
+    diameters = []
+    clust_coef = [] # Clustering coefficient
+
+    print("Name", "Diameter", "Clustering Coefficient")
+    for network, mid_file, filename in networks:
+        diameter = nx.diameter(network)
+        clust = nx.clustering(network)
+
+        diameters.append(diameter)
+        clust_coef.append(clust)
+
+        print(filename, diameter, clust)
+
 
     # SongComparisonOutputFiles

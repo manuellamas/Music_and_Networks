@@ -9,3 +9,16 @@ def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph,
     else:
         print("This graph is not a MultiDiGraph")
         return G.number_of_edges()
+
+
+def list_betweenness_centrality(G): # Returns a list with all betweenness centrality values
+    betw_values = nx.betweenness_centrality(G, normalized = True, weight = "weight")
+    print(type(betw_values))
+
+    rounded_values = []
+
+    for node, value in betw_values.items():
+        rounded = round(value, 2) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
+        rounded_values.append(rounded)
+
+    return rounded_values
