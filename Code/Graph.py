@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # Input
     if len(sys.argv) == 1:
         print("Running sample file")
-        file_path = parent_directory + "\\MIDI_files\\LegendsNeverDie.mid"
+        file_path = parent_directory + "\\MIDI_files\\Wikipedia_MIDI_sample.mid"
     else:
         file_path = sys.argv[-1]
     mid_file = mido.MidiFile(file_path, clip = True)

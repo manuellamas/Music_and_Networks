@@ -11,13 +11,27 @@ def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph,
         return G.number_of_edges()
 
 
-def list_betweenness_centrality(G): # Returns a list with all betweenness centrality values
+def list_betweenness_centrality(G):
+    """ Returns a list with all betweenness centrality values """
     betw_values = nx.betweenness_centrality(G, normalized = True, weight = "weight")
     print(type(betw_values))
 
     rounded_values = []
 
     for node, value in betw_values.items():
+        rounded = round(value, 2) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
+        rounded_values.append(rounded)
+
+    return rounded_values
+
+def list_closeness_centrality(G):
+    """ Returns a list with all closeness centrality values """
+    centr_values = nx.closeness_centrality(G, distance = "weight")
+    print(type(centr_values))
+
+    rounded_values = []
+
+    for node, value in centr_values.items():
         rounded = round(value, 2) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
         rounded_values.append(rounded)
 

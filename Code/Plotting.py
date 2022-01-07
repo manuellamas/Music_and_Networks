@@ -148,3 +148,42 @@ def betwenness_comparison_plot(networks):
     plt.legend(loc="upper right")
 
     plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")
+
+
+# Closeness Centrality
+def closeness_comparison_plot(networks):
+    """ Creates a plot of the closeness centrality distribution of a Graph """
+    fig1, ax1 = plt.subplots()
+
+    for network in networks:
+        G, midi_file, midi_title = network
+
+        closeness_values = Graph_metrics.list_closeness_centrality(G)
+
+        closeness_sequence_list = sorted(closeness_values, reverse = True)
+        closeness_sequence = np.array(closeness_sequence_list)
+
+        labels, counts = np.unique(closeness_sequence, return_counts=True)
+        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+
+
+    # Design
+    title = "Closeness Centrality"
+    plt.title(title)
+
+    # Axis Labels
+    ax1.set_xlabel('Closeness')
+    ax1.set_ylabel('#Nodes')
+
+    # Axis Ticks
+    # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
+    ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+
+    # Getting the correct path for the Plot folder
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
+
+    # Legend
+    plt.legend(loc="upper right")
+
+    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Closeness_Distribution_" + "Song_Arena" + ".png")

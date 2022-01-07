@@ -36,8 +36,9 @@ if __name__ == "__main__":
     Plotting.degree_distribution_comparison_plot(networks)
     Plotting.degree_distribution_comparison_plot(networks, "loglog")
     
-    # Betweenness
+    # Betweenness and Closeness
     Plotting.betwenness_comparison_plot(networks)
+    Plotting.closeness_comparison_plot(networks)
 
     
     diameters = []

@@ -40,3 +40,15 @@ It'll:
 #### Other files
 If an argument is given, it'll create the graph for the specified MIDI file
 `py Code/Graph.py <path_to_file>`
+
+
+
+
+
+
+# Notes
+*How should I approach rounding when calculating Betwenness and Closeness centrality?*
+If I don't round almost all values are different, but if I round too much I lose too much information.
+
+Check betwenness centrality, using or not `"weight"` attribute.
+Similarly in closeness centrality with the `distance = "weight"`
