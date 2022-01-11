@@ -52,8 +52,8 @@ if __name__ == "__main__":
         file_path = sys.argv[-1]
     mid_file = mido.MidiFile(file_path, clip = True)
     # --------------------
-    original_file = MIDI_general.midi_filename(mid_file) # Getting just the file name (without the path)
-    MIDI_general.midi_file_overview(mid_file, original_file) # Writing basic info of the midi file to a .txt
+    filename = MIDI_general.midi_filename(mid_file) # Getting just the file name (without the path)
+    MIDI_general.midi_file_overview(mid_file, filename) # Writing basic info of the midi file to a .txt
 
 
     # Parsing Input - Command
@@ -79,14 +79,14 @@ if __name__ == "__main__":
     if graph_option == "m": # MultiDigraph
 
         if (len(command) == 1 and command.isalpha()):
-            G = Music_Mapping.graph_note_interval(mid_file)
+            G = Music_Mapping.graph_note_multigraph(mid_file)
 
         else: # Same as Simple but with a maximum interval difference between notes
             if len(command) > 1:
-                eps = int(command[2:len(command)])
+                eps = float(command[2:len(command)])
             else:
-                eps = int(command)
-            G = Music_Mapping.graph_note_interval(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+                eps = float(command)
+            G = Music_Mapping.graph_note_multigraph(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
     elif graph_option in ["w", ""]: # Weighted (Default value)
         if (len(command) == 1 and command.isalpha()) or default_option:
@@ -94,25 +94,15 @@ if __name__ == "__main__":
 
         else: # Same as Simple but with a maximum interval difference between notes
             if len(command) > 1:
-                eps = int(command[2:len(command)])
+                eps = float(command[2:len(command)])
             else:
-                eps = int(command)
+                eps = float(command)
             G = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
     # --------------------
 
 
     graph_display_info(G) # Display basic info of the obtained graph
-    Plotting.degree_distribution_scatter_plot(G, original_file) # Degree Distribution (Scatter Plot)
-    nx.write_graphml(G,"graphml_files\\" + original_file + "_Graph.graphml") # Exporting graph to a graphml file
-
-
-
-
-
-    bet = nx.betweenness_centrality(G, normalized = True, weight = "weight")
-    print(bet)
-    print(type(bet))
-
-
+    Plotting.degree_distribution_scatter_plot(G, filename) # Degree Distribution (Scatter Plot)
+    nx.write_graphml(G,"graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
 
 

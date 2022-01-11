@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
+
 import os.path
+
 import Graph_metrics
 
-def degree_distribution_histogram(G, file):
+########## Graph Analysis ##########
+def degree_distribution_histogram(G, filename):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -19,7 +22,7 @@ def degree_distribution_histogram(G, file):
     # Might be interesting to define number of ticks (equally spaced) regardless of the amplitude. So say show 5 x-axix labels on every graph for example
 
     # Design
-    title = "Degree Distribution" + " " + file
+    title = "Degree Distribution" + " " + filename
     plt.title(title)
 
     # Axis Labels
@@ -33,10 +36,12 @@ def degree_distribution_histogram(G, file):
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
 
-    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + file + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + filename + ".png")
     # plt.show()
 
-def degree_distribution_scatter_plot(G, file):
+
+
+def degree_distribution_scatter_plot(G, filename):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -45,7 +50,7 @@ def degree_distribution_scatter_plot(G, file):
     fig1, ax1 = plt.subplots()
 
     # Design
-    title = "Degree Distribution" + " " + file
+    title = "Degree Distribution" + " " + filename
     plt.title(title)
 
     # Axis Labels
@@ -61,9 +66,13 @@ def degree_distribution_scatter_plot(G, file):
     parent_directory = os.path.split(current_directory)[0]
 
     plt.scatter(labels, counts, s=10)
-    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_ScatterPlot_" + file + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_ScatterPlot_" + filename + ".png")
+
+########## Graph Analysis End ##########
 
 
+
+########## Musics Comparison ##########
 def degree_distribution_comparison_plot(networks, scale = "linear"):
     """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
@@ -126,6 +135,9 @@ def betwenness_comparison_plot(networks):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        
+        # Create a line on top of a scatter plot
+        plt.plot(labels, counts)
 
 
     # Design
@@ -148,6 +160,7 @@ def betwenness_comparison_plot(networks):
     plt.legend(loc="upper right")
 
     plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")
+
 
 
 # Closeness Centrality
@@ -187,3 +200,38 @@ def closeness_comparison_plot(networks):
     plt.legend(loc="upper right")
 
     plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Closeness_Distribution_" + "Song_Arena" + ".png")
+
+########## Musics Comparison End ##########
+
+
+
+########## Time Window ##########
+def average_degree_time_window(average_degrees, time_interval, time_skip, filename):
+    x_axis = []
+    for i in range(len(average_degrees)):
+        x_axis.append(time_interval) # The time window is centered on this time (tick)
+        time_interval += time_skip
+
+    fig1, ax1 = plt.subplots()
+
+    # Design
+    title = "Average Degree" + " - " + filename
+    plt.title(title)
+
+    # Axis Labels
+    ax1.set_xlabel('Center Tick') # The center time (tick) of the window being analyzed
+    ax1.set_ylabel('Average Degree')
+
+    # Axis Ticks
+    # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
+    ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+
+    # Getting the correct path for the Plot folder
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
+
+    plt.scatter(x_axis, average_degrees, s=10)
+    plt.savefig(parent_directory + "\\Plots\\Time_Window\\Average_Distribution_" + filename + ".png")
+    
+
+    return

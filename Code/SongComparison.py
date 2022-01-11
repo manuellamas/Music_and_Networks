@@ -1,8 +1,10 @@
 import networkx as nx
 import mido
+
 import sys
 import os.path
 from os import listdir
+
 import Plotting
 import MIDI_general
 import Music_Mapping

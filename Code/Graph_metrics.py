@@ -36,3 +36,10 @@ def list_closeness_centrality(G):
         rounded_values.append(rounded)
 
     return rounded_values
+
+def average_degree(G):
+    total_degree = 0
+    for node, degree in G.degree():
+        total_degree += degree
+
+    return total_degree/G.number_of_nodes()

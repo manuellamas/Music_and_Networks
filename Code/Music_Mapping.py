@@ -39,6 +39,35 @@ def get_notes(mid_file):
             total_time += msg.time
 
     return notes # A list with entries as [note, start_time, end_time]
+
+def get_note_pairs(notes, eps = -1, window = False):
+    if window:
+        # List of edges by time
+        edge_time = [] # Will hold every pair (that dists less than eps if it is specified) in a list where each entry is
+        # [note_1, note_2, note_1_start, note_2_end]
+
+
+    note_pairs = [] # Each entry will be of the form [note_1, note_2, #occurrences, times] where times will be a list of the form [ [start_a, end_a], [start_b, end_b], ...] ] ('a' being the first occurrence, 'b' the second and so on)
+    for i in range(len(notes) - 1):
+        pair_found = False
+        if eps == -1 or (notes[i+1][1] - notes[i][1] < eps): # Only notes that are separated by at most epsilon ticks
+            for pair in note_pairs:
+                if pair[0] == notes[i][0] and pair[1] == notes[i+1][0]:
+                    pair[2] += 1 # Increasing the frequency count
+                    pair[3].append([notes[i][1], notes[i+1][2]]) # Adding the first note's starting time and last note's ending time, as the start and end of this edge occurrence
+                    pair_found = True
+            if not pair_found: # If that pair doesn't yet exist add it to the list
+                note_pairs.append([notes[i][0], notes[i+1][0], 1, [[notes[i][1], notes[i+1][2]]]])
+
+        if window: # Sliding Window
+            edge_time.append([notes[i][0], notes[i+1][0], notes[i][1], notes[i+1][2]])
+
+    if window:
+        return note_pairs, edge_time
+    else:
+        return note_pairs
+
+
 # ------------------------------------------------------------
 
 
@@ -52,25 +81,11 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
-    # ----- Sliding Window -----
-    # Currently not in use but it's for the "Sliding Window"
-    # List of edges by time
-    edge_time = [] # Will hold every pair (that dists less than eps if it is specified) in a list where each entry is
-    # [note_1, note_2, note_1_start, note_2_end]
-    # ----- Sliding Window end -----
 
-    note_pairs = [] # Each entry will be of the form [note_1, note_2, #occurrences, times] where times will be a list of the form [ [start_a, end_a], [start_b, end_b], ...] ] ('a' being the first occurrence, 'b' the second and so on)
-    for i in range(len(notes) - 1):
-        pair_found = False
-        if eps == -1 or (notes[i+1][1] - notes[i][1] < eps): # Only notes that are separated by at most epsilon ticks
-            for pair in note_pairs:
-                if pair[0] == notes[i][0] and pair[1] == notes[i+1][0]:
-                    pair[2] += 1 # Increasing the frequency count
-                    pair[3].append([notes[i][1], notes[i+1][2]]) # Adding the first note's starting time and last note's ending time, as the start and end of this edge occurrence
-                    pair_found = True
-            if not pair_found: # If that pair doesn't yet exist add it to the list
-                note_pairs.append([notes[i][0], notes[i+1][0], 1, [[notes[i][1], notes[i+1][2]]]])
-        edge_time.append([notes[i][0], notes[i+1][0], notes[i][1], notes[i+1][2]])
+
+    note_pairs = get_note_pairs(notes, eps = -1)
+
+
 
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now
@@ -80,13 +95,13 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
 
 # MultiDiGraph (non-weighted) with an (optional) maximum interval eps between notes
 # Not using it for now since it doesn't work with "common" algorithms metrics
-def graph_note_interval(mid_file, eps = -1): # MultiDiGraph
+def graph_note_multigraph(mid_file, eps = -1): # MultiDiGraph
     """ Creates a Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
 
     G = nx.MultiDiGraph() # Creating a directed multigraph
     notes = get_notes(mid_file)
 
-    # def graph_note_interval(notes, eps, ticks_per_beat): # MultiDiGraph
+    # def graph_note_multigraph(notes, eps, ticks_per_beat): # MultiDiGraph
     # Calculate how long is a tick.
     # ticks_per_beat
     # print("One tick is:",)
