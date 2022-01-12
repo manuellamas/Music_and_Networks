@@ -27,7 +27,6 @@ def list_betweenness_centrality(G):
 def list_closeness_centrality(G):
     """ Returns a list with all closeness centrality values """
     centr_values = nx.closeness_centrality(G, distance = "weight")
-    print(type(centr_values))
 
     rounded_values = []
 
@@ -38,6 +37,7 @@ def list_closeness_centrality(G):
     return rounded_values
 
 def average_degree(G):
+    """ Returns the average degree of a graph (ignoring weight) """
     total_degree = 0
     for node, degree in G.degree():
         total_degree += degree

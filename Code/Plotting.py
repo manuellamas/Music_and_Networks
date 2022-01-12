@@ -208,9 +208,10 @@ def closeness_comparison_plot(networks):
 ########## Time Window ##########
 def average_degree_time_window(average_degrees, time_interval, time_skip, filename):
     x_axis = []
+    time_window_center = time_interval/2 # The moment (tick) at the center of the current window
     for i in range(len(average_degrees)):
-        x_axis.append(time_interval) # The time window is centered on this time (tick)
-        time_interval += time_skip
+        x_axis.append(time_window_center) # The time window is centered on this time (tick)
+        time_window_center += time_skip
 
     fig1, ax1 = plt.subplots()
 
@@ -231,7 +232,8 @@ def average_degree_time_window(average_degrees, time_interval, time_skip, filena
     parent_directory = os.path.split(current_directory)[0]
 
     plt.scatter(x_axis, average_degrees, s=10)
-    plt.savefig(parent_directory + "\\Plots\\Time_Window\\Average_Distribution_" + filename + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Time_Window\\Average_Distribution_" + filename + "_I-" + str(time_interval) + "_S-" + str(time_skip) + ".png")
+    # plt.savefig(parent_directory + "\\Plots\\Time_Window\\Average_Distribution_" + filename + ".png")
     
 
     return

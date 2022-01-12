@@ -23,8 +23,8 @@ def degree_window(mid_file, eps = -1):
 
 
     # Fixed Parameters - all time parameters/variables are measured in ticks
-    time_interval = 1000 # The amount of ticks per window
-    time_skip = 100 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
+    time_interval = 2000 # The amount of ticks per window
+    time_skip = 500 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
 
     time_window_start = 0 # Where the window starts (variable)
     current_edges = [] # List of edges of the current 'windowed' graph
@@ -34,11 +34,31 @@ def degree_window(mid_file, eps = -1):
     average_degrees = []
 
     while len(available_edges) != 0:
-        print(len(available_edges))
+        edges_to_remove = []
+
+        print("current_edges")
+
+        test_edges = current_edges
+        test_edges.sort(key = lambda x:x[0])
+        for edge in test_edges:
+            print(edge)
+
+        print("graph edges")
+        graph_edges = list(G.edges())
+        graph_edges.sort(key = lambda x:x[0])
+        for edge in graph_edges:
+            print(edge)
+
+
         # Removing edges
         for edge in current_edges:
             if edge[2] < time_window_start: # If start is before the start of the window
+                print("About to be removed",edge)
                 G.remove_edge(edge[0], edge[1])
+                edges_to_remove.append(edge)
+
+        for edge in edges_to_remove: # Removing from current_edges as well, doesn't work above as it would mess up the for loop the way it is now
+            current_edges.remove(edge)
 
         # Removing edges before adding, because there might be edges that will be removed and then added again. Since an edge is just a connection between two notes, and that connection can appear multiple times (even within the same window).
 
@@ -47,11 +67,23 @@ def degree_window(mid_file, eps = -1):
             if edge[2] >= time_window_start and edge[3] <= time_window_start + time_interval:
                 # Add edge to the graph, by assigning the two nodes (notes)
                 G.add_edge(edge[0], edge[1])
+
+                # Adding edge if there isn't already an edge with the same node values.
+                # Because in the same window there can be multiple edges with the same nodes A->B but with different times (but we're ignoring weights for now)
+                exists = False
+                for existing_edge in current_edges:
+                    if existing_edge[0] == edge[0] and existing_edge[1] == edge[1]:
+                        exists = True
+                        break
+                if not exists:
+                    current_edges.append(edge)
+
             elif edge[3] < time_window_start: # Edges that were never entirely on one window, i.e., both notes time have already passed and they were never simultaneously on a time window.
                 pass # Ignore those edges
             else:
                 remaining_edges.append(edge) # Adding edge for the next windows
 
+        print(time_window_start,len(current_edges))
         if G.number_of_nodes() != 0:
             average_degrees.append(Graph_metrics.average_degree(G))
         else:
@@ -61,11 +93,6 @@ def degree_window(mid_file, eps = -1):
         remaining_edges = []
 
         time_window_start += time_skip
-
-        # if len(available_edges) == 66:
-        #     print(time_window_start)
-        #     print(available_edges[0])
-        #     break
 
     # Plotting
     filename = MIDI_general.midi_filename(mid_file)
