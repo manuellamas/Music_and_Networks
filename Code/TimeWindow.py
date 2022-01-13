@@ -4,6 +4,7 @@ import numpy as np
 
 import sys
 import os.path
+from os import listdir
 
 import Music_Mapping
 import Graph_metrics
@@ -116,14 +117,21 @@ if __name__ == "__main__":
     # Python File (Project) Location
     program_directory = os.path.dirname(__file__) # Where the Python script being ran is
     parent_directory = os.path.split(program_directory)[0]
-    
+
     # Input
     if len(sys.argv) == 1:
         print("Running sample file")
         file_path = parent_directory + "\\MIDI_files\\LegendsNeverDie.mid"
-    else:
+    elif sys.argv[-3:] == "mid": # Run for one specific .mid file
         file_path = sys.argv[-1]
-    mid_file = mido.MidiFile(file_path, clip = True)
+        mid_file = mido.MidiFile(file_path, clip = True)
+        degree_window(mid_file)
+    else: # Run for every .mid file in the folder
+        files_directory = parent_directory + "\\" + sys.argv[-1] # Where the MIDI files are
+        
+        # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
+        list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
 
-
-    degree_window(mid_file)
+        for mid in list_files:
+            mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
+            degree_window(mid_file)
