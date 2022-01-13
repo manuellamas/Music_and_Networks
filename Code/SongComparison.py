@@ -42,19 +42,16 @@ if __name__ == "__main__":
     Plotting.betwenness_comparison_plot(networks)
     Plotting.closeness_comparison_plot(networks)
 
-    
-    diameters = []
-    clust_coef = [] # Clustering coefficient
+    # Clustering Coefficient
+    Plotting.clustering_coef_comparison_plot(networks)
 
-    print("Name", "Diameter", "Clustering Coefficient")
+
+    # Diameter
+    diameters = []
+
+    print("Name", "Diameter")
     for network, mid_file, filename in networks:
         diameter = nx.diameter(network)
-        clust = nx.clustering(network)
-
         diameters.append(diameter)
-        clust_coef.append(clust)
 
-        print(filename, diameter, clust)
-
-
-    # SongComparisonOutputFiles
+        print(filename, diameter)

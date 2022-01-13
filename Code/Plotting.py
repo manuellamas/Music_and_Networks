@@ -36,7 +36,7 @@ def degree_distribution_histogram(G, filename):
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
 
-    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_" + filename + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
     # plt.show()
 
 
@@ -66,7 +66,7 @@ def degree_distribution_scatter_plot(G, filename):
     parent_directory = os.path.split(current_directory)[0]
 
     plt.scatter(labels, counts, s=10)
-    plt.savefig(parent_directory + "\\Plots\\Degree_Distribution_ScatterPlot_" + filename + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_ScatterPlot_" + filename + ".png")
 
 ########## Graph Analysis End ##########
 
@@ -114,9 +114,9 @@ def degree_distribution_comparison_plot(networks, scale = "linear"):
 
 
     if scale == "loglog":
-        plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + "Song_Arena" + ".png")
+        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + "Song_Arena" + ".png")
     else:
-        plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Degree_Distribution_" + "Song_Arena" + ".png")
+        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_" + "Song_Arena" + ".png")
 
 
 
@@ -159,7 +159,7 @@ def betwenness_comparison_plot(networks):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")
 
 
 
@@ -199,7 +199,47 @@ def closeness_comparison_plot(networks):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\SongArena\\SongComparisonOutputFiles\\Closeness_Distribution_" + "Song_Arena" + ".png")
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution_" + "Song_Arena" + ".png")
+
+
+
+# Clustering Coefficient
+def clustering_coef_comparison_plot(networks):
+    """ Creates a plot of the clustering coefficient distribution of a Graph """
+    fig1, ax1 = plt.subplots()
+
+    for network in networks:
+        G, midi_file, midi_title = network
+
+        clust_coef_values = Graph_metrics.list_clustering_coefficient(G)
+
+        clust_coef_sequence_list = sorted(clust_coef_values, reverse = True)
+        clust_coef_sequence = np.array(clust_coef_sequence_list)
+
+        labels, counts = np.unique(clust_coef_sequence, return_counts=True)
+        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+
+
+    # Design
+    title = "Clustering Coefficient"
+    plt.title(title)
+
+    # Axis Labels
+    ax1.set_xlabel('Clustering Coefficient')
+    ax1.set_ylabel('#Nodes')
+
+    # Axis Ticks
+    # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
+    ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+
+    # Getting the correct path for the Plot folder
+    current_directory = os.path.dirname(__file__)
+    parent_directory = os.path.split(current_directory)[0]
+
+    # Legend
+    plt.legend(loc="upper right")
+
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution_" + "Song_Arena" + ".png")
 
 ########## Musics Comparison End ##########
 
@@ -226,6 +266,8 @@ def average_degree_time_window(average_degrees, time_interval, time_skip, filena
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
     ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+
+    plt.ylim([0,10]) # Forces the y axis to show only values on the speficied interval
 
     # Getting the correct path for the Plot folder
     current_directory = os.path.dirname(__file__)

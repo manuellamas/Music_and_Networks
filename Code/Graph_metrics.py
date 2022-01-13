@@ -14,7 +14,6 @@ def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph,
 def list_betweenness_centrality(G):
     """ Returns a list with all betweenness centrality values """
     betw_values = nx.betweenness_centrality(G, normalized = True, weight = "weight")
-    print(type(betw_values))
 
     rounded_values = []
 
@@ -35,6 +34,19 @@ def list_closeness_centrality(G):
         rounded_values.append(rounded)
 
     return rounded_values
+
+def list_clustering_coefficient(G):
+    """ Returns a list with all the clustering coefficient values """
+    clust_values = nx.clustering(G)
+
+    rounded_values = []
+
+    for node, value in clust_values.items():
+        rounded = round(value, 2) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
+        rounded_values.append(rounded)
+
+    return rounded_values
+
 
 def average_degree(G):
     """ Returns the average degree of a graph (ignoring weight) """
