@@ -1,3 +1,4 @@
+from socket import AddressFamily
 import mido
 import networkx as nx
 
@@ -15,12 +16,11 @@ def melody_track(mid_file):
 
 
 # -------------------- Note Pairs Occurrences --------------------
-def get_notes(mid_file):
+def get_notes(mid_file , get_track_program = False):
     """ Obtaining a list of the notes of the 'melody track' from a MIDI file (MIDI Object) """
     # Dealing with just one track for now, so we automatically pick the track with the most notes (if there's a tie, the first to occur gets picked)
     melody_track_index = melody_track(mid_file)
     first_track = mid_file.tracks[melody_track_index]
-
     # Add each note to a list by order of "occurrence". For now I'm just using time of "note_on" of the note
     notes = []
 
@@ -38,7 +38,13 @@ def get_notes(mid_file):
         if not msg.is_meta:
             total_time += msg.time
 
-    return notes # A list with entries as [note, start_time, end_time]
+        if get_track_program and msg.type == "program_change":
+            program = msg.program
+
+    if get_track_program:
+        return notes, program # Returning the program (instrument) used in the track, assuming only one program is used. If there's more than one for now we only keep the last
+    else:
+        return notes # A list with entries as [note, start_time, end_time]
 
 def get_note_pairs(notes, eps = -1, window = False):
     if window:

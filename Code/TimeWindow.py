@@ -13,8 +13,8 @@ import MIDI_general
 
 def degree_window(mid_file, eps = -1):
     G = nx.DiGraph() # Creating a directed graph
-    notes = Music_Mapping.get_notes(mid_file) # A list with entries as [note, start_time, end_time]
-
+    notes, program = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
+    print(program)
     all_pairs, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
     remaining_edges = [] # This list will serve to hold the edges that weren't added to a graph until this point
     num_pairs = len(all_pairs)
@@ -37,24 +37,26 @@ def degree_window(mid_file, eps = -1):
     while len(available_edges) != 0:
         edges_to_remove = []
 
-        print("current_edges")
 
-        test_edges = current_edges
-        test_edges.sort(key = lambda x:x[0])
-        for edge in test_edges:
-            print(edge)
+        # ---------- TESTS ----------#
+        # print("current_edges")
 
-        print("graph edges")
-        graph_edges = list(G.edges())
-        graph_edges.sort(key = lambda x:x[0])
-        for edge in graph_edges:
-            print(edge)
+        # test_edges = current_edges
+        # test_edges.sort(key = lambda x:x[0])
+        # for edge in test_edges:
+        #     print(edge)
+
+        # print("graph edges")
+        # graph_edges = list(G.edges())
+        # graph_edges.sort(key = lambda x:x[0])
+        # for edge in graph_edges:
+        #     print(edge)
+        # ---------- TESTS End ----------#
 
 
         # Removing edges
         for edge in current_edges:
             if edge[2] < time_window_start: # If start is before the start of the window
-                print("About to be removed",edge)
                 G.remove_edge(edge[0], edge[1])
                 edges_to_remove.append(edge)
 
@@ -84,7 +86,6 @@ def degree_window(mid_file, eps = -1):
             else:
                 remaining_edges.append(edge) # Adding edge for the next windows
 
-        print(time_window_start,len(current_edges))
         if G.number_of_nodes() != 0:
             average_degrees.append(Graph_metrics.average_degree(G))
         else:
@@ -97,7 +98,7 @@ def degree_window(mid_file, eps = -1):
 
     # Plotting
     filename = MIDI_general.midi_filename(mid_file)
-    Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename)
+    Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename, program)
 
 
     return
@@ -122,15 +123,22 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         print("Running sample file")
         file_path = parent_directory + "\\MIDI_files\\LegendsNeverDie.mid"
-    elif sys.argv[-3:] == "mid": # Run for one specific .mid file
+        mid_file = mido.MidiFile(file_path, clip = True)
+        degree_window(mid_file)
+    elif sys.argv[-1][-3:] == "mid": # Run for one specific .mid file
         file_path = sys.argv[-1]
         mid_file = mido.MidiFile(file_path, clip = True)
         degree_window(mid_file)
+
     else: # Run for every .mid file in the folder
         files_directory = parent_directory + "\\" + sys.argv[-1] # Where the MIDI files are
-        
+
         # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
         list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
+
+        print("Running for the following files:")
+        for mid in list_files:
+            print(mid)
 
         for mid in list_files:
             mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)

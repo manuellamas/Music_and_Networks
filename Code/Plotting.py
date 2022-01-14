@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
@@ -5,6 +6,7 @@ import numpy as np
 import os.path
 
 import Graph_metrics
+import MIDI_general
 
 ########## Graph Analysis ##########
 def degree_distribution_histogram(G, filename):
@@ -246,7 +248,7 @@ def clustering_coef_comparison_plot(networks):
 
 
 ########## Time Window ##########
-def average_degree_time_window(average_degrees, time_interval, time_skip, filename):
+def average_degree_time_window(average_degrees, time_interval, time_skip, filename, program = None):
     x_axis = []
     time_window_center = time_interval/2 # The moment (tick) at the center of the current window
     for i in range(len(average_degrees)):
@@ -256,7 +258,13 @@ def average_degree_time_window(average_degrees, time_interval, time_skip, filena
     fig1, ax1 = plt.subplots()
 
     # Design
-    title = "Average Degree" + " - " + filename
+    if program is None:
+        title = "Average Degree" + " - " + filename
+    else:
+        print(program)
+        program_category = MIDI_general.midi_program_num_to_name(program)
+        print(program_category)
+        title = "Average Degree" + " - " + filename + " - " + program_category
     plt.title(title)
 
     # Axis Labels
