@@ -13,8 +13,15 @@ import MIDI_general
 
 def degree_window(mid_file, eps = -1):
     G = nx.DiGraph() # Creating a directed graph
-    notes, program = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
-    print(program)
+
+    program = None # Getting the track's program from the first program_chage (if there is any)
+
+    output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
+    if len(output) == 2:
+        notes, program = output
+    else:
+        notes = output
+
     all_pairs, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
     remaining_edges = [] # This list will serve to hold the edges that weren't added to a graph until this point
     num_pairs = len(all_pairs)
@@ -98,7 +105,12 @@ def degree_window(mid_file, eps = -1):
 
     # Plotting
     filename = MIDI_general.midi_filename(mid_file)
-    Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename, program)
+    
+    if program is not None:
+        Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename, program)
+    else:
+        Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename)
+
 
 
     return

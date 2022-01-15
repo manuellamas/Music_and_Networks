@@ -24,6 +24,8 @@ def get_notes(mid_file , get_track_program = False):
     # Add each note to a list by order of "occurrence". For now I'm just using time of "note_on" of the note
     notes = []
 
+    program = None # The first program_change declaration of the track (if it exists)
+
     total_time = 0 # Total time since the start of the track. Because 'msg.time' holds only the delta_time (time that passed since last message)
     for msg in first_track:
 
@@ -42,9 +44,11 @@ def get_notes(mid_file , get_track_program = False):
             program = msg.program
 
     if get_track_program:
-        return notes, program # Returning the program (instrument) used in the track, assuming only one program is used. If there's more than one for now we only keep the last
-    else:
-        return notes # A list with entries as [note, start_time, end_time]
+        if program is not None:
+            return notes, program # Returning the program (instrument) used in the track, assuming only one program is used. If there's more than one for now we only keep the last
+        else:
+            print("The track of the song has no Program")
+    return notes # A list with entries as [note, start_time, end_time]
 
 def get_note_pairs(notes, eps = -1, window = False):
     if window:

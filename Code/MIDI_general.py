@@ -1,7 +1,10 @@
 """ General MIDI functions """
 
-from unittest import case
+import pandas as pd
+import mido
 
+import os.path
+import sys
 
 def midi_file_overview(mid_file, filename):
     """ Exports into a txt file type, number of tracks, and the MIDI Messages themselves """
@@ -86,9 +89,32 @@ def midi_program_num_to_name(program, instrument = False):
     elif program in list(range(120,128)):
         program_category = "Sound effects"
 
-    program_instrument = ""
+
+    if instrument:
+        # Python File (Project) Location
+        program_directory = os.path.dirname(__file__) # Where the Python script being ran is
+
+        csv_file = pd.read_csv(program_directory + "\\Data\\MIDI_Program_Names.csv", header = None)
+        program_list = csv_file[0].to_list() # 0 because it's the first (and only) column
+
+        program_instrument = program_list[program]
+
+
+
 
     if instrument:
         return program_category, program_instrument
     else:
         return program_category
+
+
+if __name__ == "__main__":
+    # Python File (Project) Location
+    program_directory = os.path.dirname(__file__) # Where the Python script being ran is
+    parent_directory = os.path.split(program_directory)[0]
+
+    file_path = sys.argv[-1]
+    mid_file = mido.MidiFile(file_path, clip = True)
+
+    filename = midi_filename(mid_file)
+    midi_file_overview(mid_file, filename)
