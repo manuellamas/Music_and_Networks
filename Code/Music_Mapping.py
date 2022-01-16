@@ -100,7 +100,7 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now
 
-    return G
+    return G, notes
 
 
 # MultiDiGraph (non-weighted) with an (optional) maximum interval eps between notes
@@ -128,7 +128,7 @@ def graph_note_multigraph(mid_file, eps = -1): # MultiDiGraph
             if notes[i+1][1] - notes[i][1] < eps: # Only notes that are separated by at most epsilon ticks
                 G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
 
-    return G
+    return G, notes
 
 # ------------------------------------------------------------
 

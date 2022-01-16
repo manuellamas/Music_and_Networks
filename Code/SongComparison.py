@@ -4,6 +4,7 @@ import mido
 import sys
 import os.path
 from os import listdir
+from tabulate import tabulate
 
 import Plotting
 import MIDI_general
@@ -27,16 +28,16 @@ if __name__ == "__main__":
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        network = Music_Mapping.graph_note_pairs_weighted(mid_file)
+        network, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
         filename = MIDI_general.midi_filename(mid_file)
 
-        networks.append([network, mid_file, filename])
+        networks.append([network, mid_file, filename, notes])
 
 
     ########## Plots ##########
     # Degree Distribution
     Plotting.degree_distribution_comparison_plot(networks)
-    Plotting.degree_distribution_comparison_plot(networks, "loglog")
+    Plotting.degree_distribution_comparison_plot(networks, scale = "loglog")
     
     # Betweenness and Closeness
     Plotting.betwenness_comparison_plot(networks)
@@ -46,12 +47,15 @@ if __name__ == "__main__":
     Plotting.clustering_coef_comparison_plot(networks)
 
 
+
     # Diameter
     diameters = []
 
-    print("Name", "Diameter")
-    for network, mid_file, filename in networks:
+    # Data Formatting
+    data = []
+    headers = ["Song", "Diameter", "Length of track (#nodes)"]
+    for network, mid_file, filename, notes in networks:
         diameter = nx.diameter(network)
-        diameters.append(diameter)
+        data.append([filename, diameter, len(notes)])
 
-        print(filename, diameter)
+    print(tabulate(data, headers = headers))

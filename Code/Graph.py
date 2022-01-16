@@ -79,25 +79,25 @@ if __name__ == "__main__":
     if graph_option == "m": # MultiDigraph
 
         if (len(command) == 1 and command.isalpha()):
-            G = Music_Mapping.graph_note_multigraph(mid_file)
+            G, notes = Music_Mapping.graph_note_multigraph(mid_file)
 
         else: # Same as Simple but with a maximum interval difference between notes
             if len(command) > 1:
                 eps = float(command[2:len(command)])
             else:
                 eps = float(command)
-            G = Music_Mapping.graph_note_multigraph(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+            G, notes = Music_Mapping.graph_note_multigraph(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
     elif graph_option in ["w", ""]: # Weighted (Default value)
         if (len(command) == 1 and command.isalpha()) or default_option:
-            G = Music_Mapping.graph_note_pairs_weighted(mid_file)
+            G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
 
         else: # Same as Simple but with a maximum interval difference between notes
             if len(command) > 1:
                 eps = float(command[2:len(command)])
             else:
                 eps = float(command)
-            G = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+            G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
     # --------------------
 
 

@@ -75,12 +75,12 @@ def degree_distribution_scatter_plot(G, filename):
 
 
 ########## Musics Comparison ##########
-def degree_distribution_comparison_plot(networks, scale = "linear"):
+def degree_distribution_comparison_plot(networks, line = True, scale = "linear"):
     """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
-        G, midi_file, midi_title = network
+        G, midi_file, midi_title, notes = network
 
 
         degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
@@ -89,9 +89,16 @@ def degree_distribution_comparison_plot(networks, scale = "linear"):
         labels, counts = np.unique(degree_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
+        if line:
+            # Create a line on top of a scatter plot
+            plt.plot(labels, counts)
+
 
     # Design
-    title = "Degree Distribution"
+    if scale == "linear":
+        title = "Degree Distribution"
+    elif scale == "loglog":
+        title = "Degree Distribution" + " LogLog"
     plt.title(title)
 
     # Axis Labels
@@ -123,12 +130,12 @@ def degree_distribution_comparison_plot(networks, scale = "linear"):
 
 
 # Betweenness Centrality
-def betwenness_comparison_plot(networks):
+def betwenness_comparison_plot(networks, line = True):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
-        G, midi_file, midi_title = network
+        G, midi_file, midi_title, notes = network
 
         betwenness_values = Graph_metrics.list_betweenness_centrality(G)
 
@@ -137,9 +144,10 @@ def betwenness_comparison_plot(networks):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
-        
-        # Create a line on top of a scatter plot
-        plt.plot(labels, counts)
+
+        if line:
+            # Create a line on top of a scatter plot
+            plt.plot(labels, counts)
 
 
     # Design
@@ -166,12 +174,12 @@ def betwenness_comparison_plot(networks):
 
 
 # Closeness Centrality
-def closeness_comparison_plot(networks):
+def closeness_comparison_plot(networks, line = True):
     """ Creates a plot of the closeness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
-        G, midi_file, midi_title = network
+        G, midi_file, midi_title, notes = network
 
         closeness_values = Graph_metrics.list_closeness_centrality(G)
 
@@ -180,6 +188,10 @@ def closeness_comparison_plot(networks):
 
         labels, counts = np.unique(closeness_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+
+        if line:
+            # Create a line on top of a scatter plot
+            plt.plot(labels, counts)
 
 
     # Design
@@ -206,12 +218,12 @@ def closeness_comparison_plot(networks):
 
 
 # Clustering Coefficient
-def clustering_coef_comparison_plot(networks):
+def clustering_coef_comparison_plot(networks, line = True):
     """ Creates a plot of the clustering coefficient distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
-        G, midi_file, midi_title = network
+        G, midi_file, midi_title, notes = network
 
         clust_coef_values = Graph_metrics.list_clustering_coefficient(G)
 
@@ -220,6 +232,10 @@ def clustering_coef_comparison_plot(networks):
 
         labels, counts = np.unique(clust_coef_sequence, return_counts=True)
         plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+
+        if line:
+            # Create a line on top of a scatter plot
+            plt.plot(labels, counts)
 
 
     # Design
