@@ -46,7 +46,8 @@ if __name__ == "__main__":
     # Clustering Coefficient
     Plotting.clustering_coef_comparison_plot(networks)
 
-
+    # Edges Rank
+    
 
     # Diameter
     diameters = []
