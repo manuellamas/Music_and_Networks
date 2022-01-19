@@ -38,7 +38,7 @@ def degree_distribution_histogram(G, filename):
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
 
-    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
+    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_Histogram_" + filename + ".png")
     # plt.show()
 
 
@@ -48,6 +48,9 @@ def degree_distribution_scatter_plot(G, filename):
     degree_sequence = np.array(degree_sequence_list)
 
     labels, counts = np.unique(degree_sequence, return_counts=True)
+    # Turn absolute values into relative ones
+    num_nodes = G.number_of_nodes()
+    relative_counts = [c/num_nodes for c in counts]
 
     fig1, ax1 = plt.subplots()
 
@@ -57,7 +60,8 @@ def degree_distribution_scatter_plot(G, filename):
 
     # Axis Labels
     ax1.set_xlabel('Degree')
-    ax1.set_ylabel('#Nodes')
+    # ax1.set_ylabel('#Nodes')
+    ax1.set_ylabel('Relative Frequency')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -67,15 +71,15 @@ def degree_distribution_scatter_plot(G, filename):
     current_directory = os.path.dirname(__file__)
     parent_directory = os.path.split(current_directory)[0]
 
-    plt.scatter(labels, counts, s=10)
-    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_ScatterPlot_" + filename + ".png")
+    plt.scatter(labels, relative_counts, s=10)
+    plt.savefig(parent_directory + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
 
 ########## Graph Analysis End ##########
 
 
 
 ########## Musics Comparison ##########
-def degree_distribution_comparison_plot(networks, line = True, scale = "linear"):
+def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None):
     """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
 
@@ -87,11 +91,13 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear")
         degree_sequence = np.array(degree_sequence_list)
 
         labels, counts = np.unique(degree_sequence, return_counts=True)
-        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        num_nodes = G.number_of_nodes()
+        relative_counts = [c/num_nodes for c in counts]
+        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -103,7 +109,7 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear")
 
     # Axis Labels
     ax1.set_xlabel('Degree')
-    ax1.set_ylabel('#Nodes')
+    ax1.set_ylabel('#Nodes/total')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -121,16 +127,19 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear")
     # Legend
     plt.legend(loc="upper right")
 
+    group_name = ""
+    if plot_folder is not None:
+        group_name = plot_folder
 
     if scale == "loglog":
-        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + "Song_Arena" + ".png")
+        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + group_name + ".png")
     else:
-        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_" + "Song_Arena" + ".png")
+        plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_" + group_name + ".png")
 
 
 
 # Betweenness Centrality
-def betwenness_comparison_plot(networks, line = True):
+def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
@@ -169,12 +178,16 @@ def betwenness_comparison_plot(networks, line = True):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_" + "Song_Arena" + ".png")
+    group_name = ""
+    if plot_folder is not None:
+        group_name = plot_folder
+
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_" + group_name + ".png")
 
 
 
 # Closeness Centrality
-def closeness_comparison_plot(networks, line = True):
+def closeness_comparison_plot(networks, line = True, plot_folder = None):
     """ Creates a plot of the closeness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
@@ -213,12 +226,16 @@ def closeness_comparison_plot(networks, line = True):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution_" + "Song_Arena" + ".png")
+    group_name = ""
+    if plot_folder is not None:
+        group_name = plot_folder
+
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution_" + group_name + ".png")
 
 
 
 # Clustering Coefficient
-def clustering_coef_comparison_plot(networks, line = True):
+def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     """ Creates a plot of the clustering coefficient distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
@@ -257,7 +274,11 @@ def clustering_coef_comparison_plot(networks, line = True):
     # Legend
     plt.legend(loc="upper right")
 
-    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution_" + "Song_Arena" + ".png")
+    group_name = ""
+    if plot_folder is not None:
+        group_name = plot_folder
+
+    plt.savefig(parent_directory + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution_" + group_name + ".png")
 
 
 # import pandas as pd
