@@ -2,30 +2,29 @@ import networkx as nx
 import mido
 
 import sys
-import os.path
+
 from os import listdir
+import os.path
 from tabulate import tabulate
 
-import Plotting
+import config
+import Plot.Plotting_Song_Comparison as plt_comparison
 import MIDI_general
 import Music_Mapping
 
 
 
 
-
 if __name__ == "__main__":
-    # Python File (Project) Location
-    program_directory = os.path.dirname(__file__) # Where the Python script being ran is
-    parent_directory = os.path.split(program_directory)[0]
+    group_name = None # Default value
 
     # Directory Target
     if len(sys.argv) == 1:
         print("Running at Song Arena")
-        files_directory = parent_directory + "\\SongArena" # Where the MIDI files to be compared are
+        files_directory = config.ROOT + "\\SongArena" # Where the MIDI files to be compared are
         plot_folder = "SongArena"
     elif len(sys.argv) == 2:
-        files_directory = parent_directory + "\\" + sys.argv[-1] # Where the MIDI files are
+        files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
         plot_folder = sys.argv[-1]
         group_name = ""
         for i in range(len(plot_folder)):
@@ -60,15 +59,15 @@ if __name__ == "__main__":
 
     ########## Plots ##########
     # Degree Distribution
-    Plotting.degree_distribution_comparison_plot(networks, plot_folder = group_name)
-    Plotting.degree_distribution_comparison_plot(networks, scale = "loglog", plot_folder = group_name)
+    plt_comparison.degree_distribution_comparison_plot(networks, plot_folder = group_name)
+    plt_comparison.degree_distribution_comparison_plot(networks, scale = "loglog", plot_folder = group_name)
     
     # Betweenness and Closeness
-    Plotting.betwenness_comparison_plot(networks, plot_folder = group_name)
-    Plotting.closeness_comparison_plot(networks, plot_folder = group_name)
+    plt_comparison.betwenness_comparison_plot(networks, plot_folder = group_name)
+    plt_comparison.closeness_comparison_plot(networks, plot_folder = group_name)
 
     # Clustering Coefficient
-    Plotting.clustering_coef_comparison_plot(networks, plot_folder = group_name)
+    plt_comparison.clustering_coef_comparison_plot(networks, plot_folder = group_name)
 
     # Edges Rank
     
