@@ -6,7 +6,7 @@ import config
 
 import Graph_metrics
 
-
+# Degree Distribution
 def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None):
     """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
@@ -56,9 +56,9 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
         group_name = "_" + plot_folder
 
     if scale == "loglog":
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog_" + group_name + ".png")
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog" + group_name + ".png")
     else:
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_" + group_name + ".png")
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution" + group_name + ".png")
 
 
 
@@ -82,7 +82,7 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -104,7 +104,72 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     if plot_folder is not None:
         group_name = "_" + plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution" + group_name + ".png")
+
+
+
+# Betweenness Centrality (Side-by-side)
+def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
+    """ Creates a plot of the betweenness centrality distribution of a Graph """
+    fig, axs = plt.subplots(len(networks))
+    # fig.subplots_adjust(wspace=0.2)
+    fig.subplots_adjust(hspace=0.5)
+
+    ax_num = 0
+
+    # Since I'm working with relative values
+    min_y_value = 1
+    max_y_value = 0
+
+    for network in networks:
+        G, midi_file, midi_title, notes = network
+        ax = axs[ax_num]
+
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G)
+
+        betweenness_sequence_list = sorted(betwenness_values, reverse = True)
+        betwenness_sequence = np.array(betweenness_sequence_list)
+
+        labels, counts = np.unique(betwenness_sequence, return_counts=True)
+        num_nodes = G.number_of_nodes()
+        relative_counts = [c/num_nodes for c in counts]
+        ax.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+
+        min_y_value = min(min_y_value,min(relative_counts))
+        max_y_value = max(max_y_value,max(relative_counts))
+
+        if line:
+            # Create a line on top of a scatter plot
+            ax.plot(labels, relative_counts)
+
+        # Design
+        # title = "Betweenness Centrality"
+        # plt.title(title)
+
+        # Axis Labels
+        # ax.set_xlabel('Betweenness')
+        ax.set_ylabel('#Nodes')
+
+        # Axis Ticks
+        # ax.yaxis.set_major_locator(ticker.LinearLocator(5))
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
+        ax.locator_params(nbins=4, axis='y')
+
+
+        # Legend
+        ax.legend(loc="upper right")
+
+        ax_num += 1
+
+    for ax in axs:
+        # ax.ylim([0,10]) # Forces the y axis to show only values on the speficied interval
+        ax.set(ylim=(min_y_value, max_y_value))
+
+    group_name = ""
+    if plot_folder is not None:
+        group_name = "_" + plot_folder
+
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_(side-by-side)" + group_name + ".png")
 
 
 
@@ -128,7 +193,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -150,7 +215,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     if plot_folder is not None:
         group_name = "_" + plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution_" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution" + group_name + ".png")
 
 
 
@@ -174,7 +239,7 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design

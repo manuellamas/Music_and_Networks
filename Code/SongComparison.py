@@ -22,7 +22,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         print("Running at Song Arena")
         files_directory = config.ROOT + "\\SongArena" # Where the MIDI files to be compared are
-        plot_folder = "SongArena"
+        group_name = "SongArena"
     elif len(sys.argv) == 2:
         files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
         plot_folder = sys.argv[-1]
@@ -64,13 +64,14 @@ if __name__ == "__main__":
     
     # Betweenness and Closeness
     plt_comparison.betwenness_comparison_plot(networks, plot_folder = group_name)
+    plt_comparison.betwenness_comparison_plot_sides(networks, plot_folder = group_name)
     plt_comparison.closeness_comparison_plot(networks, plot_folder = group_name)
 
     # Clustering Coefficient
     plt_comparison.clustering_coef_comparison_plot(networks, plot_folder = group_name)
 
     # Edges Rank
-    
+
 
     # Diameter
     diameters = []
