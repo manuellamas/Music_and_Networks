@@ -102,7 +102,8 @@ if __name__ == "__main__":
 
 
     graph_display_info(G) # Display basic info of the obtained graph
-    Plotting.degree_distribution_scatter_plot(G, filename) # Degree Distribution (Scatter Plot)
+    Plotting.degree_distribution_scatter_plot(G, filename)
+    Plotting.edges_rank(G, filename)
     nx.write_graphml(G,"graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
 
 

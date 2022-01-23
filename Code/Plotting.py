@@ -65,6 +65,28 @@ def degree_distribution_scatter_plot(G, filename):
     plt.scatter(labels, relative_counts, s=10)
     plt.savefig(config.ROOT + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
 
+
+def edges_rank(network, filename, top = 20):
+    """ Plots a table with the rank of the edges by weight """
+    edges_list = [] # entries of the form [NodeA, NodeB, Weight] the edge being NodeA -> NodeB
+    for edge in network.edges.data():
+        edges_list.append([edge[0], edge[1], edge[2]["weight"]])
+    edges_list.sort(key = lambda e: e[2], reverse = True)
+
+    edges_list = edges_list[:top] # Sticking only with the top "top" edges (e.g. top 20 edges)
+
+    fig, ax = plt.subplots()
+
+    fig.patch.set_visible(False) # Removing 'background'
+    ax.axis("off") # Hide axes
+
+    columns = ["Origin Node", "End Node", "Frequency (weight)"]
+    rows = [] #, rowLabels = rows
+    ax.table(cellText = edges_list, colLabels = columns, loc = "center", cellLoc = "center")
+    fig.tight_layout()
+    print("Hello")
+    plt.savefig(config.ROOT + "\\Plots\\Single\\Edge_Rank_" + filename + ".png")
+
 ########## Graph Analysis End ##########
 
 

@@ -264,32 +264,3 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution" + group_name + ".png")
 
 
-
-# Edges Ranking
-
-# import pandas as pd
-def edges_rank(network):
-    """ Plots a table with the rank of the edges by weight """
-    edges_list = [] # entries of the form [NodeA, NodeB, Weight] the edge being NodeA -> NodeB
-    for edge in network.edges.data():
-        edges_list.append([edge[0], edge[1], edge[2]["weight"]])
-    edges_list.sort(key = lambda e: e[2], reverse = True)
-    
-    fig, ax = plt.subplots()
-
-    # Hide axes
-    fig.patch.set_visible(False)
-    ax.axis("off")
-    ax.axis("tight")
-
-    # df = pd.DataFrame()
-
-    plt.show()
-
-    return
-
-
-# import networkx as nx
-# G1 = nx.DiGraph()
-# G1.add_weighted_edges_from([(1,2,3),(1,5,1),(2,3,4)])
-# edges_rank(G1)
