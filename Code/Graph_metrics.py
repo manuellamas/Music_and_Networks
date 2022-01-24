@@ -48,10 +48,47 @@ def list_clustering_coefficient(G):
     return rounded_values
 
 
+##################
+# Average values #
+##################
+
 def average_degree(G):
-    """ Returns the average degree of a graph (ignoring weight) """
+    """ Returns the average degree of a node (ignoring weight) """
     total_degree = 0
     for node, degree in G.degree():
         total_degree += degree
 
     return total_degree/G.number_of_nodes()
+
+
+def average_betweenness(G):
+    """ Returns the average betweenness centrality of a node """
+    total = 0
+    between_list = list_betweenness_centrality(G)
+
+    for value in between_list:
+        total += value
+
+    return total/len(between_list)
+
+
+def average_closeness(G):
+    """ Returns the average closeness centrality of a node """
+    total = 0
+    closeness_list = list_closeness_centrality(G)
+
+    for value in closeness_list:
+        total += value
+
+    return total/len(closeness_list)
+
+
+def average_clustering(G):
+    """ Returns the average clustering coefficient of a node """
+    total = 0
+    clustering_list = list_clustering_coefficient(G)
+
+    for value in clustering_list:
+        total += value
+
+    return total/len(clustering_list)
