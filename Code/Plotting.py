@@ -84,7 +84,7 @@ def edges_rank(network, filename, top = 20):
     rows = [] #, rowLabels = rows
     ax.table(cellText = edges_list, colLabels = columns, loc = "center", cellLoc = "center")
     fig.tight_layout()
-    print("Hello")
+
     plt.savefig(config.ROOT + "\\Plots\\Single\\Edge_Rank_" + filename + ".png")
 
 ########## Graph Analysis End ##########
