@@ -1,3 +1,4 @@
+from locale import normalize
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
@@ -20,7 +21,7 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
 
         labels, counts = np.unique(degree_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        relative_counts = [c/num_nodes for c in counts]
+        relative_counts = [c/(num_nodes - 1) for c in counts] # Normalized
         plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
@@ -70,19 +71,18 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        betwenness_values = Graph_metrics.list_betweenness_centrality(G)
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True)
 
         betweenness_sequence_list = sorted(betwenness_values, reverse = True)
         betwenness_sequence = np.array(betweenness_sequence_list)
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        relative_counts = [c/num_nodes for c in counts]
-        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, relative_counts)
+            plt.plot(labels, num_nodes)
 
 
     # Design
@@ -125,22 +125,21 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
         G, midi_file, midi_title, notes = network
         ax = axs[ax_num]
 
-        betwenness_values = Graph_metrics.list_betweenness_centrality(G)
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True)
 
         betweenness_sequence_list = sorted(betwenness_values, reverse = True)
         betwenness_sequence = np.array(betweenness_sequence_list)
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        relative_counts = [c/num_nodes for c in counts]
-        ax.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+        ax.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
 
-        min_y_value = min(min_y_value,min(relative_counts))
-        max_y_value = max(max_y_value,max(relative_counts))
+        min_y_value = min(min_y_value,min(num_nodes))
+        max_y_value = max(max_y_value,max(num_nodes))
 
         if line:
             # Create a line on top of a scatter plot
-            ax.plot(labels, relative_counts)
+            ax.plot(labels, num_nodes)
 
         # Design
         # title = "Betweenness Centrality"
@@ -181,19 +180,18 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        closeness_values = Graph_metrics.list_closeness_centrality(G)
+        closeness_values = Graph_metrics.list_closeness_centrality(G, normalize = True)
 
         closeness_sequence_list = sorted(closeness_values, reverse = True)
         closeness_sequence = np.array(closeness_sequence_list)
 
         labels, counts = np.unique(closeness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        relative_counts = [c/num_nodes for c in counts]
-        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, relative_counts)
+            plt.plot(labels, num_nodes)
 
 
     # Design
@@ -227,19 +225,18 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        clust_coef_values = Graph_metrics.list_clustering_coefficient(G)
+        clust_coef_values = Graph_metrics.list_clustering_coefficient(G) # Already normalized since values belongs to [0,1]
 
         clust_coef_sequence_list = sorted(clust_coef_values, reverse = True)
         clust_coef_sequence = np.array(clust_coef_sequence_list)
 
         labels, counts = np.unique(clust_coef_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        relative_counts = [c/num_nodes for c in counts]
-        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, relative_counts)
+            plt.plot(labels, num_nodes)
 
 
     # Design
