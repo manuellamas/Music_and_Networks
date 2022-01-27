@@ -9,6 +9,7 @@ import mido
 import networkx as nx
 
 from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
 import numpy as np
 
@@ -21,9 +22,10 @@ def music_data(G):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
-    feature_list.append(Graph_metrics.average_degree(G))
-    feature_list.append(Graph_metrics.average_betweenness(G))
-    feature_list.append(Graph_metrics.average_closeness(G))
+    # Normalizing all values except clustering that by default is already "normalized"
+    feature_list.append(Graph_metrics.average_degree(G)/(G.number_of_nodes() - 1))
+    feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
+    feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
     feature_list.append(Graph_metrics.average_clustering(G))
 
     return feature_list
@@ -35,9 +37,9 @@ def kmeans_analysis(networks_features):
     num_clusters = np.arange(2,5)
     results = {}
     for size in num_clusters:
-        kmeans = KMeans(n_clusters = size).fit(networks_feature_list)
-        predictions = kmeans.predict(networks_feature_list)
-        results[size] = silhouette_score(networks_feature_list, predictions)
+        kmeans = KMeans(n_clusters = size).fit(networks_features)
+        predictions = kmeans.predict(networks_features)
+        results[size] = silhouette_score(networks_features, predictions)
 
     ideal_size = max(results, key=results.get)
     print(ideal_size)
@@ -51,6 +53,10 @@ def kmeans_analysis(networks_features):
     return predictions
 
 
+
+def dbscan_analysis(network_features):
+    """ Apply DBSCAN to the vector of features obtained from the network of the song """
+    DBSCAN(eps = 1, min_samples = 3).fit(networks)
 
 
 if __name__ == "__main__":
