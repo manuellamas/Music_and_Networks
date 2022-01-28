@@ -45,9 +45,9 @@ def kmeans_analysis(networks_features):
     print(ideal_size)
 
     # Right now I'm just repeating the algorithm with the ideal_size but it might be better to save all predictions (i.e., for each size) and then just use keep the one for the ideal_size
-    kmeans = KMeans(n_clusters = ideal_size).fit(networks_feature_list)
-    predictions = kmeans.predict(networks_feature_list)
-    results[ideal_size] = silhouette_score(networks_feature_list, predictions)
+    kmeans = KMeans(n_clusters = ideal_size).fit(networks_features)
+    predictions = kmeans.predict(networks_features)
+    results[ideal_size] = silhouette_score(networks_features, predictions)
     print(predictions)
 
     return predictions
@@ -56,7 +56,10 @@ def kmeans_analysis(networks_features):
 
 def dbscan_analysis(network_features):
     """ Apply DBSCAN to the vector of features obtained from the network of the song """
-    DBSCAN(eps = 1, min_samples = 3).fit(networks)
+    db = DBSCAN(eps = 4.5, min_samples = 3).fit(network_features)
+    db_clusters = db.labels_
+
+    return db_clusters
 
 
 if __name__ == "__main__":
@@ -93,6 +96,11 @@ if __name__ == "__main__":
     for network, mid_file, filename, notes in networks:
         networks_feature_list.append(music_data(network))
 
-    # Kmeans
+    # k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)
-    plt_analysis.kmeans_clustering_table(networks, kmean_predictions)
+    plt_analysis.clustering_table(networks, kmean_predictions, "k-means")
+
+    # DBSCAN
+    dbscan_predictions = dbscan_analysis(networks_feature_list)
+    print(len(dbscan_predictions))
+    plt_analysis.clustering_table(networks, dbscan_predictions, "DBSCAN")

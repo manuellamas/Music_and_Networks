@@ -6,8 +6,8 @@ import config
 
 import Graph_metrics
 
-def kmeans_clustering_table(networks, cluster_predictions):
-    """ Plots a table with the songs/networks by resulting k-means cluster """
+def clustering_table(networks, cluster_predictions, model):
+    """ Plots a table with the songs/networks and its cluster resulting of the specified model """
 
     cluster_list = []
     for i in range(len(networks)):
@@ -17,7 +17,9 @@ def kmeans_clustering_table(networks, cluster_predictions):
     fig.patch.set_visible(False) # Removing 'background'
     ax.axis("off") # Hide axes
 
-    color_list = ["b","r","g","y","p"]
+    # color_list = ["b","r","g","y","greenyellow"]
+    color_list = ["#ffffb3", "#ff803e", "#ffff68", "#ffa6bd", "#ffc100", "#ffcea2", "#ff8170"]
+    # color_list = ["#ffffb300", "#ff803e75", "#ffff6800", "#ffa6bdd7", "#ffc10020", "#ffcea262", "#ff817066"]
     colors = []
     for i in range(len(cluster_predictions)):
         chosen_color = color_list[cluster_predictions[i]]
@@ -28,9 +30,7 @@ def kmeans_clustering_table(networks, cluster_predictions):
     ax.table(cellText = cluster_list, colLabels = columns, loc = "center", cellLoc = "center", cellColours=colors)
     fig.tight_layout()
 
-    plt.savefig(config.ROOT + "\\Plots\\Single\\k-means_clustering.png")
+    plt.savefig(config.ROOT + "\\Plots\\Single\\"+ model +"_clustering.png")
 
 
 
-    # Network | Cluster number
-    # color row by cluster number, specify a list of hexcolors beforehand
