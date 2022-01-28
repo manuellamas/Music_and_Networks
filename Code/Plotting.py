@@ -75,14 +75,21 @@ def edges_rank(network, filename, top = 20):
 
     edges_list = edges_list[:top] # Sticking only with the top "top" edges (e.g. top 20 edges)
 
+    edges_list_formatted = []
+    for edge in edges_list:
+        edge_origin = edge[0]
+        edge_end = edge[1]
+        edge_label = str(edge_origin) + " -> " + str(edge_end)
+        edges_list_formatted.append([edge_label, edge[2]])
+
     fig, ax = plt.subplots()
 
     fig.patch.set_visible(False) # Removing 'background'
     ax.axis("off") # Hide axes
 
-    columns = ["Origin Node", "End Node", "Frequency (weight)"]
+    columns = ["Edge", "Frequency (weight)"]
     rows = [] #, rowLabels = rows
-    ax.table(cellText = edges_list, colLabels = columns, loc = "center", cellLoc = "center")
+    ax.table(cellText = edges_list_formatted, colLabels = columns, loc = "center", cellLoc = "center")
     fig.tight_layout()
 
     plt.savefig(config.ROOT + "\\Plots\\Single\\Edge_Rank_" + filename + ".png")
