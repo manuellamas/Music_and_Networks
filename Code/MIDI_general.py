@@ -108,6 +108,25 @@ def midi_program_num_to_name(program, instrument = False):
         return program_category
 
 
+
+# MIDI Note
+def midi_num_to_note(note_code):
+    # Checking if the number is not on the table
+    if note_code < 0 or note_code > 127:
+        print("The note code doesn't represent any note (in any octave)")
+        return
+
+    octave = [i for i in range(-1,10)]
+    note =  ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+
+    octave[note_code // 12]
+    note[note_code % 12]
+
+    return str(octave) + note
+
+
+
+
 if __name__ == "__main__":
     # Python File (Project) Location
     program_directory = os.path.dirname(__file__) # Where the Python script being ran is
