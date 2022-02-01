@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
 
     # Parsing Input - Command
-    prompt_question = "Weighted or MultiDiGraph? W/M [optional maximum ticks dif]\n"
+    prompt_question = "Weighted or MultiDiGraph? W/M [optional maximum ticks difference]\n"
     command = input(prompt_question)
     default_option = False
     if len(command) != 0:

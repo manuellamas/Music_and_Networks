@@ -77,8 +77,8 @@ def edges_rank(network, filename, top = 20):
 
     edges_list_formatted = []
     for edge in edges_list:
-        edge_origin = edge[0]
-        edge_end = edge[1]
+        edge_origin = MIDI_general.midi_num_to_note(edge[0])
+        edge_end = MIDI_general.midi_num_to_note(edge[1])
         edge_label = str(edge_origin) + " -> " + str(edge_end)
         edges_list_formatted.append([edge_label, edge[2]])
 

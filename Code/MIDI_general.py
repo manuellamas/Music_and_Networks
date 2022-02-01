@@ -116,13 +116,10 @@ def midi_num_to_note(note_code):
         print("The note code doesn't represent any note (in any octave)")
         return
 
-    octave = [i for i in range(-1,10)]
+    octave = [str(i) for i in range(-1,10)]
     note =  ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
-    octave[note_code // 12]
-    note[note_code % 12]
-
-    return str(octave) + note
+    return octave[note_code // 12] + note[note_code % 12]
 
 
 
