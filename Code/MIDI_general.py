@@ -94,7 +94,7 @@ def midi_program_num_to_name(program, instrument = False):
         # Python File (Project) Location
         program_directory = os.path.dirname(__file__) # Where the Python script being ran is
 
-        csv_file = pd.read_csv(program_directory + "\\Data\\MIDI_Program_Names.csv", header = None)
+        csv_file = pd.read_csv(program_directory + "\\_Data\\MIDI_Program_Names.csv", header = None)
         program_list = csv_file[0].to_list() # 0 because it's the first (and only) column
 
         program_instrument = program_list[program]

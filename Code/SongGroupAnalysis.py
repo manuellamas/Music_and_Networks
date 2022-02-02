@@ -18,7 +18,7 @@ import MIDI_general
 import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 
-def music_data(G):
+def music_data(G, num_notes_normalized):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
@@ -27,6 +27,9 @@ def music_data(G):
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
     feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
     feature_list.append(Graph_metrics.average_clustering(G))
+
+    if num_notes_normalized != 0:
+        feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
 
     return feature_list
 
@@ -71,7 +74,7 @@ if __name__ == "__main__":
 
     elif len(sys.argv) == 2:
         files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
-        
+
     else:
         print("Too many arguments")
         exit()
@@ -94,7 +97,17 @@ if __name__ == "__main__":
     # Feature List
     networks_feature_list = []
     for network, mid_file, filename, notes in networks:
-        networks_feature_list.append(music_data(network))
+        time_length = 0
+        try:
+            time_length = mid_file.length
+        except:
+            print("This MIDI file is of type 2 (asynchronous) and so the length can't be computed")
+            print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
+
+        if time_length == 0:
+            networks_feature_list.append(music_data(network, 0))
+        else:
+            networks_feature_list.append(music_data(network, len(notes)/time_length))
 
     # k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)

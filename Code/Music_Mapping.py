@@ -50,6 +50,8 @@ def get_notes(mid_file , get_track_program = False):
             print("The track of the song has no Program")
     return notes # A list with entries as [note, start_time, end_time]
 
+
+
 def get_note_pairs(notes, eps = -1, window = False):
     if window:
         # List of edges by time
@@ -82,7 +84,6 @@ def get_note_pairs(notes, eps = -1, window = False):
 
 
 
-
 # -------------------- Graph Creation --------------------
 # DiGraph Weighted
 def graph_note_pairs_weighted(mid_file, eps = -1):
@@ -91,11 +92,7 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
-
-
     note_pairs = get_note_pairs(notes, eps = -1)
-
-
 
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now
