@@ -1,6 +1,9 @@
 # Python Cache
 __pycache__
 
+# Python Virtual Environment
+.venv
+
 # VSCode Workspace
 *.code-workspace
 

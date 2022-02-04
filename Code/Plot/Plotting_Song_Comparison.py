@@ -1,4 +1,3 @@
-from locale import normalize
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
