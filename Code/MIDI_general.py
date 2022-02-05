@@ -6,6 +6,8 @@ import mido
 import os.path
 import sys
 
+from Music_Mapping import melody_track
+
 def midi_file_overview(mid_file, filename):
     """ Exports into a txt file type, number of tracks, and the MIDI Messages themselves """
     file = open("MIDI_file_info.txt", "w")
@@ -26,7 +28,8 @@ def midi_file_overview(mid_file, filename):
 
     # Number of tracks
     if midi_type != 0:
-        file.write("Number of tracks: {}" .format(len(mid_file.tracks)))
+        file.write("Number of tracks: {}\n" .format(len(mid_file.tracks)))
+        file.write("Melody track: {}" .format(melody_track(mid_file)))
     
     file.write("\n----------\n\n")
 
@@ -54,6 +57,7 @@ def midi_filename(mid_file):
 
 
 # MIDI program
+# Program values are from 0-127
 def midi_program_num_to_name(program, instrument = False):
     # Program Category
     if program in list(range(0,8)):
