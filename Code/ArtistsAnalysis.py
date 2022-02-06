@@ -45,6 +45,10 @@ if __name__ == "__main__":
     for i in range(len(list_folders)):
         list_files.append([f for f in listdir(files_directory + "\\" + list_folders[i]) if (os.path.isfile(os.path.join(files_directory + "\\" + list_folders[i], f)) and f[-3:]) == "mid"])
 
+        if len(list_files[i]) == 0:
+            print("The folder '" + list_folders[i] + "' is empty")
+            exit()
+
     # Create the Graphs
     networks = []
     labels = [] # To distinguish each artist/band on plots

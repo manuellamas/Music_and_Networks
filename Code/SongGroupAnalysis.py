@@ -83,6 +83,10 @@ if __name__ == "__main__":
     # Obtain a list of the file names of all MIDI files in the directory (SongArena). Only those in the "root" and not in a subdirectory
     list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
 
+    if len(list_files) == 0:
+        print("The folder is empty")
+        exit()
+
     # Create the Graphs
     networks = []
     for mid in list_files:
