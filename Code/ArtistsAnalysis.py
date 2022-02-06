@@ -49,6 +49,10 @@ if __name__ == "__main__":
             print("The folder '" + list_folders[i] + "' is empty")
             exit()
 
+        if len(list_files[i]) == 0:
+            print("The folder '" + list_folders[i] + "' is empty")
+            exit()
+
     # Create the Graphs
     networks = []
     labels = [] # To distinguish each artist/band on plots
