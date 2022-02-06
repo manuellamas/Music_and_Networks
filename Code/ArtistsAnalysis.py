@@ -49,6 +49,11 @@ if __name__ == "__main__":
             print("The folder '" + list_folders[i] + "' is empty")
             exit()
 
+        if len(list_files[i]) % 2 != 1:
+            print("Please have an odd number of songs on the folder", list_folders[i])
+            # To make it easier to choose a cluster for each artist/band
+            exit()
+
     # Create the Graphs
     networks = []
     labels = [] # To distinguish each artist/band on plots
@@ -85,5 +90,4 @@ if __name__ == "__main__":
 
     # DBSCAN
     dbscan_predictions = song_analysis.dbscan_analysis(networks_feature_list)
-    print(len(dbscan_predictions))
     plt_analysis.clustering_table(networks, dbscan_predictions, "DBSCAN", labels)

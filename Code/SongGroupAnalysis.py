@@ -44,14 +44,12 @@ def kmeans_analysis(networks_features):
         predictions = kmeans.predict(networks_features)
         results[size] = silhouette_score(networks_features, predictions)
 
-    ideal_size = max(results, key=results.get)
-    print(ideal_size)
+    ideal_size = max(results, key=results.get) # Ideal number of clusters
 
     # Right now I'm just repeating the algorithm with the ideal_size but it might be better to save all predictions (i.e., for each size) and then just use keep the one for the ideal_size
     kmeans = KMeans(n_clusters = ideal_size).fit(networks_features)
     predictions = kmeans.predict(networks_features)
     results[ideal_size] = silhouette_score(networks_features, predictions)
-    print(predictions)
 
     return predictions
 
@@ -119,5 +117,4 @@ if __name__ == "__main__":
 
     # DBSCAN
     dbscan_predictions = dbscan_analysis(networks_feature_list)
-    print(len(dbscan_predictions))
     plt_analysis.clustering_table(networks, dbscan_predictions, "DBSCAN")
