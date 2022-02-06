@@ -149,6 +149,10 @@ if __name__ == "__main__":
         # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
         list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
 
+        if len(list_files) == 0:
+            print("The folder is empty")
+            exit()
+
         print("Running for the following files:")
         for mid in list_files:
             print(mid)
