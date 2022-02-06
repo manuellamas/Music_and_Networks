@@ -36,18 +36,14 @@ if __name__ == "__main__":
         print("Looking into the folders", list_folders)
 
 
-    dirs = [] # List with the paths to the 2 folders (directories)
+    dirs = []
     for i in range(len(list_folders)):
         dirs.append(files_directory + "\\" + list_folders[i])
 
     # Getting midi files for each artist/band
     list_files = []
     for i in range(len(list_folders)):
-        list_files.append([f for f in listdir(dirs) if (os.path.isfile(os.path.join(dirs, f)) and f[-3:]) == "mid"])
-
-        if len(list_files[i]) == 0:
-            print("The folder '" + list_folders[i] + "' is empty")
-            exit()
+        list_files.append([f for f in listdir(dirs[i]) if (os.path.isfile(os.path.join(dirs[i], f)) and f[-3:]) == "mid"])
 
         if len(list_files[i]) == 0:
             print("The folder '" + list_folders[i] + "' is empty")
@@ -59,7 +55,7 @@ if __name__ == "__main__":
     for i in range(len(list_files)):
         label = list_folders[i]
         for mid in list_files[i]:
-            mid_file = mido.MidiFile(dirs + "\\" + mid, clip = True)
+            mid_file = mido.MidiFile(dirs[i] + "\\" + mid, clip = True)
 
             network, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
             filename = MIDI_general.midi_filename(mid_file)
