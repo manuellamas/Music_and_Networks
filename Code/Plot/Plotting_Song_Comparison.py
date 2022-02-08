@@ -5,6 +5,7 @@ import numpy as np
 import config
 
 import Graph_metrics
+from Plotting import edges_rank_network
 
 # Degree Distribution
 def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None):
@@ -51,6 +52,7 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
     # Legend
     plt.legend(loc="upper right")
 
+    # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
         group_name = "_" + plot_folder
@@ -77,11 +79,11 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, num_nodes)
+            plt.plot(labels, counts)
 
 
     # Design
@@ -99,6 +101,7 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     # Legend
     plt.legend(loc="upper right")
 
+    # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
         group_name = "_" + plot_folder
@@ -131,14 +134,14 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        ax.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
+        ax.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
-        min_y_value = min(min_y_value,min(num_nodes))
-        max_y_value = max(max_y_value,max(num_nodes))
+        min_y_value = min(min_y_value,min(counts))
+        max_y_value = max(max_y_value,max(counts))
 
         if line:
             # Create a line on top of a scatter plot
-            ax.plot(labels, num_nodes)
+            ax.plot(labels, counts)
 
         # Design
         # title = "Betweenness Centrality"
@@ -163,6 +166,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
         # ax.ylim([0,10]) # Forces the y axis to show only values on the speficied interval
         ax.set(ylim=(min_y_value, max_y_value))
 
+    # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
         group_name = "_" + plot_folder
@@ -186,11 +190,11 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(closeness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, num_nodes)
+            plt.plot(labels, counts)
 
 
     # Design
@@ -208,6 +212,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     # Legend
     plt.legend(loc="upper right")
 
+    # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
         group_name = "_" + plot_folder
@@ -231,11 +236,11 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(clust_coef_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, num_nodes, s=10, label = midi_title.replace("_", " "))
+        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, num_nodes)
+            plt.plot(labels, counts)
 
 
     # Design
@@ -253,6 +258,7 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     # Legend
     plt.legend(loc="upper right")
 
+    # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
         group_name = "_" + plot_folder
@@ -260,3 +266,42 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution" + group_name + ".png")
 
 
+
+# Edge Ranking Table (Comparison)
+def edges_rank_comparison(networks, top = 20, plot_folder = None):
+    """ Plots a table with the rank of the edges by weight - Comparing several songs """
+
+    edges_list_all = [[] for x in range(top)]
+    columns = []
+    for network in networks:
+        G, midi_file, filename, notes = network
+        columns.append(filename)
+        edges_list_formatted = edges_rank_network(G, "group", top)
+        for i in range(len(edges_list_formatted)): # Not 'len(top)' since some songs may have fewer than (the number) top edges. The padding to fill those voids is made after it
+            edges_list_all[i].append(edges_list_formatted[i]) # Adding a column going through every i row
+        if len(edges_list_formatted) < top:
+            for i in range(len(edges_list_formatted), top): # Adding the missing entries. The rows between the end of edges_list_formatted and top (the total number of rows)
+                edges_list_all[i].append("")
+
+    fig, ax = plt.subplots()
+
+    fig.patch.set_visible(False) # Removing 'background'
+    ax.axis("off") # Hide axes
+
+    # columns = ["Edge", "Frequency (weight)"]
+    rows = [] #, rowLabels = rows
+    tab = ax.table(cellText = edges_list_all, colLabels = columns, loc = "center", cellLoc = "center")
+
+    tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
+    tab.set_fontsize(8)
+    tab.auto_set_column_width(col=list(range(len(columns)))) # Sets Column width automatically
+
+    fig.tight_layout()
+
+
+    # Exporting to PNG
+    group_name = ""
+    if plot_folder is not None:
+        group_name = "_" + plot_folder
+
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Edge_Rank" + group_name + ".png", bbox_inches='tight')

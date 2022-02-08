@@ -66,21 +66,36 @@ def degree_distribution_scatter_plot(G, filename):
     plt.savefig(config.ROOT + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
 
 
-def edges_rank(network, filename, top = 20):
-    """ Plots a table with the rank of the edges by weight """
+
+def edges_rank_network(network, plot_type, top = 20):
+    """ Obtain a list of the edges (ranked by weight) formatted for a table plot """
     edges_list = [] # entries of the form [NodeA, NodeB, Weight] the edge being NodeA -> NodeB
     for edge in network.edges.data():
         edges_list.append([edge[0], edge[1], edge[2]["weight"]])
     edges_list.sort(key = lambda e: e[2], reverse = True)
 
     edges_list = edges_list[:top] # Sticking only with the top "top" edges (e.g. top 20 edges)
-
     edges_list_formatted = []
-    for edge in edges_list:
-        edge_origin = MIDI_general.midi_num_to_note(edge[0])
-        edge_end = MIDI_general.midi_num_to_note(edge[1])
-        edge_label = str(edge_origin) + " -> " + str(edge_end)
-        edges_list_formatted.append([edge_label, edge[2]])
+    if plot_type == "single": # Only lookint at one song
+        for edge in edges_list:
+            edge_origin = MIDI_general.midi_num_to_note(edge[0])
+            edge_end = MIDI_general.midi_num_to_note(edge[1])
+            edge_label = str(edge_origin) + " -> " + str(edge_end)
+            edges_list_formatted.append([edge_label, edge[2]])
+
+    elif plot_type == "group": # Looking at several songs at once
+        for edge in edges_list:
+            edge_origin = MIDI_general.midi_num_to_note(edge[0])
+            edge_end = MIDI_general.midi_num_to_note(edge[1])
+            edge_label = str(edge_origin) + " -> " + str(edge_end)
+            edges_list_formatted.append(edge_label)
+
+    return edges_list_formatted
+
+def edges_rank(network, filename, top = 20):
+    """ Plots a table with the rank of the edges by weight """
+
+    edges_list_formatted = edges_rank_network(network, "single", top)
 
     fig, ax = plt.subplots()
 

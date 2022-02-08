@@ -1,3 +1,5 @@
+""" A Configuration file with the value of the project Root """
+
 import os.path
 
 CONFIG_DIR = os.path.dirname(__file__)

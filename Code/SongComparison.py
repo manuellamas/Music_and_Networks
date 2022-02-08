@@ -50,6 +50,8 @@ if __name__ == "__main__":
     if len(list_files) == 0:
         print("The folder is empty")
         exit()
+    else:
+        print("Looking into the files", list_files)
 
     # Create the Graphs
     networks = []
@@ -76,12 +78,12 @@ if __name__ == "__main__":
     plt_comparison.clustering_coef_comparison_plot(networks, plot_folder = group_name)
 
     # Edges Rank
+    plt_comparison.edges_rank_comparison(networks, plot_folder = group_name)
 
 
 
 
-
-
+    # Command Line Table print
     # Diameter
     diameters = []
 
