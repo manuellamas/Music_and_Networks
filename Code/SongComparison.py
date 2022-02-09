@@ -65,6 +65,10 @@ if __name__ == "__main__":
 
 
     ########## Plots ##########
+    # Creating directory for group if it doesn't already exist
+    path = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name
+    plt_comparison.check_dir(path)
+
     # Degree Distribution
     plt_comparison.degree_distribution_comparison_plot(networks, plot_folder = group_name)
     plt_comparison.degree_distribution_comparison_plot(networks, scale = "loglog", plot_folder = group_name)
@@ -91,6 +95,7 @@ if __name__ == "__main__":
     data = []
     headers = ["Song", "Diameter", "Length of track (#nodes)"]
     for network, mid_file, filename, notes in networks:
+        print(filename)
         diameter = nx.diameter(network)
         data.append([filename, diameter, len(notes)])
 

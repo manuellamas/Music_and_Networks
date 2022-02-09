@@ -2,10 +2,28 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
+from os import mkdir
+import os.path
 import config
 
 import Graph_metrics
 from Plotting import edges_rank_network
+
+# Support Function
+def check_dir(dir):
+    """ Checks if directory exists, else it creates it """
+
+    # Checking if path exists
+    path_exists = os.path.exists(dir)
+
+    if not path_exists:
+        mkdir(dir)
+        print("The following directory was created", dir)
+
+
+#------------------------------------------------------------#
+#----------------------------Main----------------------------#
+#------------------------------------------------------------#
 
 # Degree Distribution
 def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None):
@@ -55,12 +73,13 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
     if scale == "loglog":
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution_LogLog" + group_name + ".png")
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Degree_Distribution_LogLog" + group_name + ".png")
     else:
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Degree_Distribution" + group_name + ".png")
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Degree_Distribution" + group_name + ".png")
 
 
 
@@ -79,11 +98,12 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        relative_counts = [c/num_nodes for c in counts]
+        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -92,7 +112,7 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
 
     # Axis Labels
     ax1.set_xlabel('Betweenness')
-    ax1.set_ylabel('#Nodes')
+    ax1.set_ylabel('#Nodes/total')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -104,9 +124,10 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Betweenness_Distribution" + group_name + ".png")
 
 
 
@@ -134,14 +155,15 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        ax.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        relative_counts = [c/num_nodes for c in counts]
+        ax.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
-        min_y_value = min(min_y_value,min(counts))
-        max_y_value = max(max_y_value,max(counts))
+        min_y_value = min(min_y_value,min(relative_counts))
+        max_y_value = max(max_y_value,max(relative_counts))
 
         if line:
             # Create a line on top of a scatter plot
-            ax.plot(labels, counts)
+            ax.plot(labels, relative_counts)
 
         # Design
         # title = "Betweenness Centrality"
@@ -149,7 +171,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
 
         # Axis Labels
         # ax.set_xlabel('Betweenness')
-        ax.set_ylabel('#Nodes')
+        ax.set_ylabel('#N/total')
 
         # Axis Ticks
         # ax.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -169,9 +191,10 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Betweenness_Distribution_(side-by-side)" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Betweenness_Distribution_(side-by-side)" + group_name + ".png")
 
 
 
@@ -190,11 +213,12 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(closeness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        relative_counts = [c/num_nodes for c in counts]
+        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -203,7 +227,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
 
     # Axis Labels
     ax1.set_xlabel('Closeness')
-    ax1.set_ylabel('#Nodes')
+    ax1.set_ylabel('#Nodes/total')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -215,9 +239,10 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Closeness_Distribution" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Closeness_Distribution" + group_name + ".png")
 
 
 
@@ -236,11 +261,12 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
 
         labels, counts = np.unique(clust_coef_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
-        plt.scatter(labels, counts, s=10, label = midi_title.replace("_", " "))
+        relative_counts = [c/num_nodes for c in counts]
+        plt.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
 
         if line:
             # Create a line on top of a scatter plot
-            plt.plot(labels, counts)
+            plt.plot(labels, relative_counts)
 
 
     # Design
@@ -249,7 +275,7 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
 
     # Axis Labels
     ax1.set_xlabel('Clustering Coefficient')
-    ax1.set_ylabel('#Nodes')
+    ax1.set_ylabel('#Nodes/total')
 
     # Axis Ticks
     # ax1.yaxis.set_major_locator(ticker.LinearLocator(5))
@@ -261,9 +287,10 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Clustering_Coefficient_Distribution" + group_name + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Clustering_Coefficient_Distribution" + group_name + ".png")
 
 
 
@@ -302,6 +329,7 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        group_name = "_" + plot_folder
+        # group_name = "_" + plot_folder
+        group_name = plot_folder
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\Edge_Rank" + group_name + ".png", bbox_inches='tight')
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Edge_Rank" + group_name + ".png", bbox_inches='tight')
