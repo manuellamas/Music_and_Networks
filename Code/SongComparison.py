@@ -95,7 +95,6 @@ if __name__ == "__main__":
     data = []
     headers = ["Song", "Diameter", "Length of track (#nodes)"]
     for network, mid_file, filename, notes in networks:
-        print(filename)
         diameter = nx.diameter(network)
         data.append([filename, diameter, len(notes)])
 

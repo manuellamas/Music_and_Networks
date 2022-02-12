@@ -299,25 +299,61 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None):
     """ Plots a table with the rank of the edges by weight - Comparing several songs """
 
     edges_list_all = [[] for x in range(top)]
+
+    edges_list_sum = [[] for x in range(len(networks))]
+    network_index = 0
+
     columns = []
     for network in networks:
         G, midi_file, filename, notes = network
         columns.append(filename)
         edges_list_formatted = edges_rank_network(G, "group", top)
         for i in range(len(edges_list_formatted)): # Not 'len(top)' since some songs may have fewer than (the number) top edges. The padding to fill those voids is made after it
-            edges_list_all[i].append(edges_list_formatted[i]) # Adding a column going through every i row
+            edges_list_all[i].append(edges_list_formatted[i][0]) # Adding a column going through every i row
+            edges_list_sum[network_index].append(edges_list_formatted[i][1]) # Ordered in a different way from edges_list_all. Every entry is a list with all edges (cumulative sum) of each music, and not spread out on a column
         if len(edges_list_formatted) < top:
             for i in range(len(edges_list_formatted), top): # Adding the missing entries. The rows between the end of edges_list_formatted and top (the total number of rows)
                 edges_list_all[i].append("")
+                # No edges_list_sum because I only append the existing values
+        network_index += 1
 
     fig, ax = plt.subplots()
 
     fig.patch.set_visible(False) # Removing 'background'
     ax.axis("off") # Hide axes
 
-    # columns = ["Edge", "Frequency (weight)"]
+
+
+    color_list = ["#ffffb3", "#ff803e", "#ffff68", "#ffa6bd", "#ffc100", "#ffcea2", "#ff8170"]
+    # Maybe it would be better to use just one color that gets darker (or maybe less transparent)
+
+    colors = [[] for i in range(top)]
+    for i in range(len(networks)): # For each song, which is a column
+        levels = [l/100 for l in range(0, 100 + 1, 20)]
+        next_level = 1
+        current_level = 0
+
+        for j in range(len(edges_list_sum[i])): # For each edge, which is a row (that can be different for each song of course)
+            new_level = False
+
+            while next_level < len(levels) and edges_list_sum[i][j] > levels[next_level]: # First condition is there due to aproximation errors ending up above 1.0
+                next_level += 1
+                new_level = True
+
+            chosen_color = color_list[current_level]
+            colors[j].append(chosen_color)
+            # colors[j][i].append(chosen_color)
+
+            if new_level:
+                # current_level += 1
+                current_level = next_level - 1
+
+        for j in range(len(edges_list_sum[i]), top): # Dealing with missing entries
+            colors[j].append("white")
+            pass
+
     rows = [] #, rowLabels = rows
-    tab = ax.table(cellText = edges_list_all, colLabels = columns, loc = "center", cellLoc = "center")
+    tab = ax.table(cellText = edges_list_all, colLabels = columns, loc = "center", cellLoc = "center", cellColours=colors)
 
     tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
     tab.set_fontsize(8)
@@ -329,7 +365,10 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None):
     # Exporting to PNG
     group_name = ""
     if plot_folder is not None:
-        # group_name = "_" + plot_folder
-        group_name = plot_folder
+        group_name = plot_folder + "_"
+        plot_folder += "\\" 
+    else:
+        plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name + "\\Edge_Rank" + group_name + ".png", bbox_inches='tight')
+    print("Plot at", plot_folder + group_name + "Edge_Rank" + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Edge_Rank" + ".png", bbox_inches='tight')

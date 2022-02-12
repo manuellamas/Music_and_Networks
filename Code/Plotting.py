@@ -70,8 +70,11 @@ def degree_distribution_scatter_plot(G, filename):
 def edges_rank_network(network, plot_type, top = 20):
     """ Obtain a list of the edges (ranked by weight) formatted for a table plot """
     edges_list = [] # entries of the form [NodeA, NodeB, Weight] the edge being NodeA -> NodeB
+    total_weight = 0
+
     for edge in network.edges.data():
         edges_list.append([edge[0], edge[1], edge[2]["weight"]])
+        total_weight += edge[2]["weight"]
     edges_list.sort(key = lambda e: e[2], reverse = True)
 
     edges_list = edges_list[:top] # Sticking only with the top "top" edges (e.g. top 20 edges)
@@ -84,11 +87,13 @@ def edges_rank_network(network, plot_type, top = 20):
             edges_list_formatted.append([edge_label, edge[2]])
 
     elif plot_type == "group": # Looking at several songs at once
+        sum = 0
         for edge in edges_list:
             edge_origin = MIDI_general.midi_num_to_note(edge[0])
             edge_end = MIDI_general.midi_num_to_note(edge[1])
             edge_label = str(edge_origin) + " -> " + str(edge_end)
-            edges_list_formatted.append(edge_label)
+            sum += edge[2]/total_weight # This is already the cumulative sum of the weights of the edges of this network (starting with the 'heaviest' edge)
+            edges_list_formatted.append([edge_label, sum])
 
     return edges_list_formatted
 
