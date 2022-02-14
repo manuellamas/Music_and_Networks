@@ -78,10 +78,10 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
         plot_folder = ""
 
     if scale == "loglog":
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution_LogLog" + ".png", bbox_inches='tight')
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution_LogLog" + ".png")
         print("Plot at", plot_folder + group_name + "Degree_Distribution_LogLog" + ".png")
     else:
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution" + ".png", bbox_inches='tight')
+        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution" + ".png")
         print("Plot at", plot_folder + group_name + "Degree_Distribution" + ".png")
 
 
@@ -131,7 +131,7 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     else:
         plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution" + ".png", bbox_inches='tight')
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution" + ".png")
     print("Plot at", plot_folder + group_name + "Betweenness_Distribution" + ".png")
 
 
@@ -199,7 +199,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
     else:
         plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches='tight')
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
     print("Plot at", plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
 
 
@@ -248,7 +248,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     else:
         plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Closeness_Distribution" + ".png", bbox_inches='tight')
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Closeness_Distribution" + ".png")
     print("Plot at", plot_folder + group_name + "Closeness_Distribution" + ".png")
 
 
@@ -297,7 +297,7 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     else:
         plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png", bbox_inches='tight')
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
     print("Plot at", plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
 
 

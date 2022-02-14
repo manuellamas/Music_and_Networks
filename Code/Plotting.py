@@ -33,7 +33,9 @@ def degree_distribution_histogram(G, filename):
     # Legend
     # plt.legend(loc="upper left")
 
-    plt.savefig(config.ROOT + "\\Plots\\Single\\Degree_Distribution_Histogram_" + filename + ".png")
+    plot_filename = filename + "_Degree_Distribution_Histogram" + ".png"
+    plt.savefig(config.ROOT + "\\Plots\\Single\\" + plot_filename)
+    print("Plot at", plot_filename)
     # plt.show()
 
 
@@ -63,7 +65,9 @@ def degree_distribution_scatter_plot(G, filename):
     ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
 
     plt.scatter(labels, relative_counts, s=10)
-    plt.savefig(config.ROOT + "\\Plots\\Single\\Degree_Distribution_" + filename + ".png")
+    plot_filename = filename + "_Degree_Distribution" + ".png"
+    plt.savefig(config.ROOT + "\\Plots\\Single\\" + plot_filename)
+    print("Plot at", plot_filename)
 
 
 
@@ -112,7 +116,9 @@ def edges_rank(network, filename, top = 20):
     ax.table(cellText = edges_list_formatted, colLabels = columns, loc = "center", cellLoc = "center")
     fig.tight_layout()
 
-    plt.savefig(config.ROOT + "\\Plots\\Single\\Edge_Rank_" + filename + ".png")
+    plot_filename = filename + "_Edge_Rank" + ".png"
+    plt.savefig(config.ROOT + "\\Plots\\Single\\" + plot_filename)
+    print("Plot at", plot_filename)
 
 ########## Graph Analysis End ##########
 
@@ -151,8 +157,10 @@ def average_degree_time_window(average_degrees, time_interval, time_skip, filena
     plt.ylim([0,10]) # Forces the y axis to show only values on the speficied interval
 
     plt.scatter(x_axis, average_degrees, s=10)
-    plt.savefig(config.ROOT + "\\Plots\\Time_Window\\Average_Distribution_" + filename + "_I-" + str(time_interval) + "_S-" + str(time_skip) + ".png")
+    plot_filename = filename + "_I-" + str(time_interval) + "_S-" + str(time_skip) + ".png"
+    plt.savefig(config.ROOT + "\\Plots\\Time_Window\\Average_Distribution_" + plot_filename)
     # plt.savefig(config.ROOT + "\\Plots\\Time_Window\\Average_Distribution_" + filename + ".png")
+    print("Plot at", plot_filename)
     
 
     return

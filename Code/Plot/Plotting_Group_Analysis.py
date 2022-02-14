@@ -82,7 +82,7 @@ def clustering_table(networks, cluster_predictions, model, labels = None):
 
     fig.tight_layout()
 
-    plt.savefig(config.ROOT + "\\Plots\\SongGroupAnalysis\\"+ model +"_clustering.png")
-
+    plt.savefig(config.ROOT + "\\Plots\\SongGroupAnalysis\\"+ model + "_clustering.png")
+    print("Plot at", model + "_clustering" + ".png")
 
 
