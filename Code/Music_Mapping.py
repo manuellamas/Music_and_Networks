@@ -2,8 +2,24 @@ from socket import AddressFamily
 import mido
 import networkx as nx
 
+def first_meta_track(mid_file):
+    """ Returns the first track that only contains MetaMessages (if it exists) """
+
+    for i, track in enumerate(mid_file.tracks):
+        track_is_only_meta = True
+        for msg in track:
+            if not msg.is_meta:
+                track_is_only_meta = False
+                break
+        if track_is_only_meta:
+            return i
+
+    return None
+
+
 def melody_track(mid_file):
     """ Returns track with most notes (if multiple chooses the first in file) """
+
     num_nodes = []
     for track in mid_file.tracks:
         count = 0
@@ -18,6 +34,7 @@ def melody_track(mid_file):
 # -------------------- Note Pairs Occurrences --------------------
 def get_notes(mid_file , get_track_program = False):
     """ Obtaining a list of the notes of the 'melody track' from a MIDI file (MIDI Object) """
+
     # Dealing with just one track for now, so we automatically pick the track with the most notes (if there's a tie, the first to occur gets picked)
     melody_track_index = melody_track(mid_file)
     first_track = mid_file.tracks[melody_track_index]
@@ -92,7 +109,7 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
-    note_pairs = get_note_pairs(notes, eps = -1)
+    note_pairs = get_note_pairs(notes, eps)
 
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now

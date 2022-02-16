@@ -6,7 +6,7 @@ import mido
 import os.path
 import sys
 
-from Music_Mapping import melody_track
+from Music_Mapping import melody_track, first_meta_track
 
 def midi_file_overview(mid_file, filename):
     """ Exports into a txt file type, number of tracks, and the MIDI Messages themselves """
@@ -59,6 +59,8 @@ def midi_filename(mid_file):
 # MIDI program
 # Program values are from 0-127
 def midi_program_num_to_name(program, instrument = False):
+    """ Convert program_number to the class (and optionally specific name) of the instrument """
+    
     # Program Category
     if program in list(range(0,8)):
         program_category = "Piano"
@@ -104,8 +106,6 @@ def midi_program_num_to_name(program, instrument = False):
         program_instrument = program_list[program]
 
 
-
-
     if instrument:
         return program_category, program_instrument
     else:
@@ -127,6 +127,38 @@ def midi_num_to_note(note_code):
 
 
 
+def midi_get_track(mid_file):
+    """ Creates a MIDI file that contains only the specified track of another MIDI """
+
+    #!!!!!!!!!!!!!!!!!!!!!!!!!#
+    ## CURRENTLY NOT WORKING ##
+    #!!!!!!!!!!!!!!!!!!!!!!!!!#
+
+    melody_track_index = melody_track(mid_file)
+    meta_track_index = first_meta_track(mid_file)
+    new_mid = mido.MidiFile()
+
+    if meta_track_index is not None: # Adding a MetaTrack (if it exists)
+        new_meta_track = mido.MidiTrack()
+        new_mid.tracks.append(new_meta_track)
+
+        meta_track = mid_file.tracks[meta_track_index]
+        for msg in meta_track:
+            new_meta_track.append(msg)
+
+    track = mido.MidiTrack()
+    new_mid.tracks.append(track)
+
+    mid_melody_track = mid_file.tracks[melody_track_index]    
+    for msg in mid_melody_track:
+        track.append(msg)
+
+    new_mid.save("melody_track.mid")
+
+    return
+
+
+
 
 if __name__ == "__main__":
     # Python File (Project) Location
@@ -138,3 +170,4 @@ if __name__ == "__main__":
 
     filename = midi_filename(mid_file)
     midi_file_overview(mid_file, filename)
+    midi_get_track(mid_file)
