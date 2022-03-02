@@ -85,7 +85,6 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
         print("Plot at", plot_folder + group_name + "Degree_Distribution" + ".png")
 
 
-
 # Betweenness Centrality
 def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
@@ -140,7 +139,9 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig, axs = plt.subplots(len(networks))
     # fig.subplots_adjust(wspace=0.2)
-    fig.subplots_adjust(hspace=0.5)
+
+    fig.set_size_inches(7, 6, forward=True)
+    fig.subplots_adjust(hspace=1)
 
     ax_num = 0
 
@@ -160,7 +161,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
         labels, counts = np.unique(betwenness_sequence, return_counts=True)
         num_nodes = G.number_of_nodes()
         relative_counts = [c/num_nodes for c in counts]
-        ax.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " "))
+        ax.scatter(labels, relative_counts, s=10, label = midi_title.replace("_", " ").replace(" - ", "\n"))
 
         min_y_value = min(min_y_value,min(relative_counts))
         max_y_value = max(max_y_value,max(relative_counts))
@@ -184,7 +185,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
 
 
         # Legend
-        ax.legend(loc="upper right")
+        ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop={'size': 8}) # Places center left of the legend at the designated position (in axes coordinates)
 
         ax_num += 1
 
@@ -199,7 +200,8 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
     else:
         plot_folder = ""
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
+    # plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
+    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
     print("Plot at", plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
 
 
@@ -299,7 +301,6 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
 
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
     print("Plot at", plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
-
 
 
 # Edge Ranking Table (Comparison)
