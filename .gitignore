@@ -21,3 +21,8 @@ MIDI_file_info.txt
 
 # SongArena - Used to place two files so that they can be compared
 SongArena
+
+# Possible routes that are not to be considered for now
+Music_Mapping_Higher_Order.py
+Music_Mapping_Multilayer.py
+pymnet

@@ -1,5 +1,3 @@
-from socket import AddressFamily
-import mido
 import networkx as nx
 
 def first_meta_track(mid_file):

@@ -86,8 +86,8 @@ if __name__ == "__main__":
 
     # k-means
     kmean_predictions = song_analysis.kmeans_analysis(networks_feature_list)
-    plt_analysis.clustering_table(networks, kmean_predictions, "k-means", labels)
+    plt_analysis.clustering_table(networks, kmean_predictions, "k-means", labels = labels)
 
     # DBSCAN
     dbscan_predictions = song_analysis.dbscan_analysis(networks_feature_list)
-    plt_analysis.clustering_table(networks, dbscan_predictions, "DBSCAN", labels)
+    plt_analysis.clustering_table(networks, dbscan_predictions, "DBSCAN", labels = labels)
