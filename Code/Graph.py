@@ -57,49 +57,52 @@ if __name__ == "__main__":
 
 
     # Parsing Input - Command
-    prompt_question = "Weighted or MultiDiGraph? W/M [optional maximum ticks difference]\n"
-    command = input(prompt_question)
-    default_option = False
-    if len(command) != 0:
-        graph_option = command[0].lower()
-        while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
 
-            # The above still needs improvement, for the default case "" I can't just receive a number as it is now. Meaning "26" which would default to "w" with eps=26 currently doesn't work
-            # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
-            command = input(prompt_question)
-            graph_option = command[0].lower()
-    else: # Default
-        graph_option = "w"
-        default_option = True
+    # prompt_question = "Weighted or MultiDiGraph? W/M [optional maximum ticks difference]\n"
+    # command = input(prompt_question)
+    # default_option = False
+    # if len(command) != 0:
+    #     graph_option = command[0].lower()
+    #     while graph_option not in ["m", "w", " ", ""]: # Only accept valid types (or empty) (The whitespace one is to use only time for the interval case)
+
+    #         # The above still needs improvement, for the default case "" I can't just receive a number as it is now. Meaning "26" which would default to "w" with eps=26 currently doesn't work
+    #         # REGEX could be a nice way of doing it. Accepting only a number would default to the "m" with interval
+    #         command = input(prompt_question)
+    #         graph_option = command[0].lower()
+    # else: # Default
+    #     graph_option = "w"
+    #     default_option = True
     # --------------------
 
 
     # Obtain the notes and create the graph
     # THIS BELOW NEEDS SOME CLEANING
-    if graph_option == "m": # MultiDigraph
+    # if graph_option == "m": # MultiDigraph
 
-        if (len(command) == 1 and command.isalpha()):
-            G, notes = Music_Mapping.graph_note_multigraph(mid_file)
+    #     if (len(command) == 1 and command.isalpha()):
+    #         G, notes = Music_Mapping.graph_note_multigraph(mid_file)
 
-        else: # Same as Simple but with a maximum interval difference between notes
-            if len(command) > 1:
-                eps = float(command[2:len(command)])
-            else:
-                eps = float(command)
-            G, notes = Music_Mapping.graph_note_multigraph(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+    #     else: # Same as Simple but with a maximum interval difference between notes
+    #         if len(command) > 1:
+    #             eps = float(command[2:len(command)])
+    #         else:
+    #             eps = float(command)
+    #         G, notes = Music_Mapping.graph_note_multigraph(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
-    elif graph_option in ["w", ""]: # Weighted (Default value)
-        if (len(command) == 1 and command.isalpha()) or default_option:
-            G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
+    # elif graph_option in ["w", ""]: # Weighted (Default value)
+    #     if (len(command) == 1 and command.isalpha()) or default_option:
+    #         G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
 
-        else: # Same as Simple but with a maximum interval difference between notes
-            if len(command) > 1:
-                eps = float(command[2:len(command)])
-            else:
-                eps = float(command)
-            G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+    #     else: # Same as Simple but with a maximum interval difference between notes
+    #         if len(command) > 1:
+    #             eps = float(command[2:len(command)])
+    #         else:
+    #             eps = float(command)
+    #         G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file, eps) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
     # --------------------
 
+
+    G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.degree_distribution_scatter_plot(G, filename)
