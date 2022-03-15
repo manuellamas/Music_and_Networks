@@ -6,7 +6,35 @@ import mido
 import os.path
 import sys
 
-from Music_Mapping import melody_track, first_meta_track
+
+def first_meta_track(mid_file):
+    """ Returns the first track that only contains MetaMessages (if it exists) """
+
+    for i, track in enumerate(mid_file.tracks):
+        track_is_only_meta = True
+        for msg in track:
+            if not msg.is_meta:
+                track_is_only_meta = False
+                break
+        if track_is_only_meta:
+            return i
+
+    return None
+
+
+def melody_track(mid_file):
+    """ Returns track with most notes (if multiple chooses the first in file) """
+
+    num_nodes = []
+    for track in mid_file.tracks:
+        count = 0
+        for msg in track:
+            if msg.type == "note_on" and msg.velocity != 0: # If a message is "starting" a note
+                count += 1
+        num_nodes.append(count)
+
+    return num_nodes.index(max(num_nodes)) # Returns the first track with the most number of notes
+
 
 def midi_file_overview(mid_file, filename):
     """ Exports into a txt file type, number of tracks, and the MIDI Messages themselves """
@@ -136,6 +164,7 @@ def midi_get_track(mid_file):
 
     melody_track_index = melody_track(mid_file)
     meta_track_index = first_meta_track(mid_file)
+    print("The chosen track was:", melody_track_index)
     new_mid = mido.MidiFile()
 
     if meta_track_index is not None: # Adding a MetaTrack (if it exists)

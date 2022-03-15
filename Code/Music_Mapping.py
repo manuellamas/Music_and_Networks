@@ -1,32 +1,7 @@
 import networkx as nx
-
-def first_meta_track(mid_file):
-    """ Returns the first track that only contains MetaMessages (if it exists) """
-
-    for i, track in enumerate(mid_file.tracks):
-        track_is_only_meta = True
-        for msg in track:
-            if not msg.is_meta:
-                track_is_only_meta = False
-                break
-        if track_is_only_meta:
-            return i
-
-    return None
+from MIDI_general import midi_filename, melody_track
 
 
-def melody_track(mid_file):
-    """ Returns track with most notes (if multiple chooses the first in file) """
-
-    num_nodes = []
-    for track in mid_file.tracks:
-        count = 0
-        for msg in track:
-            if msg.type == "note_on" and msg.velocity != 0: # If a message is "starting" a note
-                count += 1
-        num_nodes.append(count)
-    
-    return num_nodes.index(max(num_nodes)) # Returns the first track with the most number of notes
 
 
 # -------------------- Note Pairs Occurrences --------------------
@@ -62,7 +37,8 @@ def get_notes(mid_file , get_track_program = False):
         if program is not None:
             return notes, program # Returning the program (instrument) used in the track, assuming only one program is used. If there's more than one for now we only keep the last
         else:
-            print("The track of the song has no Program")
+            filename = midi_filename(mid_file) # Getting just the file name (without the path)
+            print("The track of the song: " + filename + " has no Program")
     return notes # A list with entries as [note, start_time, end_time]
 
 
