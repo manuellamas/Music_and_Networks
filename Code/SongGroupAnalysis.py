@@ -17,13 +17,14 @@ import Music_Mapping
 import MIDI_general
 import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
+import TimeWindow
 
 def music_data(G, num_notes_normalized):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
     # Normalizing all values except clustering that by default is already "normalized"
-    feature_list.append(Graph_metrics.average_degree(G)/(G.number_of_nodes() - 1))
+    feature_list.append(Graph_metrics.average_indegree(G)/(G.number_of_nodes() - 1))
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
     feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
     feature_list.append(Graph_metrics.average_clustering(G))
@@ -99,7 +100,8 @@ if __name__ == "__main__":
 
 
     # Feature List
-    networks_feature_list = []
+    networks_feature_list = [] # Each entry is relative to a song
+    networks_feature_time_list = [] # Features from TimeWindow
     filenames = []
     for network, mid_file, filename, notes in networks:
         filenames.append(filename)
@@ -115,11 +117,14 @@ if __name__ == "__main__":
             networks_feature_list.append(music_data(network, 0))
         else:
             networks_feature_list.append(music_data(network, len(notes)/time_length))
+        networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
     feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Note 'density'"] # Note density refers to # Nodes / Time Length
+    feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)"] # Time Window Features
 
     # Feature Table
     plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
+    plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, time = True)
 
     # k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)

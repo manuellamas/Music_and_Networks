@@ -1,5 +1,16 @@
 import networkx as nx
 
+# def count_self_loops(G):
+#     """ Counts the number of self loops in a graph """
+#     num_self_loops = 0
+
+#     for edge in list(G.edges()):
+#         if edge[0] == edge[1]:
+#             num_self_loops += 1
+
+#     # return 0
+#     return num_self_loops
+
 def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph, i.e., number of directed pairs of nodes that are connected by at least one edge
     if isinstance(G,nx.multidigraph.MultiDiGraph):
         total_unique_edges = 0
@@ -24,16 +35,13 @@ def list_betweenness_centrality(G, normalize = False):
     return rounded_values
 
 def list_closeness_centrality(G, normalize = False):
-    """ Returns a list with all closeness centrality values """
+    """ Returns a list with all closeness centrality values (normalized) """
     centr_values = nx.closeness_centrality(G, distance = "weight")
 
     rounded_values = []
 
     for node, value in centr_values.items():
-        if normalize:
-            value *= (G.number_of_nodes() - 1)
-
-        rounded = round(value, 2) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
+        rounded = round(value, 5) # Pay attention to how much rounding is useful to do to obtain 'meaningful' info from the data
         rounded_values.append(rounded)
 
     return rounded_values
@@ -55,14 +63,22 @@ def list_clustering_coefficient(G):
 # Average values #
 ##################
 
-def average_degree(G, normalize = False):
-    """ Returns the average degree of a node (ignoring weight) """
+def average_indegree(G, normalize = False):
+    """ Returns the average in-degree of a node (ignoring weight) """
     total_degree = 0
-    for node, degree in G.degree():
+    for node, degree in G.in_degree(): # Summing in degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
         total_degree += degree
 
     if normalize:
-        total_degree = total_degree/(G.number_of_nodes() - 1)
+        total_degree = total_degree/(G.number_of_nodes()**2)
+
+    # if total_degree > 1:
+    #     print("Avg Deg Higher than 1")
+    #     print("Num Self-loops", count_self_loops(G))
+    #     print(total_degree, G.number_of_nodes())
+    #     for node, degree in G.degree():
+    #         print(degree)
+
 
     return total_degree/G.number_of_nodes()
 
@@ -75,17 +91,21 @@ def average_betweenness(G, normalize = False):
     for value in between_list:
         total += value
 
+    if total/len(between_list) > 1:
+        print("Avg Bet Higher than 1")
     return total/len(between_list)
 
 
 def average_closeness(G, normalize = False):
     """ Returns the average closeness centrality of a node """
     total = 0
-    closeness_list = list_closeness_centrality(G, normalize = normalize)
+    closeness_list = list_closeness_centrality(G)
 
     for value in closeness_list:
         total += value
 
+    if total/len(closeness_list) > 1:
+        print("Avg Clos Higher than 1")
     return total/len(closeness_list)
 
 
@@ -97,4 +117,6 @@ def average_clustering(G):
     for value in clustering_list:
         total += value
 
+    if total/len(clustering_list) >= 1:
+        print("Avg Clust Higher than 1")
     return total/len(clustering_list)

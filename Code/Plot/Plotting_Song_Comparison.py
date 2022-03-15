@@ -2,23 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from os import mkdir
-import os.path
 import config
 
 import Graph_metrics
 from Plotting import edges_rank_network
-
-# Support Function
-def check_dir(dir):
-    """ Checks if directory exists, else it creates it """
-
-    # Checking if path exists
-    path_exists = os.path.exists(dir)
-
-    if not path_exists:
-        mkdir(dir)
-        print("The following directory was created", dir)
 
 
 #------------------------------------------------------------#
@@ -83,7 +70,8 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
     else:
         plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution" + ".png")
         print("Plot at", plot_folder + group_name + "Degree_Distribution" + ".png")
-
+    
+    plt.close()
 
 # Betweenness Centrality
 def betwenness_comparison_plot(networks, line = True, plot_folder = None):
@@ -131,6 +119,7 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
         plot_folder = ""
 
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution" + ".png")
+    plt.close()
     print("Plot at", plot_folder + group_name + "Betweenness_Distribution" + ".png")
 
 
@@ -202,6 +191,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
 
     # plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
+    plt.close()
     print("Plot at", plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
 
 
@@ -213,7 +203,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        closeness_values = Graph_metrics.list_closeness_centrality(G, normalize = True)
+        closeness_values = Graph_metrics.list_closeness_centrality(G)
 
         closeness_sequence_list = sorted(closeness_values, reverse = True)
         closeness_sequence = np.array(closeness_sequence_list)
@@ -251,6 +241,7 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
         plot_folder = ""
 
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Closeness_Distribution" + ".png")
+    plt.close()
     print("Plot at", plot_folder + group_name + "Closeness_Distribution" + ".png")
 
 
@@ -300,6 +291,7 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
         plot_folder = ""
 
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
+    plt.close()
     print("Plot at", plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
 
 
@@ -380,4 +372,5 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None):
         plot_folder = ""
 
     plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Edge_Rank" + ".png", bbox_inches='tight')
+    plt.close()
     print("Plot at", plot_folder + group_name + "Edge_Rank" + ".png")

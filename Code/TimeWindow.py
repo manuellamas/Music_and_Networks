@@ -10,10 +10,10 @@ import config
 
 import Music_Mapping
 import Graph_metrics
-import Plotting
+import Plot.Plotting_Time_Window as plt_time_window
 import MIDI_general
 
-def degree_window(mid_file, eps = -1):
+def time_window_metrics(mid_file, eps = -1, plot = True):
     G = nx.DiGraph() # Creating a directed graph
 
     program = None # Getting the track's program from the first program_chage (if there is any)
@@ -33,15 +33,18 @@ def degree_window(mid_file, eps = -1):
 
 
     # Fixed Parameters - all time parameters/variables are measured in ticks
-    time_interval = 2000 # The amount of ticks per window
-    time_skip = 500 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
+    time_interval = 5000 # The amount of ticks per window
+    time_skip = 1000 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
 
     time_window_start = 0 # Where the window starts (variable)
     current_edges = [] # List of edges of the current 'windowed' graph
 
 
     # Graph metrics
-    average_degrees = []
+    average_indegree_values = []
+    average_betweenness_values = []
+    average_closeness_values = []
+    average_cluster_coeff_values = []
 
     while len(available_edges) != 0:
         edges_to_remove = []
@@ -95,33 +98,62 @@ def degree_window(mid_file, eps = -1):
             else:
                 remaining_edges.append(edge) # Adding edge for the next windows
 
-        if G.number_of_nodes() != 0:
-            average_degrees.append(Graph_metrics.average_degree(G))
+        if G.number_of_nodes() != 0: # If there are no notes in that time window
+            if Graph_metrics.average_indegree(G, True) > 1:
+                print("\n\nPhase")
+                print(Graph_metrics.average_indegree(G, True))
+                print(G.nodes())
+                print(G.edges())
+                print(G.degree())
+
+        if G.number_of_nodes() != 0: # If there are no notes in that time window
+            average_indegree_values.append(Graph_metrics.average_indegree(G, True))
+            average_betweenness_values.append(Graph_metrics.average_betweenness(G, True))
+            average_closeness_values.append(Graph_metrics.average_closeness(G, True))
+            average_cluster_coeff_values.append(Graph_metrics.average_clustering(G))
         else:
-            average_degrees.append(0)
+            average_indegree_values.append(0)
+            average_betweenness_values.append(0)
+            average_closeness_values.append(0)
+            average_cluster_coeff_values.append(0)
 
         available_edges = remaining_edges # The available edges are the ones that remain, i.e., that haven't yet been added to a graph
         remaining_edges = []
 
         time_window_start += time_skip
 
-    # Plotting
-    filename = MIDI_general.midi_filename(mid_file)
-    
-    if program is not None:
-        Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename, program)
-    else:
-        Plotting.average_degree_time_window(average_degrees, time_interval, time_skip, filename)
+    metrics_list = [average_indegree_values, average_betweenness_values, average_closeness_values, average_cluster_coeff_values]
+
+    if plot:
+        # Plotting
+        filename = MIDI_general.midi_filename(mid_file)
+
+        # plt_time_window.time_window_several_metrics_plot(metrics_list, time_interval, time_skip, filename, program)
+        plt_time_window.time_window_metric_plot(average_indegree_values, time_interval, time_skip, filename, ["Average Degree", "Avg_Degree"], program)
+        plt_time_window.time_window_metric_plot(average_betweenness_values, time_interval, time_skip, filename, ["Average Betweenness Centrality", "Avg_Betweenness"], program)
+        plt_time_window.time_window_metric_plot(average_closeness_values, time_interval, time_skip, filename, ["Average Closeness Centrality", "Avg_Closenness"], program)
+        plt_time_window.time_window_metric_plot(average_cluster_coeff_values, time_interval, time_skip, filename, ["Average Clustering Coefficient", "Avg_ClusterCoeff"], program)
+
+
+    return metrics_list
 
 
 
-    return
 
+def time_window_features(mid_file):
+    metrics_list = time_window_metrics(mid_file, plot = False)
+    """ Creating features for a single song, looking at metrics overtime """
+    features = [] # Average Metric 1, Variation Metric 2, Average Metric 2,...
+    for metric in metrics_list:
+        try:
+            average = sum(metric)/len(metric)
+            variance = np.var(metric)
+            features.append(average)
+            features.append(variance)
+        except:
+            print("There're no values to calculate the average and variance")
 
-
-
-
-
+    return features
 
 
 
@@ -137,11 +169,11 @@ if __name__ == "__main__":
         print("Running sample file")
         file_path = config.ROOT + "\\MIDI_files\\LegendsNeverDie.mid"
         mid_file = mido.MidiFile(file_path, clip = True)
-        degree_window(mid_file)
+        time_window_metrics(mid_file)
     elif sys.argv[-1][-3:] == "mid": # Run for one specific .mid file
         file_path = sys.argv[-1]
         mid_file = mido.MidiFile(file_path, clip = True)
-        degree_window(mid_file)
+        time_window_metrics(mid_file)
 
     else: # Run for every .mid file in the folder
         files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
@@ -159,4 +191,4 @@ if __name__ == "__main__":
 
         for mid in list_files:
             mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-            degree_window(mid_file)
+            time_window_metrics(mid_file)

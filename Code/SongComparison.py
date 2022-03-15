@@ -9,6 +9,7 @@ from tabulate import tabulate
 
 import config
 import Plot.Plotting_Song_Comparison as plt_comparison
+from Plotting import check_dir
 import MIDI_general
 import Music_Mapping
 
@@ -67,7 +68,7 @@ if __name__ == "__main__":
     ########## Plots ##########
     # Creating directory for group if it doesn't already exist
     path = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + group_name
-    plt_comparison.check_dir(path)
+    check_dir(path)
 
     # Degree Distribution
     plt_comparison.degree_distribution_comparison_plot(networks, plot_folder = group_name)

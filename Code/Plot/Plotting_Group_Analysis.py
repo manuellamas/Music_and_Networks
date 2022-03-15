@@ -80,11 +80,12 @@ def clustering_table(networks, cluster_predictions, model, group_name = "", labe
     fig.tight_layout()
 
     plt.savefig(config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clustering.png")
+    plt.close()
     print("Plot at", model + "_clustering" + ".png")
 
 
 
-def feature_table(network_features, feature_names, file_names, group_name = ""):
+def feature_table(network_features, feature_names, file_names, group_name = "", time = False):
     """ Plots a table with all features being analyzed """
 
 
@@ -104,7 +105,7 @@ def feature_table(network_features, feature_names, file_names, group_name = ""):
             network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
 
 
-        
+
 
 
 
@@ -116,7 +117,6 @@ def feature_table(network_features, feature_names, file_names, group_name = ""):
     columns = feature_names
 
 
-    print(list(range(len(network_feature_list)+1)))
 
     # rows = [] #, rowLabels = rows
     tab = ax.table(cellText = network_feature_list, colLabels = columns, loc = "center", cellLoc = "center")
@@ -134,9 +134,16 @@ def feature_table(network_features, feature_names, file_names, group_name = ""):
 
 
 
+
     fig.tight_layout()
 
-    plt.savefig(config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name+ "_features.png", bbox_inches='tight')
-    print("Plot at", "features" + ".png")
+    features_type = "_features"
+    if time:
+        features_type += "_time"
+
+    export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + features_type + ".png"
+    plt.savefig(export_directory, bbox_inches='tight')
+    plt.close()
+    print("Plot at", export_directory)
 
     return
