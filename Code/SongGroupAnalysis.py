@@ -80,6 +80,8 @@ if __name__ == "__main__":
         print("Too many arguments")
         exit()
 
+    import time
+    start_time = time.time()
 
     # Obtain a list of the file names of all MIDI files in the directory (SongArena). Only those in the "root" and not in a subdirectory
     list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
@@ -126,10 +128,22 @@ if __name__ == "__main__":
     plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
     plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, time = True)
 
+    # Clustering
+    # for i in range(len(networks_feature_list)):
+    #     networks_feature_list[i] += networks_feature_time_list[i] # Adding these features for the clustering
+
     # k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)
     plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name)
 
+    kmean_predictions = kmeans_analysis(networks_feature_time_list)
+    plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name, time = True)
+
     # DBSCAN
     dbscan_predictions = dbscan_analysis(networks_feature_list)
     plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name)
+    
+    dbscan_predictions = dbscan_analysis(networks_feature_time_list)
+    plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name, time = True)
+
+    print("\n\n----- %s seconds -----" % (time.time() - start_time))

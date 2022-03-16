@@ -3,7 +3,7 @@ import numpy as np
 
 import config
 
-def clustering_table(networks, cluster_predictions, model, group_name = "", labels = None):
+def clustering_table(networks, cluster_predictions, model, group_name = "", labels = None, time = False):
     """ Plots a table with the songs/networks and its cluster resulting of the specified model """
 
     cluster_list = []
@@ -79,9 +79,14 @@ def clustering_table(networks, cluster_predictions, model, group_name = "", labe
 
     fig.tight_layout()
 
-    plt.savefig(config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clustering.png")
+    if time:
+        group_name += "_time"
+    export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clustering.png"
+
+
+    plt.savefig(export_directory)
     plt.close()
-    print("Plot at", model + "_clustering" + ".png")
+    print("Plot at", export_directory)
 
 
 

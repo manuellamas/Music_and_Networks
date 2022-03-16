@@ -33,8 +33,8 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
 
 
     # Fixed Parameters - all time parameters/variables are measured in ticks
-    time_interval = 5000 # The amount of ticks per window
-    time_skip = 1000 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
+    time_interval = 15000 # The amount of ticks per window
+    time_skip = 2000 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
 
     time_window_start = 0 # Where the window starts (variable)
     current_edges = [] # List of edges of the current 'windowed' graph
