@@ -83,8 +83,9 @@ def degree_distribution_scatter_plot(G, filename):
 
     plt.scatter(labels, relative_counts, s=10)
     plot_filename = filename + "_Degree_Distribution" + ".png"
-    plt.savefig(config.ROOT + "\\Plots\\Single\\" + plot_filename)
-    print("Plot at", plot_filename)
+    export_directory = config.ROOT + "\\Plots\\Single\\" + plot_filename
+    plt.savefig(export_directory)
+    print("Plot at", export_directory)
 
 
 
@@ -134,8 +135,9 @@ def edges_rank(network, filename, top = 20):
     fig.tight_layout()
 
     plot_filename = filename + "_Edge_Rank" + ".png"
-    plt.savefig(config.ROOT + "\\Plots\\Single\\" + plot_filename)
-    print("Plot at", plot_filename)
+    export_directory = config.ROOT + "\\Plots\\Single\\" + plot_filename
+    plt.savefig(export_directory)
+    print("Plot at", export_directory)
 
 ########## Graph Analysis End ##########
 

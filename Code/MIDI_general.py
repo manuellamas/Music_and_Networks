@@ -6,6 +6,10 @@ import mido
 import os.path
 import sys
 
+# Code associated to short and long rests nodes
+SHORTREST_NOTE = 128
+LONGREST_NOTE = 129
+
 
 def first_meta_track(mid_file):
     """ Returns the first track that only contains MetaMessages (if it exists) """
@@ -144,9 +148,13 @@ def midi_program_num_to_name(program, instrument = False):
 # MIDI Note
 def midi_num_to_note(note_code):
     # Checking if the number is not on the table
-    if note_code < 0 or note_code > 127:
+    if note_code < 0 or note_code > 129: # 2 Codes added for short and long rest
         print("The note code doesn't represent any note (in any octave)")
         return
+    elif note_code == 128:
+        return "Short Rest"
+    elif note_code == 129:
+        return "Long Rest"
 
     octave = [str(i) for i in range(-1,10)]
     note =  ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
