@@ -18,11 +18,15 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
 
     program = None # Getting the track's program from the first program_chage (if there is any)
 
-    output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
-    if len(output) == 2:
-        notes, program = output
-    else:
-        notes = output
+    # # Working with single track
+    # output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
+    # if len(output) == 2:
+    #     notes, program = output
+    # else:
+    #     notes = output
+
+    # Working with all tracks by "merging" the notes into a single (ordered) list
+    notes = Music_Mapping.merge_tracks(mid_file)
 
     all_pairs, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
     remaining_edges = [] # This list will serve to hold the edges that weren't added to a graph until this point
@@ -33,8 +37,8 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
 
 
     # Fixed Parameters - all time parameters/variables are measured in ticks
-    time_interval = 15000 # The amount of ticks per window
-    time_skip = 2000 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
+    time_interval = 20000 # The amount of ticks per window
+    time_skip = 1500 # The size of the shift from one window to the next (so there'll be intersection between windows if it's lower than time_interval)
 
     time_window_start = 0 # Where the window starts (variable)
     current_edges = [] # List of edges of the current 'windowed' graph

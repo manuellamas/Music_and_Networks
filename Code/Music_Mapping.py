@@ -147,18 +147,41 @@ def merge_tracks(mid_file):
     track_notes = [] # Notes of the track currently being analyzed
 
     # Add the first track's notes directly in merge_all_notes
-    merge_all_notes = get_notes(mid_file, track_index = 0)
+    first_track = 0 # Index of first track with notes (i.e. not a "Meta" track)
+    all_notes = get_notes(mid_file, track_index = first_track)
+    while len(all_notes) == 0 and first_track < len(mid_file.tracks) - 1:
+        first_track += 1
+        all_notes = get_notes(mid_file, track_index = first_track)
 
-    for track_index in range(1, len(mid_file.tracks)):
+    for track_index in range(1 + first_track, len(mid_file.tracks)): # Adding all tracks of a song one by one
         track_notes = get_notes(mid_file, track_index = track_index)
 
-        new_track_pointer = 0 # Pointer to the next note to analyze in the new track
-        all_notes_pointer = 0 # Pointer to the next note to analyze in the all_notes list
+        new_track_pointer = 0 # Pointer to the next note to analyze in the new track - tracks_notes
+        all_notes_pointer = 0 # Pointer to the next note to analyze in all_notes
 
         # Analyze both track_notes and all_notes with a pointer in each (for the starting time of a node)
         # and add note instances to all notes by moving along both track_notes and all_notes simultaneously
         # Add the notes (smaller starting time first) on all_notes
-        
+
+        print(len(all_notes), len(track_notes))
+
+        while new_track_pointer < len(track_notes) and all_notes_pointer < len(all_notes):
+            if track_notes[new_track_pointer][1] < all_notes[all_notes_pointer][1]:
+                merge_all_notes.append(track_notes[new_track_pointer])
+                new_track_pointer += 1
+
+            else: # if all_notes note occurs earlier OR at the same time
+                merge_all_notes.append(all_notes[all_notes_pointer])
+                all_notes_pointer += 1
+
+
+        while new_track_pointer < len(track_notes): # Add track_notes notes if we haven't yet gone through the whole list
+            merge_all_notes.append(track_notes[new_track_pointer])
+            new_track_pointer += 1
+
+        while all_notes_pointer < len(all_notes): # Add all_notes notes if we haven't yet gone through the whole list
+            merge_all_notes.append(all_notes[all_notes_pointer])
+            all_notes_pointer += 1
 
 
         # Update the list
@@ -181,8 +204,13 @@ def merge_tracks(mid_file):
 def graph_note_pairs_weighted(mid_file, eps = -1):
     """ Creates a (Simple Directed) Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
     G = nx.DiGraph() # Creating a directed graph
-    notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
-    # [note, start_time, end_time]
+
+    # # Working with single track
+    # notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
+    # # [note, start_time, end_time]
+
+    # Working with all tracks by "merging" the notes into a single (ordered) list
+    notes = merge_tracks(mid_file)
 
     note_pairs = get_note_pairs(notes, eps)
 
