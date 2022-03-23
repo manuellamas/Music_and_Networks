@@ -53,6 +53,8 @@ def get_note_pairs(notes, eps = -1, window = False):
         edge_time = [] # Will hold every pair (that dists less than eps if it is specified) in a list where each entry is
         # [note_1, note_2, note_1_start, note_2_end]
 
+    notes_duration = []
+
     # ----- Working with Rests (Creating them as a node) -----
     interval_between_notes = [] # Time from a note ending to the next one beginning. Each entry i will correspond to the "space" between notes i and i+1
     minimum_duration = notes[0][2] - notes[0][1]
@@ -64,6 +66,8 @@ def get_note_pairs(notes, eps = -1, window = False):
         duration = notes[i][2] - notes[i][1] # Duration of the note
         minimum_duration = min(minimum_duration, duration)
         maximum_duration = max(maximum_duration, duration)
+
+        notes_duration.append(duration) # Creating a list with all notes durations to work with as a song's feature
         # print(duration, minimum_duration, maximum_duration)
 
 
@@ -133,9 +137,9 @@ def get_note_pairs(notes, eps = -1, window = False):
             edge_time.append([notes[i][0], notes[i+1][0], notes[i][1], notes[i+1][2]])
 
     if window:
-        return note_pairs + note_pairs_rest, edge_time
+        return note_pairs + note_pairs_rest, notes_duration, edge_time
     else:
-        return note_pairs + note_pairs_rest
+        return note_pairs + note_pairs_rest, notes_duration
 
 
 
@@ -212,12 +216,12 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     # Working with all tracks by "merging" the notes into a single (ordered) list
     notes = merge_tracks(mid_file)
 
-    note_pairs = get_note_pairs(notes, eps)
+    note_pairs, notes_duration = get_note_pairs(notes, eps)
 
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now
 
-    return G, notes
+    return G, notes, notes_duration
 
 
 

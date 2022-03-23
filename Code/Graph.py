@@ -102,7 +102,7 @@ if __name__ == "__main__":
     # --------------------
 
 
-    G, notes = Music_Mapping.graph_note_pairs_weighted(mid_file) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
+    G, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.degree_distribution_scatter_plot(G, filename)

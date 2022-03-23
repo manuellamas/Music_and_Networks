@@ -28,7 +28,7 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
     # Working with all tracks by "merging" the notes into a single (ordered) list
     notes = Music_Mapping.merge_tracks(mid_file)
 
-    all_pairs, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
+    all_pairs, notes_duration, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
     remaining_edges = [] # This list will serve to hold the edges that weren't added to a graph until this point
     num_pairs = len(all_pairs)
 

@@ -95,7 +95,7 @@ if __name__ == "__main__":
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        network, notes = Music_Mapping.graph_note_pairs_weighted(mid_file)
+        network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file)
         filename = MIDI_general.midi_filename(mid_file)
 
         networks.append([network, mid_file, filename, notes])
