@@ -167,8 +167,6 @@ def merge_tracks(mid_file):
         # and add note instances to all notes by moving along both track_notes and all_notes simultaneously
         # Add the notes (smaller starting time first) on all_notes
 
-        print(len(all_notes), len(track_notes))
-
         while new_track_pointer < len(track_notes) and all_notes_pointer < len(all_notes):
             if track_notes[new_track_pointer][1] < all_notes[all_notes_pointer][1]:
                 merge_all_notes.append(track_notes[new_track_pointer])

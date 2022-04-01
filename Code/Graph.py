@@ -109,4 +109,4 @@ if __name__ == "__main__":
     Plotting.edges_rank(G, filename)
     nx.write_graphml(G,"graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
 
-
+    # Graph_metrics.modularity(G)

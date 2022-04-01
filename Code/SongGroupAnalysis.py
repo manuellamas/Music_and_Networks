@@ -19,7 +19,7 @@ import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
 
-def music_data(G, num_notes_normalized):
+def music_data(G, num_notes_normalized, time_length):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
@@ -28,6 +28,24 @@ def music_data(G, num_notes_normalized):
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
     feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
     feature_list.append(Graph_metrics.average_clustering(G))
+    feature_list.append(nx.average_shortest_path_length(G))
+    feature_list.append(nx.density(G))
+    # feature_list.append(Graph_metrics.modularity(G))
+
+    # For new features -> Don't forget to add the features names to feature_names and feature_time_names
+
+    # Notes and Edges relative to duration
+    if time_length != 0:
+        if G.number_of_nodes() != 0:
+            feature_list.append(G.number_of_nodes() / time_length)
+        else:
+            feature_list.append(0)
+
+        if G.number_of_edges():
+            feature_list.append(G.number_of_edges() / time_length)
+        else:
+            feature_list.append(0)
+
 
     if num_notes_normalized != 0:
         feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
@@ -62,6 +80,23 @@ def dbscan_analysis(network_features):
     db_clusters = db.labels_
 
     return db_clusters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -116,13 +151,17 @@ if __name__ == "__main__":
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
         if time_length == 0:
-            networks_feature_list.append(music_data(network, 0))
+            networks_feature_list.append(music_data(network, 0, time_length))
         else:
-            networks_feature_list.append(music_data(network, len(notes)/time_length))
+            networks_feature_list.append(music_data(network, len(notes)/time_length, time_length))
+                
+        # Features from Time Window
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
-    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Note 'density'"] # Note density refers to # Nodes / Time Length
-    feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)"] # Time Window Features
+    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
+
 
     # Feature Table
     plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)

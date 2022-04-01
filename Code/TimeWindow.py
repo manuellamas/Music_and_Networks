@@ -49,6 +49,8 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
     average_betweenness_values = []
     average_closeness_values = []
     average_cluster_coeff_values = []
+    # Not considering average_shortest_path_length since given how we take the "snapshots" there's no assurance that the graph is weakly connected
+    average_density = []
 
     while len(available_edges) != 0:
         edges_to_remove = []
@@ -115,6 +117,7 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
             average_betweenness_values.append(Graph_metrics.average_betweenness(G, True))
             average_closeness_values.append(Graph_metrics.average_closeness(G, True))
             average_cluster_coeff_values.append(Graph_metrics.average_clustering(G))
+            average_density.append(nx.density(G))
         else:
             average_indegree_values.append(0)
             average_betweenness_values.append(0)
@@ -137,7 +140,9 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
         plt_time_window.time_window_metric_plot(average_betweenness_values, time_interval, time_skip, filename, ["Average Betweenness Centrality", "Avg_Betweenness"], program)
         plt_time_window.time_window_metric_plot(average_closeness_values, time_interval, time_skip, filename, ["Average Closeness Centrality", "Avg_Closenness"], program)
         plt_time_window.time_window_metric_plot(average_cluster_coeff_values, time_interval, time_skip, filename, ["Average Clustering Coefficient", "Avg_ClusterCoeff"], program)
+        plt_time_window.time_window_metric_plot(average_density, time_interval, time_skip, filename, ["Density", "Density"], program) # Should I consider the density?
 
+        # When adding new features -> Don't forget to add to feature_time_names in SongGroupAnalysis.py
 
     return metrics_list
 

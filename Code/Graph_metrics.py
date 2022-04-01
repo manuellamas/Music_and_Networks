@@ -1,4 +1,5 @@
 import networkx as nx
+import networkx.algorithms.community as nx_comm
 
 # def count_self_loops(G):
 #     """ Counts the number of self loops in a graph """
@@ -120,3 +121,28 @@ def average_clustering(G):
     if total/len(clustering_list) >= 1:
         print("Avg Clust Higher than 1")
     return total/len(clustering_list)
+
+
+# Modularity
+
+#################################################
+#!!!!!!!!!!!!!!!!! NOT WORKING !!!!!!!!!!!!!!!!!#
+# Neither louvain_communities nor girvan_newman #
+#################################################
+
+
+def modularity(G):
+    """ Returns modularity value from communities (Louvain Algorithm) """
+
+    # Obtain Communities
+    print("If the program stopped it's stuck at the louvain_communities algorithm")
+    # communities = nx_comm.louvain_communities(G, seed = 123)
+    communities = nx_comm.girvan_newman(G)
+    print(communities)
+
+    # Modularity value based on those communities
+    modularity = nx_comm.modularity(G, communities)
+    print(modularity)
+
+    return modularity
+# Then return this as a feature in SongGroupAnalysis
