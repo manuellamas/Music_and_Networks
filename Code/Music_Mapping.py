@@ -4,7 +4,7 @@ from MIDI_general import midi_filename, melody_track, SHORTREST_NOTE, LONGREST_N
 
 
 
-# -------------------- Note Pairs Occurrences --------------------
+# -------------------- Obtaining list of notes --------------------
 def get_notes(mid_file , get_track_program = False, track_index = None):
     """ Obtaining a list of the notes from a specific track from a MIDI file (MIDI Object)
     which if not specified will just be the 'melody track' """
@@ -47,7 +47,64 @@ def get_notes(mid_file , get_track_program = False, track_index = None):
 
 
 
+def merge_tracks(mid_file):
+    """ Merge all tracks notes from a MIDI file into a single (ordered list) """
+
+    all_notes = [] # Contains all notes from the previously analyzed tracks
+    merge_all_notes = [] # List were notes from both all_notes and track_notes are being merged. Is created on each iteration
+    track_notes = [] # Notes of the track currently being analyzed
+
+    # Add the first track's notes directly in merge_all_notes
+    first_track = 0 # Index of first track with notes (i.e. not a "Meta" track)
+    all_notes = get_notes(mid_file, track_index = first_track)
+    while len(all_notes) == 0 and first_track < len(mid_file.tracks) - 1:
+        first_track += 1
+        all_notes = get_notes(mid_file, track_index = first_track)
+
+    for track_index in range(1 + first_track, len(mid_file.tracks)): # Adding all tracks of a song one by one
+        track_notes = get_notes(mid_file, track_index = track_index)
+
+        new_track_pointer = 0 # Pointer to the next note to analyze in the new track - tracks_notes
+        all_notes_pointer = 0 # Pointer to the next note to analyze in all_notes
+
+        # Analyze both track_notes and all_notes with a pointer in each (for the starting time of a node)
+        # and add note instances to all notes by moving along both track_notes and all_notes simultaneously
+        # Add the notes (smaller starting time first) on all_notes
+
+        while new_track_pointer < len(track_notes) and all_notes_pointer < len(all_notes):
+            if track_notes[new_track_pointer][1] < all_notes[all_notes_pointer][1]:
+                merge_all_notes.append(track_notes[new_track_pointer])
+                new_track_pointer += 1
+
+            else: # if all_notes note occurs earlier OR at the same time
+                merge_all_notes.append(all_notes[all_notes_pointer])
+                all_notes_pointer += 1
+
+
+        while new_track_pointer < len(track_notes): # Add track_notes notes if we haven't yet gone through the whole list
+            merge_all_notes.append(track_notes[new_track_pointer])
+            new_track_pointer += 1
+
+        while all_notes_pointer < len(all_notes): # Add all_notes notes if we haven't yet gone through the whole list
+            merge_all_notes.append(all_notes[all_notes_pointer])
+            all_notes_pointer += 1
+
+
+        # Update the list
+        all_notes = merge_all_notes
+        merge_all_notes = [] # Reset the list for the next iteration
+
+    return all_notes
+# -------------------- Obtaining list of notes End --------------------
+
+
+
+
+
+
+# ------------ Obtaining pairs of consecutive notes from the list of notes ------------
 def get_note_pairs(notes, eps = -1, window = False):
+    """ Getting a list of note pairs (with occurrences number and times) """
     if window:
         # List of edges by time
         edge_time = [] # Will hold every pair (that dists less than eps if it is specified) in a list where each entry is
@@ -68,17 +125,9 @@ def get_note_pairs(notes, eps = -1, window = False):
         maximum_duration = max(maximum_duration, duration)
 
         notes_duration.append(duration) # Creating a list with all notes durations to work with as a song's feature
-        # print(duration, minimum_duration, maximum_duration)
 
 
-    # print("\n\n\n\n\n\n\n----------------------\nInterval between notes\n")
-    # print(interval_between_notes)
-    # interval_sorted = sorted(interval_between_notes)
-    # for i in range(len(interval_sorted)):
-    #     print(interval_sorted[i])
-    # print("\n----------------------Interval between notes\n\n\n\n\n\n\n")
-
-    # ----- Working with Rests end -----
+    # ----- Working with Rests End -----
 
     note_pairs_rest = [] # Similar to note_pairs but making only the pairs between a rest (short or long) and a note. And of the form [note_1, note_2, #occurrences]
     note_pairs = [] # Each entry will be of the form [note_1, note_2, #occurrences, times] where times will be a list of the form [ [start_a, end_a], [start_b, end_b], ...] ] ('a' being the first occurrence, 'b' the second and so on)
@@ -141,60 +190,7 @@ def get_note_pairs(notes, eps = -1, window = False):
     else:
         return note_pairs + note_pairs_rest, notes_duration
 
-
-
-def merge_tracks(mid_file):
-    """ Merge all tracks notes into a single (ordered list) """
-
-    all_notes = [] # Contains all notes from the previously analyzed tracks
-    merge_all_notes = [] # List were notes from both all_notes and track_notes are being merged. Is created on each iteration
-    track_notes = [] # Notes of the track currently being analyzed
-
-    # Add the first track's notes directly in merge_all_notes
-    first_track = 0 # Index of first track with notes (i.e. not a "Meta" track)
-    all_notes = get_notes(mid_file, track_index = first_track)
-    while len(all_notes) == 0 and first_track < len(mid_file.tracks) - 1:
-        first_track += 1
-        all_notes = get_notes(mid_file, track_index = first_track)
-
-    for track_index in range(1 + first_track, len(mid_file.tracks)): # Adding all tracks of a song one by one
-        track_notes = get_notes(mid_file, track_index = track_index)
-
-        new_track_pointer = 0 # Pointer to the next note to analyze in the new track - tracks_notes
-        all_notes_pointer = 0 # Pointer to the next note to analyze in all_notes
-
-        # Analyze both track_notes and all_notes with a pointer in each (for the starting time of a node)
-        # and add note instances to all notes by moving along both track_notes and all_notes simultaneously
-        # Add the notes (smaller starting time first) on all_notes
-
-        while new_track_pointer < len(track_notes) and all_notes_pointer < len(all_notes):
-            if track_notes[new_track_pointer][1] < all_notes[all_notes_pointer][1]:
-                merge_all_notes.append(track_notes[new_track_pointer])
-                new_track_pointer += 1
-
-            else: # if all_notes note occurs earlier OR at the same time
-                merge_all_notes.append(all_notes[all_notes_pointer])
-                all_notes_pointer += 1
-
-
-        while new_track_pointer < len(track_notes): # Add track_notes notes if we haven't yet gone through the whole list
-            merge_all_notes.append(track_notes[new_track_pointer])
-            new_track_pointer += 1
-
-        while all_notes_pointer < len(all_notes): # Add all_notes notes if we haven't yet gone through the whole list
-            merge_all_notes.append(all_notes[all_notes_pointer])
-            all_notes_pointer += 1
-
-
-        # Update the list
-        all_notes = merge_all_notes
-        merge_all_notes = [] # Reset the list for the next iteration
-
-    return all_notes
-
-
-# ------------------------------------------------------------
-
+# ------------ Obtaining pairs of consecutive notes from the list of notes End ------------
 
 
 
