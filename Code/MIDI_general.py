@@ -147,6 +147,8 @@ def midi_program_num_to_name(program, instrument = False):
 
 # MIDI Note
 def midi_num_to_note(note_code):
+    """ Returns note associated with the inputted MIDI number """
+
     # Checking if the number is not on the table
     if note_code < 0 or note_code > 129: # 2 Codes added for short and long rest
         print("The note code doesn't represent any note (in any octave)")
@@ -160,6 +162,16 @@ def midi_num_to_note(note_code):
     note =  ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
     return octave[note_code // 12] + note[note_code % 12]
+
+
+
+def note_mapping_dict(G):
+    """ Returns a dictionary for relabeling nodes according to the notes """
+    dict = {}
+    for node in G:
+        dict[node] = midi_num_to_note(node)
+
+    return dict
 
 
 

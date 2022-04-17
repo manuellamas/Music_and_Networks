@@ -46,7 +46,7 @@ def get_notes(mid_file , get_track_program = False, track_index = None):
     return notes # A list with entries as [note, start_time, end_time]
 
 
-
+""" NOT IN USE """
 def merge_tracks(mid_file):
     """ Merge all tracks notes from a MIDI file into a single (ordered list) """
 
@@ -204,11 +204,11 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
     G = nx.DiGraph() # Creating a directed graph
 
     # # Working with single track
-    # notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
-    # # [note, start_time, end_time]
+    notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
+    # [note, start_time, end_time]
 
     # Working with all tracks by "merging" the notes into a single (ordered) list
-    notes = merge_tracks(mid_file)
+    # notes = merge_tracks(mid_file)
 
     note_pairs, notes_duration = get_note_pairs(notes, eps)
 

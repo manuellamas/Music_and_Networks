@@ -18,15 +18,15 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
 
     program = None # Getting the track's program from the first program_chage (if there is any)
 
-    # # Working with single track
-    # output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
-    # if len(output) == 2:
-    #     notes, program = output
-    # else:
-    #     notes = output
+    # Working with single track
+    output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
+    if len(output) == 2:
+        notes, program = output
+    else:
+        notes = output
 
     # Working with all tracks by "merging" the notes into a single (ordered) list
-    notes = Music_Mapping.merge_tracks(mid_file)
+    # notes = Music_Mapping.merge_tracks(mid_file)
 
     all_pairs, notes_duration, available_edges = Music_Mapping.get_note_pairs(notes, window = True) # all_edges = [note_1, note_2, note_1_start, note_2_end] ordered by note_1_start
     remaining_edges = [] # This list will serve to hold the edges that weren't added to a graph until this point
@@ -170,9 +170,6 @@ def time_window_features(mid_file):
 
 
 if __name__ == "__main__":
-    program_directory = os.path.dirname(__file__) # Where the Python script being ran is
-    config.ROOT = os.path.split(program_directory)[0]
-
     # Input
     if len(sys.argv) == 1:
         print("Running sample file")

@@ -133,6 +133,9 @@ if __name__ == "__main__":
         network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file)
         filename = MIDI_general.midi_filename(mid_file)
 
+        nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+        network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
+
         networks.append([network, mid_file, filename, notes])
 
 

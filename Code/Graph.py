@@ -1,7 +1,9 @@
 import networkx as nx
 import mido
 import sys
+import config
 import os.path
+
 import Music_Mapping
 import Plotting
 import Graph_metrics
@@ -40,8 +42,7 @@ def graph_display_info(G):
 # ----- Main ----- #
 if __name__ == "__main__":
     # Python File (Project) Location
-    program_directory = os.path.dirname(__file__) # Where the Python script being ran is
-    parent_directory = os.path.split(program_directory)[0]
+    parent_directory = config.ROOT
 
 
     # Input
@@ -107,6 +108,8 @@ if __name__ == "__main__":
     graph_display_info(G) # Display basic info of the obtained graph
     Plotting.degree_distribution_scatter_plot(G, filename)
     Plotting.edges_rank(G, filename)
-    nx.write_graphml(G,"graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+
+    G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
+    nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
 
     # Graph_metrics.modularity(G)

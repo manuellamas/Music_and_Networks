@@ -18,8 +18,9 @@ def merge_artist(artist_directory):
     merged_list = []
 
     for midi_file in list_midi_files:
-        all_notes = Music_Mapping.merge_tracks(midi_file) # Using all tracks of the song
-        merged_list += all_notes
+        # notes = Music_Mapping.merge_tracks(midi_file) # Using all tracks of the song
+        notes = Music_Mapping.get_notes(midi_file)
+        merged_list += notes
 
         # Adding a Long Rest between songs
         merged_list += LONGREST_NOTE
