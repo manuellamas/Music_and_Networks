@@ -56,7 +56,7 @@ def music_data(G, num_notes_normalized, time_length):
 
 def kmeans_analysis(networks_features):
     """ Apply kmeans to the vector of features obtained from the network of the song """
-    num_clusters = np.arange(2,5)
+    num_clusters = np.arange(2, min(5, len(networks_features)))
     results = {}
     for size in num_clusters:
         kmeans = KMeans(n_clusters = size).fit(networks_features)
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Obtain a list of the file names of all MIDI files in the directory (SongArena). Only those in the "root" and not in a subdirectory
-    list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:]) == "mid"]
+    list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
 
     if len(list_files) == 0:
         print("The folder is empty")

@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # Getting midi files for each artist/band
     list_files = []
     for i in range(len(list_folders)):
-        list_files.append([f for f in listdir(dirs[i]) if (os.path.isfile(os.path.join(dirs[i], f)) and f[-3:]) == "mid"])
+        list_files.append([f for f in listdir(dirs[i]) if (os.path.isfile(os.path.join(dirs[i], f)) and f[-3:].lower() == "mid")])
 
         if len(list_files[i]) == 0:
             print("The folder '" + list_folders[i] + "' is empty")

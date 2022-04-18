@@ -5,7 +5,6 @@ import config
 import matplotlib.pyplot as plt
 
 def simple_time_series_plot(series, filename):
-    # Scatter plot
     fig1, ax1 = plt.subplots()
 
     x = []
