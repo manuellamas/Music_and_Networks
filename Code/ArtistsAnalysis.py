@@ -79,9 +79,9 @@ if __name__ == "__main__":
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
         if time_length == 0:
-            networks_feature_list.append(song_analysis.music_data(network, 0))
+            networks_feature_list.append(song_analysis.music_data(network, 0, 0))
         else:
-            networks_feature_list.append(song_analysis.music_data(network, len(notes)/time_length))
+            networks_feature_list.append(song_analysis.music_data(network, len(notes)/time_length, time_length))
 
 
     # k-means

@@ -34,7 +34,7 @@ def music_data(G, num_notes_normalized, time_length):
 
     # For new features -> Don't forget to add the features names to feature_names and feature_time_names
 
-    # Notes and Edges relative to duration
+    # Notes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
     if time_length != 0:
         if G.number_of_nodes() != 0:
             feature_list.append(G.number_of_nodes() / time_length)
@@ -45,10 +45,14 @@ def music_data(G, num_notes_normalized, time_length):
             feature_list.append(G.number_of_edges() / time_length)
         else:
             feature_list.append(0)
-
+    else:
+        feature_list.append(0)
+        feature_list.append(0)
 
     if num_notes_normalized != 0:
         feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
+    else:
+        feature_list.append(0)
 
     return feature_list
 
