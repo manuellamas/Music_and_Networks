@@ -110,6 +110,6 @@ if __name__ == "__main__":
     Plotting.edges_rank(G, filename)
 
     G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
-    nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+    nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + ".graphml") # Exporting graph to a graphml file
 
-    # Graph_metrics.modularity(G)
+    Graph_metrics.modularity_louvain(G)

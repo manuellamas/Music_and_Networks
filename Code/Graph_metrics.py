@@ -125,23 +125,20 @@ def average_clustering(G):
 
 # Modularity
 
-#################################################
-#!!!!!!!!!!!!!!!!! NOT WORKING !!!!!!!!!!!!!!!!!#
-# Neither louvain_communities nor girvan_newman #
-#################################################
 
-
-def modularity(G):
+def modularity_louvain(G):
     """ Returns modularity value from communities (Louvain Algorithm) """
+
+    G_undirected = nx.to_undirected(G) # Using an undirected version of the graph
 
     # Obtain Communities
     print("If the program stopped it's stuck at the louvain_communities algorithm")
-    # communities = nx_comm.louvain_communities(G, seed = 123)
-    communities = nx_comm.girvan_newman(G)
+    communities = nx_comm.louvain_communities(G_undirected, seed = 123)
+    # communities = nx_comm.girvan_newman(G)
     print(communities)
 
     # Modularity value based on those communities
-    modularity = nx_comm.modularity(G, communities)
+    modularity = nx_comm.modularity(G_undirected, communities)
     print(modularity)
 
     return modularity
