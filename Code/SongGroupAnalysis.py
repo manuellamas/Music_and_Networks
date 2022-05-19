@@ -31,9 +31,15 @@ def music_data(G, num_notes_normalized, time_length):
     feature_list.append(Graph_metrics.average_clustering(G))
     feature_list.append(nx.average_shortest_path_length(G))
     feature_list.append(nx.density(G))
-    feature_list.append(Graph_metrics.modularity_louvain(G))
 
+    modularity, num_communities = Graph_metrics.modularity_louvain(G)
+    feature_list.append(modularity)
+    feature_list.append(num_communities)
+
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!
     # For new features -> Don't forget to add the features names to feature_names and feature_time_names
+    # !!!!!!!!!!!!!!!!!!!!!!!!!
 
     # Notes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
     if time_length != 0:
@@ -169,7 +175,7 @@ if __name__ == "__main__":
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
     # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
-    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
