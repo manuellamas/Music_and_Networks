@@ -18,6 +18,7 @@ import MIDI_general
 import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
+import MIDITimeSeries
 
 def music_data(G, num_notes_normalized, time_length):
     """ From a network obtains a list of features to be compared to other songs """
@@ -30,7 +31,7 @@ def music_data(G, num_notes_normalized, time_length):
     feature_list.append(Graph_metrics.average_clustering(G))
     feature_list.append(nx.average_shortest_path_length(G))
     feature_list.append(nx.density(G))
-    # feature_list.append(Graph_metrics.modularity(G))
+    feature_list.append(Graph_metrics.modularity_louvain(G))
 
     # For new features -> Don't forget to add the features names to feature_names and feature_time_names
 
@@ -94,15 +95,6 @@ def dbscan_analysis(network_features):
 
 
 
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
 
     # Directory Target
@@ -122,12 +114,16 @@ if __name__ == "__main__":
     import time
     start_time = time.time()
 
-    # Obtain a list of the file names of all MIDI files in the directory (SongArena). Only those in the "root" and not in a subdirectory
+    # Obtain a list of the file names of all MIDI files in the directory (SongArena by Default). Only those in the "root" and not in a subdirectory
     list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
 
     if len(list_files) == 0:
         print("The folder is empty")
         exit()
+
+    print("Running for the following files:")
+    for mid in list_files:
+        print(mid)
 
     # Create the Graphs
     networks = []
@@ -143,13 +139,20 @@ if __name__ == "__main__":
         networks.append([network, mid_file, filename, notes])
 
 
+
+    ##################
+    # Usual Features #
+    ##################
+
     # Feature List
     networks_feature_list = [] # Each entry is relative to a song
+
     networks_feature_time_list = [] # Features from TimeWindow
     filenames = []
     for network, mid_file, filename, notes in networks:
-        filenames.append(filename)
+        filenames.append(filename) # Listing filenames for the feature table
 
+        # Obtaining Time Length (if possible)
         time_length = 0
         try:
             time_length = mid_file.length
@@ -165,18 +168,23 @@ if __name__ == "__main__":
         # Features from Time Window
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
-    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
-    # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
     # Feature Table
     plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
-    plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, time = True)
+    plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, type = "time")
 
-    # Clustering
-    # for i in range(len(networks_feature_list)):
-    #     networks_feature_list[i] += networks_feature_time_list[i] # Adding these features for the clustering
+
+
+    ##############
+    # Clustering #
+    ##############
+
+    for i in range(len(networks_feature_list)):
+        networks_feature_list[i] += networks_feature_time_list[i] # Adding these features for the clustering
 
     # k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)
@@ -188,8 +196,10 @@ if __name__ == "__main__":
     # DBSCAN
     dbscan_predictions = dbscan_analysis(networks_feature_list)
     plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name)
-    
+
     dbscan_predictions = dbscan_analysis(networks_feature_time_list)
     plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name, time = True)
+
+
 
     print("\n\n----- %s seconds -----" % (time.time() - start_time))

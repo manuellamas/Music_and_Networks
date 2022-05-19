@@ -9,7 +9,7 @@ def simple_time_series_plot(series, filename):
 
     x = []
     y = []
-    for value, time_stamp in series[:300]: # Showing just the first 300 values
+    for value, time_stamp in enumerate(series[:300]): # Showing just the first 300 values
         x.append(time_stamp)
         y.append(value)
 
@@ -21,4 +21,3 @@ def simple_time_series_plot(series, filename):
     plt.savefig(config.ROOT + export_location)
     plt.close()
     print("Plot at", export_location)
-    

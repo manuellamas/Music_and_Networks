@@ -1,3 +1,8 @@
+#### Requirements
+[NetF](https://github.com/vanessa-silva/NetF) on the Code\Music_NetF folder.
+
+
+
 ### Music mapping (to a graph)
 #### First version
 The graph is being created by looking only at each note's start. Meaning *I'm currently ignoring the velocity and duration*.

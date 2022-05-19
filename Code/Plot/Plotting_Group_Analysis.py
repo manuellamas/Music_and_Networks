@@ -90,7 +90,7 @@ def clustering_table(networks, cluster_predictions, model, group_name = "", labe
 
 
 
-def feature_table(network_features, feature_names, file_names, group_name = "", time = False):
+def feature_table(network_features, feature_names, file_names, group_name = "", type = None):
     """ Plots a table with all features being analyzed """
 
 
@@ -143,8 +143,11 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
     fig.tight_layout()
 
     features_type = "_features"
-    if time:
+    if type == "time":
         features_type += "_time"
+    elif type == "netf":
+        features_type = "_netf_features"
+
 
     export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + features_type + ".png"
     plt.savefig(export_directory, bbox_inches='tight')
