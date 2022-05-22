@@ -79,8 +79,6 @@ def clustering_table(networks, cluster_predictions, model, group_name = "", labe
 
     fig.tight_layout()
 
-    if time:
-        group_name += "_time"
     export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clustering.png"
 
 
@@ -144,7 +142,7 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
 
     features_type = "_features"
     if type == "time":
-        features_type += "_time"
+        features_type = "_time_features"
     elif type == "netf":
         features_type = "_netf_features"
 

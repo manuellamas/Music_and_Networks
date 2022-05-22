@@ -10,7 +10,7 @@ import subprocess
 
 
 from MIDI_general import midi_filename
-from Music_Mapping import get_notes
+from Music_Mapping import get_notes, get_notes_rest
 import Plot.Plotting_Time_Series as plt_time_series
 
 # Create a (ordered) list, using the melodic track, which will be the time series
@@ -55,7 +55,8 @@ def series_from_MIDI_group(mid_file_list):
 
     for mid_file in mid_file_list:
         notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
-        
+        # notes = get_notes_rest(mid_file) # Obtaining a list of notes (with rests), each entry of the list is of the form [note, time_start, time_end]
+
         series = []
         for note in notes:
             series.append(note[0])
@@ -68,8 +69,6 @@ def series_from_MIDI_group(mid_file_list):
         csv_writer = csv.writer(csvfile)
         for i in range(len(mid_file_list)): # Writing one time series per line
             csv_writer.writerow(all_series[i])
-
-    # Each series on a column
 
 
 

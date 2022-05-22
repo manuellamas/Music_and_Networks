@@ -7,7 +7,7 @@ from MIDI_general import midi_filename, melody_track, SHORTREST_NOTE, LONGREST_N
 # -------------------- Obtaining list of notes --------------------
 def get_notes(mid_file , get_track_program = False, track_index = None):
     """ Obtaining a list of the notes from a specific track from a MIDI file (MIDI Object)
-    which if not specified will just be the 'melody track' """
+    Returns a list with entries as [note, start_time, end_time] """
 
     if track_index is None:
         # Dealing with just one track for now, so we automatically pick the track with the most notes (if there's a tie, the first to occur gets picked)
@@ -44,6 +44,45 @@ def get_notes(mid_file , get_track_program = False, track_index = None):
             filename = midi_filename(mid_file) # Getting just the file name (without the path)
             print("The track of the song: " + filename + " has no Program")
     return notes # A list with entries as [note, start_time, end_time]
+
+
+
+def get_notes_rest(mid_file, track_index = None):
+    """ Get list of notes with rests 
+    Returns list with notes values only """
+
+    notes = get_notes(mid_file, track_index = track_index)
+
+    ## Getting the minimum and maximum note's duration to attribute to the Short Rest and Long Rest respectively
+    # Attributing as a start to both min and max values the first note's duration
+    min_duration = notes[0][2] - notes[0][1] # The duration of the smallest note's duration
+    max_duration = notes[0][2] - notes[0][1] # The duration of the longest note's duration
+
+    for note in notes:
+        duration = note[2] - note[1] # Note's duration
+        min_duration = min(min_duration, duration)
+        max_duration = max(max_duration, duration)
+
+
+
+    ## Going through the notes and adding rests
+    final_notes = []
+    for i in range(len(notes) - 1):
+        final_notes.append(notes[i][0])
+
+        duration = notes[i+1][1] - notes[i][2] # Obtaining the interval duration between consecutive notes
+        if duration > min_duration:
+            if duration > max_duration: # Long Rest
+                final_notes.append(LONGREST_NOTE)
+            else: # Short Rest
+                final_notes.append(SHORTREST_NOTE)
+
+    # Adding last note
+    final_notes.append(notes[-1][0])
+
+
+    return final_notes # List with notes values only (but including rests)
+
 
 
 """ NOT IN USE """

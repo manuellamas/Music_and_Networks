@@ -197,14 +197,14 @@ if __name__ == "__main__":
     plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name)
 
     kmean_predictions = kmeans_analysis(networks_feature_time_list)
-    plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name, time = True)
+    plt_analysis.clustering_table(networks, kmean_predictions, "time_k-means", group_name)
 
     # DBSCAN
     dbscan_predictions = dbscan_analysis(networks_feature_list)
     plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name)
 
     dbscan_predictions = dbscan_analysis(networks_feature_time_list)
-    plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name, time = True)
+    plt_analysis.clustering_table(networks, dbscan_predictions,"time_DBSCAN", group_name)
 
 
 
