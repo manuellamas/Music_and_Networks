@@ -8,8 +8,13 @@ setwd("Code/Music_NetF/NetF")
 # To run from Music_NetF
 # setwd("NetF")
 
-# Read from a CSV into a table
-musicTimeSeriesGroup_table <- read.csv(file = "../time_series_group.csv", header = FALSE, sep = ",")
+# Reading the first line which contains the number of quantiles to be used on the QVG
+quantile_number_csv <- read.csv(file = "../time_series_group.csv", header = FALSE, sep = ",", nrows = 1)
+quantile_number <- quantile_number_csv[1, 1]
+
+# Read from a CSV into a table (skipping the first line)
+musicTimeSeriesGroup_table <- read.csv(file = "../time_series_group.csv", header = FALSE, sep = ",", skip = 1)
+
 
 
 # Load igraph
@@ -41,7 +46,7 @@ for (i in seq(num_rows)) {
     ## Getting the graphs (input is a matrix)
     musicTimeSeries_NVG_graph <- generate_Graphs(musicTimeSeriesGroup_matrix, 1, length(musicTimeSeriesGroup_matrix), map_type = "NVG", weight_type = TRUE)
     musicTimeSeries_HVG_graph <- generate_Graphs(musicTimeSeriesGroup_matrix, 1, length(musicTimeSeriesGroup_matrix), map_type = "HVG", weight_type = TRUE)
-    musicTimeSeries_QG_graph <- generate_Graphs(musicTimeSeriesGroup_matrix, 1, length(musicTimeSeriesGroup_matrix), q = 4, map_type = "QG", weight_type = TRUE)
+    musicTimeSeries_QG_graph <- generate_Graphs(musicTimeSeriesGroup_matrix, 1, length(musicTimeSeriesGroup_matrix), q = quantile_number, map_type = "QG", weight_type = TRUE)
 
 
     ## Obtaining features

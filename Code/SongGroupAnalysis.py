@@ -12,13 +12,13 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
 import numpy as np
+import scipy as sp
 
 import Music_Mapping
 import MIDI_general
 import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
-import MIDITimeSeries
 
 def music_data(G, num_notes_normalized, time_length):
     """ From a network obtains a list of features to be compared to other songs """
@@ -41,7 +41,7 @@ def music_data(G, num_notes_normalized, time_length):
     # For new features -> Don't forget to add the features names to feature_names and feature_time_names
     # !!!!!!!!!!!!!!!!!!!!!!!!!
 
-    # Notes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
+    # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
     if time_length != 0:
         if G.number_of_nodes() != 0:
             feature_list.append(G.number_of_nodes() / time_length)
@@ -67,7 +67,7 @@ def music_data(G, num_notes_normalized, time_length):
 
 def kmeans_analysis(networks_features):
     """ Apply kmeans to the vector of features obtained from the network of the song """
-    num_clusters = np.arange(2, min(5, len(networks_features)))
+    num_clusters = np.arange(2, min(5, len(networks_features))) # The 5 here where did it come from?
     results = {}
     for size in num_clusters:
         kmeans = KMeans(n_clusters = size).fit(networks_features)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
         network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
 
-        networks.append([network, mid_file, filename, notes])
+        networks.append([network, mid_file, filename, notes, notes_duration])
 
 
 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     networks_feature_time_list = [] # Features from TimeWindow
     filenames = []
-    for network, mid_file, filename, notes in networks:
+    for network, mid_file, filename, notes, notes_duration in networks:
         filenames.append(filename) # Listing filenames for the feature table
 
         # Obtaining Time Length (if possible)

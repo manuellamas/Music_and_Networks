@@ -46,7 +46,7 @@ def series_from_MIDI (mid_file):
 
 
 
-def series_from_MIDI_group(mid_file_list):
+def series_from_MIDI_group(mid_file_list, num_quantiles):
     """ Create list (series) from MIDI - but gives as input several files at once """
     # Meaning it only needs to run Rscript once
 
@@ -67,6 +67,10 @@ def series_from_MIDI_group(mid_file_list):
     # Export All Time Series list "series" to an CSV - Each Series on a line/row
     with open("Code/Music_NetF/time_series_group.csv", "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile)
+
+        # Write the number of quantiles to be used
+        csv_writer.writerow(str(num_quantiles))
+
         for i in range(len(mid_file_list)): # Writing one time series per line
             csv_writer.writerow(all_series[i])
 
