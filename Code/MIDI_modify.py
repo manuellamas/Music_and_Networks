@@ -10,7 +10,7 @@ else:
 mid = mido.MidiFile(file_path, clip = True)
 
 def midi_program_switch(mid_file):
-    # New file
+    # New midi file
     mid_adapted = mido.MidiFile()
     track = mido.MidiTrack()
     mid_adapted.tracks.append(track)
@@ -34,7 +34,7 @@ def midi_program_switch(mid_file):
             end = i # One index after the Filename ends
     original_file = original_file[start:end]
 
-    new_file = "MIDI_files/created/" + original_file + "_adapted_program.mid"
+    new_file = "MIDI_files/modified/" + original_file + "_adapted_program.mid"
     mid_adapted.save(new_file)
 
 # ---------- Main ----------

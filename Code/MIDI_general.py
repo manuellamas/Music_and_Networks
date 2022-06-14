@@ -214,9 +214,12 @@ if __name__ == "__main__":
     program_directory = os.path.dirname(__file__) # Where the Python script being ran is
     parent_directory = os.path.split(program_directory)[0]
 
-    file_path = sys.argv[-1]
-    mid_file = mido.MidiFile(file_path, clip = True)
+    try:
+        file_path = sys.argv[-1]
+        mid_file = mido.MidiFile(file_path, clip = True)
 
-    filename = midi_filename(mid_file)
-    midi_file_overview(mid_file, filename)
-    midi_get_track(mid_file)
+        filename = midi_filename(mid_file)
+        midi_file_overview(mid_file, filename)
+        midi_get_track(mid_file)
+    except:
+        print("No path to a MIDI was provided")
