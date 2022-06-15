@@ -22,10 +22,6 @@ def midi_synthetic_1():
     meta2 = mido.MetaMessage('set_tempo', tempo = 361445, time = 0)
     meta_track.append(meta2)
 
-    # # print(meta2.dict())
-    # # print(meta2.type)
-    # print(meta2.is_meta)
-
 
 
 
@@ -38,25 +34,64 @@ def midi_synthetic_1():
     track.append(program_message)
 
 
-    # 
-    for i in range(1, 40+1):
-        message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
-        track.append(message_on)
-
-        message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
-        track.append(message_off)
 
 
+    ### Specifying what to generate
+    # title = midi_straight_up(track)
+    title = midi_repeat_up(track)
 
 
 
 
     # Saving the file
-    mid_path = "MIDI_files/synthetic/" + "straight_up" + ".mid"
+    mid_path = "MIDI_files/synthetic/" + title + ".mid"
     mid.save(mid_path)
     
     return
 
+
+def midi_repeat_up(track):
+    """ Repeating the same note n times until going through the entire octave """
+    for i in range(0, 11+1):
+        for j in range(5):
+            message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+            track.append(message_on)
+
+            message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+            track.append(message_off)
+
+
+    return "repeat_up"
+
+
+
+def midi_straight_up_rising_octave(track):
+    """ Do Re Mi ... - going up to different octaves """
+    for i in range(0, (12*2**5-1)+1):
+        message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+        track.append(message_on)
+
+        message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+        track.append(message_off)
+    
+    return "straight_up_rising_octave"
+
+
+
+
+
+def midi_straight_up_rising_octave(track):
+    """ Do Re Mi ... Do - on a loop up at a fixed octave """
+
+    for j in range(5):
+        for i in range(0, 11+1):
+            message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+            track.append(message_on)
+
+            message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+            track.append(message_off)
+    
+    return "straight_up_rising_octave"
 
 
 
