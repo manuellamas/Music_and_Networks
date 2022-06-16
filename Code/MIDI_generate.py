@@ -37,8 +37,9 @@ def midi_synthetic_1():
 
 
     ### Specifying what to generate
-    # title = midi_straight_up(track)
-    title = midi_repeat_up(track)
+    # title = midi_repeat_up(track)
+    # title = midi_straight_up_rising_octave(track)
+    title = midi_straight_up_fixed_octave(track)
 
 
 
@@ -67,7 +68,7 @@ def midi_repeat_up(track):
 
 def midi_straight_up_rising_octave(track):
     """ Do Re Mi ... - going up to different octaves """
-    for i in range(0, (12*2**5-1)+1):
+    for i in range(0, (12*5 - 1) + 1):
         message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
         track.append(message_on)
 
@@ -80,7 +81,7 @@ def midi_straight_up_rising_octave(track):
 
 
 
-def midi_straight_up_rising_octave(track):
+def midi_straight_up_fixed_octave(track):
     """ Do Re Mi ... Do - on a loop up at a fixed octave """
 
     for j in range(5):
@@ -91,7 +92,7 @@ def midi_straight_up_rising_octave(track):
             message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
             track.append(message_off)
     
-    return "straight_up_rising_octave"
+    return "straight_up_fixed_octave"
 
 
 
