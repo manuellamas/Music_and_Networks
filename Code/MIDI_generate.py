@@ -63,10 +63,10 @@ REPETITIONS = 6
 
 
 
-def midi_fixed_note(track, note = 1):
+def midi_fixed_note(track, note = 1, times = REPETITIONS*12):
     """ Keeps playing the same note """
     
-    repeat(track, note, times = REPETITIONS*12)
+    repeat(track, note, times)
 
     return "fixed_note" + "_" + str(note).zfill(3) # zfill pads the number to have three digits
 
@@ -105,7 +105,7 @@ def midi_straight_rising_octave(track, starting_note = 0, last_note = (12*REPETI
     ... Mi Re Do - going down to different octaves
     """
 
-    straight(track, starting_note = starting_note, last_note = last_note, up = up)
+    straight(track, starting_note, last_note, up)
 
     if up:
         return "straight_rising_octave_up"
@@ -114,11 +114,11 @@ def midi_straight_rising_octave(track, starting_note = 0, last_note = (12*REPETI
 
 
 
-def midi_straight_fixed_octave(track, up = True):
+def midi_straight_fixed_octave(track, starting_note = 0, last_note = 11, up = True):
     """ Do Re Mi ... Do - on a loop up at a fixed octave """
 
     for j in range(REPETITIONS):
-        straight(track, starting_note = 0, last_note = 11, up = up)
+        straight(track, starting_note, last_note, up)
     
     if up:
         return "straight_fixed_octave_up"
@@ -132,42 +132,42 @@ def midi_straight_fixed_octave(track, up = True):
 ## Peaks and Valleys ##
 #######################
 
-def midi_peak_fixed_octave(track, starting_note = 0, highest_note = 11):
+def midi_peak_fixed_octave(track, starting_note = 0, peak_height = 11):
     """
     Straight up and down on the same octave
     Do Re Mi ... Do - on a loop down at a fixed octave
     """
 
     for j in range(REPETITIONS):
-        peak(track, starting_note = starting_note, highest_note = highest_note)
+        peak(track, starting_note, peak_height)
 
     return "peak_fixed_octave"
 
 
 
-def midi_small_large_peaks_constant(track, starting_note = 0, small_peak_highest = 5, large_peak_highest = 11):
+def midi_small_large_peaks_constant(track, starting_note = 0, small_peak_height = 5, large_peak_height = 11):
     """ 
     Small peak, large peak, on a loop
     """
 
     for j in range(REPETITIONS):
-        peak(track, starting_note, small_peak_highest) # Small Peak
-        peak(track, starting_note, large_peak_highest) # Large Peak
+        peak(track, starting_note, small_peak_height) # Small Peak
+        peak(track, starting_note, large_peak_height) # Large Peak
 
     return "peaks_small_large_constant"
 
 
 
-def midi_small_large_peaks_rising(track):
+def midi_small_large_peaks_rising(track, starting_note = 0, small_peak_height = 5, large_peak_height = 11, step = 5):
     """
-    Small peak, large peak ending above the initial point
+    Small peak, large peak ending above (by step) the initial point
     Then loop
     Making it have a up tendency
     """
 
     for j in range(REPETITIONS):
-        peak(0,5) # Small Peak
-        peak(0,11) # Large Peak
+        peak(track, starting_note, small_peak_height) # Small Peak
+        peak(track, starting_note, large_peak_height) # Large Peak
 
     return "peaks_small_large_rising"
 
@@ -252,8 +252,10 @@ def repeat(track, note_to_repeat = 0, times = 1):
 
 
 
-def peak(track, starting_note = 0, highest_note = 11):
+def peak(track, starting_note = 0, peak_height = 11):
     """ Notes going up from the starting_note until reaching the highest_note, then going down until reaching starting_note """
+
+    highest_note = starting_note + peak_height
 
     for i in range(starting_note, highest_note + 1): # Going up
         message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
@@ -288,6 +290,7 @@ if __name__ == "__main__":
     # Peaks and Valleys
     midi_synthetic(midi_peak_fixed_octave)
     midi_synthetic(midi_small_large_peaks_constant)
+    midi_synthetic(midi_small_large_peaks_rising)
 
 
 
