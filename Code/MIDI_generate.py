@@ -158,7 +158,7 @@ def midi_small_large_peaks_constant(track, starting_note = 0, small_peak_height 
 
 
 
-def midi_small_large_peaks_rising(track, starting_note = 0, small_peak_height = 5, large_peak_height = 11, step = 5):
+def midi_small_large_peaks_rising(track, starting_note = 0, small_peak_height = 5, large_peak_height = 7, step = 6):
     """
     Small peak, large peak ending above (by step) the initial point
     Then loop
@@ -167,7 +167,10 @@ def midi_small_large_peaks_rising(track, starting_note = 0, small_peak_height = 
 
     for j in range(REPETITIONS):
         peak(track, starting_note, small_peak_height) # Small Peak
-        peak(track, starting_note, large_peak_height) # Large Peak
+        straight(track, starting_note, starting_note + step) # Goes up by step
+        peak(track, starting_note + step, large_peak_height) # Large Peak ending step notes above the cycle's initial one
+
+        starting_note = starting_note + step # The next small peak starts where the large one ended
 
     return "peaks_small_large_rising"
 
