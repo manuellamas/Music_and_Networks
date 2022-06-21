@@ -30,7 +30,8 @@ def midi_synthetic(midi_generator, **args):
     track.append(track_name_message)
 
     # Specifying the program
-    program_message = mido.Message("program_change", channel = 0, program = 3, time = 0)
+    program_message = mido.Message("program_change", channel = 0, program = 3, time = 0) # Piano
+    # program_message = mido.Message("program_change", channel = 0, program = 40, time = 0) # Violin
     track.append(program_message)
 
 
@@ -58,7 +59,9 @@ def midi_synthetic(midi_generator, **args):
 # Choose an even number of REPETITIONS (For, for example, the up down up down sequences)
 REPETITIONS = 6
 
-
+# Roughly the "loudness"
+# VELOCITY = 50
+VELOCITY = 80
 
 
 
@@ -190,10 +193,10 @@ def midi_random_fixed_octave(track, starting_note = 0, last_note = 11):
     for i in range(REPETITIONS*12):
             random_note = random.randint(starting_note, last_note) # Random number between starting_note and last_note (including)
 
-            message_on = mido.Message('note_on', note = random_note, velocity = 50, time = 20)
+            message_on = mido.Message('note_on', note = random_note, velocity = VELOCITY, time = 20)
             track.append(message_on)
 
-            message_off = mido.Message('note_off', note = random_note, velocity = 50, time = 300)
+            message_off = mido.Message('note_off', note = random_note, velocity = VELOCITY, time = 300)
             track.append(message_off)
 
     return "random_fixed_octave"
@@ -205,10 +208,10 @@ def midi_fully_random(track):
     for i in range(REPETITIONS*12):
             random_note = random.randint(0, 127) # Random number between 0 and 127 (including)
 
-            message_on = mido.Message('note_on', note = random_note, velocity = 50, time = 20)
+            message_on = mido.Message('note_on', note = random_note, velocity = VELOCITY, time = 20)
             track.append(message_on)
 
-            message_off = mido.Message('note_off', note = random_note, velocity = 50, time = 300)
+            message_off = mido.Message('note_off', note = random_note, velocity = VELOCITY, time = 300)
             track.append(message_off)
 
     return "random_fully"
@@ -231,10 +234,10 @@ def straight(track, starting_note = 0, last_note = 11, up = True):
         range_interval = reversed(range(starting_note, last_note + 1))
 
     for i in range_interval:
-            message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+            message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = 20)
             track.append(message_on)
 
-            message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+            message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = 300)
             track.append(message_off)
 
     return
@@ -245,10 +248,10 @@ def repeat(track, note_to_repeat = 0, times = 1):
     """ Repeats the same note a specific number of times """
 
     for i in range(times):
-        message_on = mido.Message('note_on', note = note_to_repeat, velocity = 50, time = 20)
+        message_on = mido.Message('note_on', note = note_to_repeat, velocity = VELOCITY, time = 20)
         track.append(message_on)
 
-        message_off = mido.Message('note_off', note = note_to_repeat, velocity = 50, time = 300)
+        message_off = mido.Message('note_off', note = note_to_repeat, velocity = VELOCITY, time = 300)
         track.append(message_off)
 
     return
@@ -261,16 +264,16 @@ def peak(track, starting_note = 0, peak_height = 11):
     highest_note = starting_note + peak_height
 
     for i in range(starting_note, highest_note + 1): # Going up
-        message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+        message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = 20)
         track.append(message_on)
 
-        message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+        message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = 300)
         track.append(message_off)
     for i in reversed(range(starting_note, (highest_note - 1) + 1)): # Going down - It's (highest_note - 1) so that it doesn't repeat the "peak" note
-        message_on = mido.Message('note_on', note = i, velocity = 50, time = 20)
+        message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = 20)
         track.append(message_on)
 
-        message_off = mido.Message('note_off', note = i, velocity = 50, time = 300)
+        message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = 300)
         track.append(message_off)
 
     return
