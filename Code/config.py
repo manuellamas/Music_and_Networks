@@ -2,7 +2,7 @@
 
 import os.path
 
-CONFIG_DIR = os.path.dirname(__file__)
-ROOT = os.path.split(CONFIG_DIR)[0]
+CODE_DIR = os.path.dirname(__file__)
+ROOT = os.path.split(CODE_DIR)[0]
 
 print("This is the ROOT", ROOT)

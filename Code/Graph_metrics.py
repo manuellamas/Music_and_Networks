@@ -67,11 +67,12 @@ def list_clustering_coefficient(G):
 def average_indegree(G, normalize = False):
     """ Returns the average in-degree of a node (ignoring weight) """
     total_degree = 0
-    for node, degree in G.in_degree(): # Summing in degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
+    for node, degree in G.in_degree(weight = "weight"): # Summing in-degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
         total_degree += degree
 
     if normalize:
-        total_degree = total_degree/(G.number_of_nodes()**2)
+        total_degree = total_degree/(G.number_of_nodes()**2) # For Directed Unweighted Grahs
+        # total_degree = total_degree/(G.number_of_nodes() - 1) * G.number_of_nodes() # For Undirected (Unweighted) Graphs
 
     # if total_degree > 1:
     #     print("Avg Deg Higher than 1")
@@ -81,7 +82,7 @@ def average_indegree(G, normalize = False):
     #         print(degree)
 
 
-    return total_degree/G.number_of_nodes()
+    return total_degree
 
 
 def average_betweenness(G, normalize = False):

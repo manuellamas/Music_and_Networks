@@ -13,8 +13,14 @@ __pycache__
 # Plots
 Plots
 
+# Synthetic Representations
+Synthetic_Representations
+
 # graphml files
 graphml_files
+
+# Synthesized files (midi2audio)
+*.flac
 
 # Log file
 MIDI_file_info.txt

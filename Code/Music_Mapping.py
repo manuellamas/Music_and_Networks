@@ -85,7 +85,7 @@ def get_notes_rest(mid_file, track_index = None):
 
 
 
-""" NOT IN USE """
+""" DEPRECATED """
 def merge_tracks(mid_file):
     """ Merge all tracks notes from a MIDI file into a single (ordered list) """
 
@@ -253,12 +253,15 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
 
     for pair in note_pairs:
         G.add_weighted_edges_from([(pair[0], pair[1], pair[2])]) # Leaving the time out for now
+        # By Default weight gets added as
+        # weight = "weight"
 
     return G, notes, notes_duration
 
 
 
 
+""" DEPRECATED """
 # MultiDiGraph (non-weighted) with an (optional) maximum interval eps between notes
 # Not using it for now since it doesn't work with "common" algorithms metrics
 def graph_note_multigraph(mid_file, eps = -1): # MultiDiGraph
