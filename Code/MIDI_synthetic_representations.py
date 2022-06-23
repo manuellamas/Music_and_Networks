@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from Plotting import check_dir
 
 import mido
-from MIDI_general import midi_filename
+from MIDI_general import midi_filename, midi_num_to_note
 from Music_Mapping import get_notes
 
 
@@ -41,17 +41,22 @@ def plot_track(note_list, filename):
     note_order = [i for i in range(1, len(note_list) + 1)] # Just the order of the notes. 1,2,3,...
     # note_list being the notes numbers
 
+
     # Scatter Plot
-    # ax.scatter(note_order, note_list, s = 10, label = filename, color = "#FF7000")
+    ax.scatter(note_order, note_list, s = 10, label = filename)
     
     # Continuous line
-    ax.plot(note_order, note_list)
+    # ax.plot(note_order, note_list)
 
+
+    # Setting the y scale, to the notes maybe?
+    # Using midi_num_to_note()
+
+
+
+    ## Design
     # ax.legend(loc = "upper right")
 
-
-
-    # Design
     # title = "Representation of " + filename
     plt.title(filename)
 

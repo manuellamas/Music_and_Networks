@@ -141,8 +141,10 @@ def midi_peak_fixed_octave(track, starting_note = 0, peak_height = 11):
     Do Re Mi ... Do - on a loop down at a fixed octave
     """
 
-    for j in range(REPETITIONS):
-        peak(track, starting_note, peak_height)
+    range_interval = range(REPETITIONS)
+
+    for j in range_interval:
+        peak(track, starting_note, peak_height, j == range_interval[-1])
 
     return "peak_fixed_octave"
 
@@ -152,10 +154,12 @@ def midi_small_large_peaks_constant(track, starting_note = 0, small_peak_height 
     """ 
     Small peak, large peak, on a loop
     """
+    
+    range_interval = range(REPETITIONS)
 
-    for j in range(REPETITIONS):
-        peak(track, starting_note, small_peak_height) # Small Peak
-        peak(track, starting_note, large_peak_height) # Large Peak
+    for j in range_interval:
+        peak(track, starting_note, small_peak_height, last_peak = False) # Small Peak
+        peak(track, starting_note, large_peak_height, j == range_interval[-1]) # Large Peak
 
     return "peaks_small_large_constant"
 
@@ -168,10 +172,12 @@ def midi_small_large_peaks_rising(track, starting_note = 0, small_peak_height = 
     Making it have a up tendency
     """
 
-    for j in range(REPETITIONS):
+    range_interval = range(REPETITIONS)
+
+    for j in range_interval:
         peak(track, starting_note, small_peak_height) # Small Peak
-        straight(track, starting_note, starting_note + step) # Goes up by step
-        peak(track, starting_note + step, large_peak_height) # Large Peak ending step notes above the cycle's initial one
+        straight(track, starting_note + 1, starting_note + step - 1) # Goes up by step. +1 and -1 to not replicate the notes of the peaks
+        peak(track, starting_note + step, large_peak_height, j == range_interval[-1]) # Large Peak ending step notes above the cycle's initial one. And only having the last note if it's the last peak of the sequence
 
         starting_note = starting_note + step # The next small peak starts where the large one ended
 
@@ -258,7 +264,7 @@ def repeat(track, note_to_repeat = 0, times = 1):
 
 
 
-def peak(track, starting_note = 0, peak_height = 11):
+def peak(track, starting_note = 0, peak_height = 11, last_peak = True):
     """ Notes going up from the starting_note until reaching the highest_note, then going down until reaching starting_note """
 
     highest_note = starting_note + peak_height
@@ -269,7 +275,19 @@ def peak(track, starting_note = 0, peak_height = 11):
 
         message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = 300)
         track.append(message_off)
-    for i in reversed(range(starting_note, (highest_note - 1) + 1)): # Going down - It's (highest_note - 1) so that it doesn't repeat the "peak" note
+
+
+
+    if last_peak: # If it's the "last peak" it'll had the final note
+        down_range_interval = reversed(range(starting_note, (highest_note - 1) + 1))
+
+    else:
+    # Because there will be more peaks (or sequences) we don't want to add the final note
+    # as it'll be the first of the next peak (or sequence)
+        down_range_interval = reversed(range(starting_note + 1, (highest_note - 1) + 1))
+
+
+    for i in down_range_interval: # Going down - It's (highest_note - 1) so that it doesn't repeat the "peak" note
         message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = 20)
         track.append(message_on)
 
