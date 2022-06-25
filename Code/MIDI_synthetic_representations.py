@@ -35,6 +35,15 @@ def get_midi_note_list(mid_file):
 ## Plotting ##
 ##############
 
+def format_y_ticks(value, tick_number):
+    print(value)
+    if int(value) == float(value):
+        midi_num_to_note(int(value))
+    else:
+        return value
+
+
+
 def plot_track(note_list, filename):
     fig, ax = plt.subplots()
 
@@ -49,8 +58,15 @@ def plot_track(note_list, filename):
     # ax.plot(note_order, note_list)
 
 
-    # Setting the y scale, to the notes maybe?
-    # Using midi_num_to_note()
+    ylim = [0,127]
+    # ylim = [0,12]
+    ymargin = (ylim[1]-ylim[0])/90
+    ax.set_ylim([ylim[0] - ymargin, ylim[1] + ymargin])
+
+    ax.set_yticks(ylim)
+
+    # locs = ax.get_xticks()
+    # ax.set_yticks(locs, [midi_num_to_note(int(value)) for value in locs])
 
 
 
@@ -71,7 +87,7 @@ def plot_track(note_list, filename):
     representations_dir = config.ROOT + "\\Synthetic_Representations"
     check_dir(representations_dir) # Checking if directory folder exists
 
-    plt.savefig(representations_dir + "\\" + plot_filename + ".png")
+    plt.savefig(representations_dir + "\\" + plot_filename)
     print("Plot at", representations_dir + "\\" + plot_filename)
 
     return
