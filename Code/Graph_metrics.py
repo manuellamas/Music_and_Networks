@@ -133,15 +133,12 @@ def modularity_louvain(G):
     G_undirected = nx.to_undirected(G) # Using an undirected version of the graph
 
     # Obtain Communities
-    print("If the program stopped it's stuck at the louvain_communities algorithm")
+    # print("If the program stopped it's stuck at the louvain_communities algorithm")
     communities = nx_comm.louvain_communities(G_undirected, seed = 123)
     # communities = nx_comm.girvan_newman(G)
-    print("\n\n-----------------------------\nCommunities")
-    print(len(communities))
 
     # Modularity value based on those communities
     modularity = nx_comm.modularity(G_undirected, communities)
-    print(modularity)
 
     return modularity, len(communities)
 # Then return this as a feature in SongGroupAnalysis

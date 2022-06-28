@@ -43,11 +43,13 @@ def music_data(G, num_notes_normalized, time_length):
 
     # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
     if time_length != 0:
+        # Nodes per duration
         if G.number_of_nodes() != 0:
             feature_list.append(G.number_of_nodes() / time_length)
         else:
             feature_list.append(0)
 
+        # Edges per duration
         if G.number_of_edges():
             feature_list.append(G.number_of_edges() / time_length)
         else:
@@ -56,6 +58,7 @@ def music_data(G, num_notes_normalized, time_length):
         feature_list.append(0)
         feature_list.append(0)
 
+    # Notes per duration
     if num_notes_normalized != 0:
         feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
     else:
@@ -175,7 +178,7 @@ if __name__ == "__main__":
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
     # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
-    feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
