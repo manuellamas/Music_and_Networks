@@ -14,8 +14,8 @@ from Music_Mapping import get_notes, get_notes_rest
 import Plot.Plotting_Time_Series as plt_time_series
 
 # Create a (ordered) list, using the melodic track, which will be the time series
-def series_from_MIDI (mid_file):
-    """ Create list (series) from MIDI """
+def features_from_MIDI_series (mid_file):
+    """ Obtain features through NetF from a MIDI's time series """
 
     notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
     
@@ -46,7 +46,7 @@ def series_from_MIDI (mid_file):
 
 
 
-def series_from_MIDI_group(mid_file_list, num_quantiles):
+def features_from_MIDI_series_group(mid_file_list, num_quantiles):
     """ Create list (series) from MIDI - but gives as input several files at once """
     # Meaning it only needs to run Rscript once
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         print("Running sample file")
         file_path = config.ROOT + "\\MIDI_files\\LegendsNeverDie.mid"
         mid_file = mido.MidiFile(file_path, clip = True)
-        series = series_from_MIDI(mid_file)
+        series = features_from_MIDI_series(mid_file)
 
         # Plotting
         filename = midi_filename(mid_file)
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     elif sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
         file_path = sys.argv[-1]
         mid_file = mido.MidiFile(file_path, clip = True)
-        series = series_from_MIDI(mid_file)
+        series = features_from_MIDI_series(mid_file)
 
         # Plotting
         filename = midi_filename(mid_file)
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
         for mid in list_files:
             mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-            series = series_from_MIDI(mid_file)
+            series = features_from_MIDI_series(mid_file)
 
             # Plotting
             filename = midi_filename(mid_file)

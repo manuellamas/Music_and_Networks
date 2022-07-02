@@ -85,7 +85,7 @@ if __name__ == "__main__":
     for i in range(len(networks)):
         networks_midi_files.append(networks[i][1]) # Storing the mid_files (objects)
         filenames.append(networks[i][2]) # Saving the filenames
-    netf_all_series_strings = MIDITimeSeries.series_from_MIDI_group(networks_midi_files, num_quantiles = 8)
+    netf_all_series_strings = MIDITimeSeries.features_from_MIDI_series_group(networks_midi_files, num_quantiles = 8)
 
 
     for i in range(len(networks)):
