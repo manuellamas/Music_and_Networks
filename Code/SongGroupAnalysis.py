@@ -25,7 +25,7 @@ def music_data(G, num_notes_normalized, time_length):
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
     # Normalizing all values except clustering that by default is already "normalized"
-    feature_list.append(Graph_metrics.average_indegree(G, normalize = True))
+    feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
     feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
     feature_list.append(Graph_metrics.average_clustering(G))
