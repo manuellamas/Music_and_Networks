@@ -5,7 +5,7 @@ from MIDI_general import midi_filename, melody_track, SHORTREST_NOTE, LONGREST_N
 
 
 # -------------------- Obtaining list of notes --------------------
-def get_notes(mid_file , get_track_program = False, track_index = None):
+def get_notes(mid_file , get_track_program = False, track_index = None, ticks = False):
     """ Obtaining a list of the notes from a specific track from a MIDI file (MIDI Object)
     Returns a list with entries as [note, start_time, end_time] """
 
@@ -20,19 +20,19 @@ def get_notes(mid_file , get_track_program = False, track_index = None):
 
     program = None # The first program_change declaration of the track (if it exists)
 
-    total_time = 0 # Total time since the start of the track. Because 'msg.time' holds only the delta_time (time that passed since last message)
+    total_ticks = 0 # Total time (in ticks) since the start of the track. Because 'msg.time' holds only the delta_time (time that passed since last message)
     for msg in first_track:
 
         if msg.type == "note_on" and msg.velocity != 0: # Creating a node because a note starts
-            notes.append([msg.note,total_time,0]) # [note, start_time, end_time]
+            notes.append([msg.note,total_ticks,0]) # [note, start_time, end_time]
         
         elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0): # Editing an existing node to add its "end" timestamp
             for i in range(len(notes)):
                 if notes[i][0] == msg.note and notes[i][2] == 0:
-                    notes[i][2] = total_time
+                    notes[i][2] = total_ticks
 
         if not msg.is_meta:
-            total_time += msg.time
+            total_ticks += msg.time
 
         if get_track_program and msg.type == "program_change":
             program = msg.program
@@ -43,7 +43,11 @@ def get_notes(mid_file , get_track_program = False, track_index = None):
         else:
             filename = midi_filename(mid_file) # Getting just the file name (without the path)
             print("The track of the song: " + filename + " has no Program")
-    return notes # A list with entries as [note, start_time, end_time]
+
+    if not ticks:
+        return notes # A list with entries as [note, start_time, end_time].
+    else:
+        return notes, total_ticks # A list with entries as [note, start_time, end_time]. And total_time being the total number of ticks of the song
 
 
 
@@ -51,7 +55,7 @@ def get_notes_rest(mid_file, track_index = None):
     """ Get list of notes with rests 
     Returns list with notes values only """
 
-    notes = get_notes(mid_file, track_index = track_index)
+    notes, total_ticks = get_notes(mid_file, track_index = track_index, ticks = True)
 
     ## Getting the minimum and maximum note's duration to attribute to the Short Rest and Long Rest respectively
     # Attributing as a start to both min and max values the first note's duration
@@ -238,12 +242,12 @@ def get_note_pairs(notes, eps = -1, window = False):
 
 # -------------------- Graph Creation --------------------
 # DiGraph Weighted
-def graph_note_pairs_weighted(mid_file, eps = -1):
+def graph_note_pairs_weighted(mid_file, eps = -1, ticks = False):
     """ Creates a (Simple Directed) Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
     G = nx.DiGraph() # Creating a directed graph
 
     # # Working with single track
-    notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form
+    notes, total_ticks = get_notes(mid_file, ticks =  True) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
     # Working with all tracks by "merging" the notes into a single (ordered) list
@@ -256,7 +260,10 @@ def graph_note_pairs_weighted(mid_file, eps = -1):
         # By Default weight gets added as
         # weight = "weight"
 
-    return G, notes, notes_duration
+    if not ticks:
+        return G, notes, notes_duration
+    else:
+        return G, notes, notes_duration, total_ticks
 
 
 

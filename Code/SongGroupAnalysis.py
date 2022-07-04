@@ -20,7 +20,7 @@ import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
 
-def music_data(G, num_notes_normalized, time_length):
+def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
 
@@ -58,7 +58,13 @@ def music_data(G, num_notes_normalized, time_length):
         feature_list.append(0)
         feature_list.append(0)
 
-    # Notes per duration
+    # Notes per duration (ticks)
+    if num_notes != 0:
+        feature_list.append(num_notes/total_ticks) # Length of music (number of notes in track)
+    else:
+        feature_list.append(0)
+
+    # Notes per duration (seconds)
     if num_notes_normalized != 0:
         feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
     else:
@@ -139,13 +145,13 @@ if __name__ == "__main__":
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file)
+        network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True)
         filename = MIDI_general.midi_filename(mid_file)
 
         nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
         network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
 
-        networks.append([network, mid_file, filename, notes, notes_duration])
+        networks.append([network, mid_file, filename, notes, notes_duration, total_ticks])
 
 
 
@@ -158,27 +164,29 @@ if __name__ == "__main__":
 
     networks_feature_time_list = [] # Features from TimeWindow
     filenames = []
-    for network, mid_file, filename, notes, notes_duration in networks:
+    for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
         filenames.append(filename) # Listing filenames for the feature table
 
-        # Obtaining Time Length (if possible)
-        time_length = 0
+        # Obtaining Time Length in seconds (if possible)
+        time_length_seconds = 0
+        note_density = 0
         try:
-            time_length = mid_file.length
+            time_length_seconds = mid_file.length
+            note_density = len(notes)/time_length_seconds
         except:
             print("This MIDI file is of type 2 (asynchronous) and so the length can't be computed")
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
-        if time_length == 0:
-            networks_feature_list.append(music_data(network, 0, time_length))
-        else:
-            networks_feature_list.append(music_data(network, len(notes)/time_length, time_length))
+
+        networks_feature_list.append(music_data(network, note_density, len(notes), time_length_seconds, total_ticks))
+
+
                 
         # Features from Time Window
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
     # feature_names = ["Song", "Avg. Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
-    feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per duration", "Edges per duration", "Note 'density'"] # Note density refers to # Notes / Time Length
+    feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
