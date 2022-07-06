@@ -8,7 +8,7 @@ from Plotting import check_dir
 
 import mido
 from MIDI_general import midi_filename, midi_num_to_note
-from Music_Mapping import get_notes
+from Music_Mapping import get_notes, get_notes_rest
 
 
 
@@ -18,14 +18,20 @@ from Music_Mapping import get_notes
 #######################
 
 
-def get_midi_note_list(mid_file):
+def get_midi_note_list(mid_file, with_rests = True):
     """ Obtain list of notes from a MIDI file (with a single non-meta Track) """
 
-    notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
-
     series = []
-    for note in notes:
-        series.append(note[0]) # note[0] corresponds to just the note (and not the times)
+
+    if with_rests:
+        notes_with_rests = get_notes_rest(mid_file) # Obtain a list of notes with rests. VALUES ONLY
+        for note in notes_with_rests:
+            series.append(note) # When working with rests, we get only the value
+
+    else:
+        notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
+        for note in notes:
+            series.append(note[0]) # note[0] corresponds to just the note (and not the times)
 
     return series
 
@@ -44,8 +50,11 @@ def format_y_ticks(value, tick_number):
 
 
 
-def plot_track(note_list, filename):
+def plot_track(mid_file, with_rests = True):
     fig, ax = plt.subplots()
+
+    note_list = get_midi_note_list(mid_file, with_rests) # Note list
+    filename = midi_filename(mid_file) # Getting the filename
 
     note_order = [i for i in range(1, len(note_list) + 1)] # Just the order of the notes. 1,2,3,...
     # note_list being the notes numbers
@@ -58,7 +67,8 @@ def plot_track(note_list, filename):
     # ax.plot(note_order, note_list)
 
 
-    ylim = [0,127]
+    # ylim = [0,127] # Without rests
+    ylim = [0,129] # With rests
     # ylim = [0,12]
     ymargin = (ylim[1]-ylim[0])/90
     ax.set_ylim([ylim[0] - ymargin, ylim[1] + ymargin])
@@ -130,7 +140,5 @@ if __name__ == "__main__":
     for mid in list_files: # Do this for all (.mid) files of the folder
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        note_list = get_midi_note_list(mid_file) # Note list
-        filename = midi_filename(mid_file) # Getting the filename
-        plot_track(note_list, filename)
+        plot_track(mid_file, with_rests = True)
 
