@@ -24,18 +24,21 @@ def get_notes(mid_file , get_track_program = False, track_index = None, ticks = 
     for msg in first_track:
 
         if msg.type == "note_on" and msg.velocity != 0: # Creating a node because a note starts
-            notes.append([msg.note,total_ticks,0]) # [note, start_time, end_time]
+            notes.append([msg.note, total_ticks + msg.time, 0]) # [note, start_time, end_time]
         
         elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0): # Editing an existing node to add its "end" timestamp
             for i in range(len(notes)):
                 if notes[i][0] == msg.note and notes[i][2] == 0:
-                    notes[i][2] = total_ticks
+                    notes[i][2] = total_ticks + msg.time
 
         if not msg.is_meta:
             total_ticks += msg.time
 
         if get_track_program and msg.type == "program_change":
             program = msg.program
+
+
+    ## Currently get_track_program and ticks CANNOT be both simultaneously True ##
 
     if get_track_program:
         if program is not None:
@@ -74,9 +77,10 @@ def get_notes_rest(mid_file, track_index = None):
     for i in range(len(notes) - 1):
         final_notes.append(notes[i][0])
 
-        duration = notes[i+1][1] - notes[i][2] # Obtaining the interval duration between consecutive notes
-        if duration > min_duration:
-            if duration > max_duration: # Long Rest
+        interval_duration = notes[i+1][1] - notes[i][2] # Obtaining the interval duration between consecutive notes
+
+        if interval_duration > min_duration:
+            if interval_duration > max_duration: # Long Rest
                 final_notes.append(LONGREST_NOTE)
             else: # Short Rest
                 final_notes.append(SHORTREST_NOTE)
