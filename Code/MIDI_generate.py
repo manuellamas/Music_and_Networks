@@ -2,6 +2,7 @@
 
 import mido
 import random
+from numpy import sign
 
 
 # def midi_synthetic(tempo = 361445, midi_generator, **args):
@@ -22,7 +23,7 @@ def midi_synthetic(midi_generator, tempo = 361445, **args):
     meta_track.append(meta1)
     
     # meta2 = mido.MetaMessage('set_tempo', tempo = 361445, time = 0)
-    meta2 = mido.MetaMessage('set_tempo', tempo = tempo, time = 0)
+    meta2 = mido.MetaMessage('set_tempo', tempo = tempo, time = 0) # Tempo is tempo_value microseconds per beat
     meta_track.append(meta2)
 
 
@@ -61,7 +62,7 @@ def midi_synthetic(midi_generator, tempo = 361445, **args):
 # Choose an even number of REPETITIONS (For, for example, the up down up down sequences)
 REPETITIONS = 6
 
-# Roughly the "loudness"
+# Velocity is roughly the "loudness"
 # VELOCITY = 50
 VELOCITY = 80
 NOTE_DURATION = 300 # The duration in ticks of each note
@@ -105,29 +106,32 @@ def midi_repeat_aabb(track, note_duration = NOTE_DURATION, note_spacing = NOTE_S
 ## Straight Up or Down ##
 #########################
 
-def midi_straight_rising_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = (12*REPETITIONS - 1), up = True):
+def midi_straight_rising_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = (12*REPETITIONS - 1)):
     """
-    Do Re Mi ... - going up to different octaves
-    OR
-    ... Mi Re Do - going down to different octaves
+    Goes straight from the starting_note to the last_note incrementing by one each time
+    or decrementing if starting_note is higher than last_note
     """
 
-    straight(track, note_duration, note_spacing, starting_note, last_note, up)
 
-    if up:
+    straight(track, note_duration, note_spacing, starting_note, last_note)
+
+    if starting_note < last_note:
         return "straight_rising_octave_up", note_duration, note_spacing
     else:
         return "straight_rising_octave_down", note_duration, note_spacing
 
 
 
-def midi_straight_fixed_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = 11, up = True):
-    """ Do Re Mi ... Do - on a loop up at a fixed octave """
+def midi_straight_fixed_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = 11, loop_times = REPETITIONS):
+    """
+    Goes from starting_note to last_note (up if starting_note < last_note, down otherwise)
+    on a loop for loop_times number of times
+    """
 
-    for j in range(REPETITIONS):
-        straight(track, note_duration, note_spacing, starting_note, last_note, up)
+    for j in range(loop_times):
+        straight(track, note_duration, note_spacing, starting_note, last_note)
     
-    if up:
+    if starting_note < last_note:
         return "straight_fixed_octave_up", note_duration, note_spacing
     else:
         return "straight_fixed_octave_down", note_duration, note_spacing
@@ -139,53 +143,70 @@ def midi_straight_fixed_octave(track, note_duration = NOTE_DURATION, note_spacin
 ## Peaks and Valleys ##
 #######################
 
-def midi_peak_fixed_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, peak_height = 11):
+def midi_peak_fixed_octave(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, peak_height = 11, function = None):
     """
-    Straight up and down on the same octave
+    Straight up and down on the same octave (or reverse with function = valley)
     Do Re Mi ... Do - on a loop down at a fixed octave
     """
 
+    if function == None or function.__name__ == "peak":
+        function = peak
+
     range_interval = range(REPETITIONS)
 
     for j in range_interval:
-        peak(track, note_duration, note_spacing, starting_note, peak_height, j == range_interval[-1])
+        function(track, note_duration, note_spacing, starting_note, peak_height, j == range_interval[-1])
 
-    return "peak_fixed_octave", note_duration, note_spacing
+    return function.__name__ + "_fixed_octave", note_duration, note_spacing
 
 
 
-def midi_small_large_peaks_constant(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, small_peak_height = 5, large_peak_height = 11):
+def midi_small_large_peaks_constant(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, small_peak_height = 5, large_peak_height = 11, function = None):
     """ 
-    Small peak, large peak, on a loop
+    Small peak, large peak, on a loop (or valley with function = valley)
     """
-    
+
+    if function == None or function.__name__ == "peak":
+        function = peak
+
     range_interval = range(REPETITIONS)
 
     for j in range_interval:
-        peak(track, note_duration, note_spacing, starting_note, small_peak_height, last_peak = False) # Small Peak
-        peak(track, note_duration, note_spacing, starting_note, large_peak_height, j == range_interval[-1]) # Large Peak
+        function(track, note_duration, note_spacing, starting_note, small_peak_height, False) # Small Peak/Valley
+        function(track, note_duration, note_spacing, starting_note, large_peak_height, j == range_interval[-1]) # Large Peak/Valley
 
-    return "peaks_small_large_constant", note_duration, note_spacing
+    return function.__name__ + "s_small_large_constant", note_duration, note_spacing
 
 
 
-def midi_small_large_peaks_rising(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, small_peak_height = 5, large_peak_height = 7, step = 6):
+def midi_small_large_peaks_rising(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, small_peak_height = 5, large_peak_height = 7, step = 6, function = None):
     """
     Small peak, large peak ending above (by step) the initial point
     Then loop
     Making it have a up tendency
+    Or with function == valley, small valley, large valley, loop downward
     """
+
+    if function == None or function.__name__ == "peak":
+        function = peak
+        tendency = "rising" # For the filename
+
+    else:
+        tendency = "falling" # For the filename
+        step = -step
 
     range_interval = range(REPETITIONS)
 
+
     for j in range_interval:
-        peak(track, note_duration, note_spacing, starting_note, small_peak_height) # Small Peak
-        straight(track, note_duration, note_spacing, starting_note + 1, starting_note + step - 1) # Goes up by step. +1 and -1 to not replicate the notes of the peaks
-        peak(track, note_duration, note_spacing, starting_note + step, large_peak_height, j == range_interval[-1]) # Large Peak ending step notes above the cycle's initial one. And only having the last note if it's the last peak of the sequence
+        function(track, note_duration, note_spacing, starting_note, small_peak_height) # Small Peak/Valley
+        straight(track, note_duration, note_spacing, starting_note + sign(step), starting_note + step - sign(step)) # Goes up by step. + sign(step) and - sign(step) to not replicate the notes of the peaks/valleys. And sign(step) to increment or decrement adjusting to whether it's a valley or a peak
+        function(track, note_duration, note_spacing, starting_note + step, large_peak_height, j == range_interval[-1]) # Large Peak/Valley ending step notes above/bellow the cycle's initial one. And only having the last note if it's the last peak/valley of the sequence
+        
+        starting_note = starting_note + step # The next small peak/valley starts where the large one ended
 
-        starting_note = starting_note + step # The next small peak starts where the large one ended
 
-    return "peaks_small_large_rising", note_duration, note_spacing
+    return function.__name__ + "s_small_large_" + tendency, note_duration, note_spacing
 
 
 
@@ -235,20 +256,23 @@ def midi_fully_random(track, note_duration = NOTE_DURATION, note_spacing = NOTE_
 ##################################################
 # Supporting Functions
 
-def straight(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = 11, up = True):
-    """ Steadily go up (or down) from starting_note until last_note """
+def straight(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 0, last_note = 11):
+    """
+    Steadily go up from starting_note until last_note (including)
+    Or down in case starting_note is higher than last_note
+    """
 
-    if up:
-        range_interval = range(starting_note, last_note + 1)
+    if starting_note < last_note:
+        range_interval = range(starting_note, last_note + 1) # [starting_note, starting_note + 1, ..., last_note]
     else:
-        range_interval = reversed(range(starting_note, last_note + 1))
+        range_interval = range(starting_note, last_note - 1, -1) # [starting_note, starting_note - 1, ..., last_note]
 
     for i in range_interval:
-            message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = note_spacing)
-            track.append(message_on)
+        message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = note_spacing)
+        track.append(message_on)
 
-            message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = note_duration)
-            track.append(message_off)
+        message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = note_duration)
+        track.append(message_off)
 
     return
 
@@ -282,16 +306,53 @@ def peak(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, star
 
 
 
-    if last_peak: # If it's the "last peak" it'll had the final note
-        down_range_interval = reversed(range(starting_note, (highest_note - 1) + 1))
+    if last_peak: # If it's the "last peak" it'll add the final note
+        down_range_interval = range(highest_note - 1, starting_note - 1, -1) # Start one below the highest_note, and ends on the starting_note
 
     else:
     # Because there will be more peaks (or sequences) we don't want to add the final note
     # as it'll be the first of the next peak (or sequence)
-        down_range_interval = reversed(range(starting_note + 1, (highest_note - 1) + 1))
+        down_range_interval = range(highest_note - 1, starting_note, -1) # Start one below the highest_note, and ends one above the starting_note
 
 
     for i in down_range_interval: # Going down - It's (highest_note - 1) so that it doesn't repeat the "peak" note
+        message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = note_spacing)
+        track.append(message_on)
+
+        message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = note_duration)
+        track.append(message_off)
+
+    return
+
+
+
+def valley(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, starting_note = 100, valley_depth = 11, last_valley = True):
+    """
+    Notes going down from the starting_note until reaching the lowest_note, then going up until reaching starting_note
+    Essentially reverse of peak()
+    """
+
+    lowest_note = starting_note - valley_depth
+
+    for i in range(starting_note, lowest_note - 1, -1): # Going down
+        message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = note_spacing)
+        track.append(message_on)
+
+        message_off = mido.Message('note_off', note = i, velocity = VELOCITY, time = note_duration)
+        track.append(message_off)
+
+
+
+    if last_valley: # If it's the "last valley" it'll add the final note
+        up_range_interval = range(lowest_note + 1, starting_note + 1) # Start one above the lowest_note, and ends on the starting_note
+
+    else:
+    # Because there will be more valleys (or sequences) we don't want to add the final note
+    # as it'll be the first of the next valley (or sequence)
+        up_range_interval = range(lowest_note + 1, starting_note) # Start one above the lowest_note, and ends one below the starting_note
+
+
+    for i in up_range_interval: # Going down - It's (lowest_note - 1) so that it doesn't repeat the "valley" note
         message_on = mido.Message('note_on', note = i, velocity = VELOCITY, time = note_spacing)
         track.append(message_on)
 
@@ -310,17 +371,22 @@ if __name__ == "__main__":
     midi_synthetic(midi_repeat_aabb, up = True)
     midi_synthetic(midi_repeat_aabb, up = False)
 
-    midi_synthetic(midi_straight_rising_octave, up = True)
-    midi_synthetic(midi_straight_rising_octave, up = False)
+    midi_synthetic(midi_straight_rising_octave, starting_note = 0, last_note = (12*REPETITIONS - 1))
+    midi_synthetic(midi_straight_rising_octave, starting_note = (12*REPETITIONS - 1), last_note = 0)
 
-    midi_synthetic(midi_straight_fixed_octave, up = True)
-    midi_synthetic(midi_straight_fixed_octave, up = False)
+    midi_synthetic(midi_straight_fixed_octave, starting_note = 0, last_note = 11)
+    midi_synthetic(midi_straight_fixed_octave, starting_note = 11, last_note = 0)
 
 
     # Peaks and Valleys
-    midi_synthetic(midi_peak_fixed_octave)
-    midi_synthetic(midi_small_large_peaks_constant)
-    midi_synthetic(midi_small_large_peaks_rising)
+    midi_synthetic(midi_peak_fixed_octave, function = peak)
+    midi_synthetic(midi_peak_fixed_octave, function = valley, starting_note = 100)
+
+    midi_synthetic(midi_small_large_peaks_constant, function = peak)
+    midi_synthetic(midi_small_large_peaks_constant, function = valley, starting_note = 100)
+
+    midi_synthetic(midi_small_large_peaks_rising, function = peak)
+    midi_synthetic(midi_small_large_peaks_rising, function = valley, starting_note = 100)
 
 
 
