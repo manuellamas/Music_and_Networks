@@ -249,6 +249,27 @@ def midi_fully_random(track, note_duration = NOTE_DURATION, note_spacing = NOTE_
 
 
 
+def midi_random_tendency(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, random_interval_length = 15 , random_interval_frequency = 2, random_interval_skip = 1):
+    """ Random notes within an interval that's slowly growing """
+    # random_interval_frequency is for how many notes will keep the same interval
+    # random_interval_length is the length of the interval of numbers a note can have on a specific i
+    # random_interval_skip is how much the interval's start and end values increase each time (i.e., after each random_interval_frequency has passed)
+
+
+
+    for i in range(REPETITIONS*12):
+            random_note = random.randint(i//random_interval_frequency * random_interval_skip, i//random_interval_frequency * random_interval_skip + random_interval_length - 1)
+            # random_note = random.randint(0, 127) # Random number between 0 and 127 (including)
+
+            message_on = mido.Message('note_on', note = random_note, velocity = VELOCITY, time = note_spacing)
+            track.append(message_on)
+
+            message_off = mido.Message('note_off', note = random_note, velocity = VELOCITY, time = note_duration)
+            track.append(message_off)
+
+
+    return "random_tendency_f" + str(random_interval_frequency) + "_l" + str(random_interval_length) + "_s" + str(random_interval_skip) , note_duration, note_spacing
+
 
 
 ##################################################
@@ -393,6 +414,9 @@ if __name__ == "__main__":
     # Random
     midi_synthetic(midi_random_fixed_octave)
     midi_synthetic(midi_fully_random)
+    midi_synthetic(midi_random_tendency, random_interval_length = 10 , random_interval_frequency = 3, random_interval_skip = 1)
+    midi_synthetic(midi_random_tendency, random_interval_length = 15 , random_interval_frequency = 2, random_interval_skip = 1)
+    midi_synthetic(midi_random_tendency, random_interval_length = 10 , random_interval_frequency = 3, random_interval_skip = 4)
 
 
 

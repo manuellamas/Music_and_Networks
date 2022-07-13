@@ -19,7 +19,10 @@ from Music_Mapping import get_notes, get_notes_rest
 
 
 def get_midi_note_list(mid_file, with_rests = True):
-    """ Obtain list of notes from a MIDI file (with a single non-meta Track) """
+    """
+    Obtain list of notes from a MIDI file
+    working on the "Melodic" Track
+    """
 
     series = []
 
