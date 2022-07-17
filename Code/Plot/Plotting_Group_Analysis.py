@@ -130,10 +130,21 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
 
     cells = tab.properties()["celld"]
 
+    row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
+
+    # Aligning the cells of the first column (0) to the left (excluding the header row)
+    for i in range(1, len(network_feature_list) + 1): # For each row. +1 because the column headers cells are included
+        cells[i, 0].set_text_props(ha = "left") # Aligning column 0 to the left
+        cells[i, 0].PAD = 0.05 # Setting padding. Since it's aligned to the left (I think) it's only controlling the padding to the left side (and not up and down as well)
+        cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
+
+
+    # Aligning the cells of all columns except the first one(0) to the right (excluding the header row)
     # Overriding the cellLoc = "center"
     for j in range(1, len(columns)):
         for i in range(1, len(network_feature_list) + 1): # For each row. +1 because the column headers cells are included
-            cells[i, j].set_text_props(ha = "right") # Centering column j
+            cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
+            cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
 
 
 
