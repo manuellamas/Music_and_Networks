@@ -54,6 +54,14 @@ for (i in seq(num_rows)) {
     m_whvg_Music <- calc_metrics(musicTimeSeries_HVG_graph, 1, map_type = "HVG", weight_type = TRUE)
     m_wqg_Music <- calc_metrics(musicTimeSeries_QG_graph, 1, map_type = "QG", weight_type = TRUE)
 
+    # print(is.na(m_wqg_Music[["d"]]))
+    # print(is.nan(m_wqg_Music[["d"]]))
+
+    # Convert NA / NaN values to 0, when it is not possible to calculate average path length
+    if (is.na(m_wqg_Music[["d"]])) { # "d" is the average path length entry
+            m_wqg_Music[["d"]] <- 0
+        }
+
     netf_feature_list <- c(m_wnvg_Music, m_whvg_Music, m_wqg_Music)
 
     net_data_frame[nrow(net_data_frame) + 1, ] <- netf_feature_list
