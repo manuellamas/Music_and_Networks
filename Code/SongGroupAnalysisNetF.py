@@ -123,6 +123,8 @@ if __name__ == "__main__":
     kmean_predictions = kmeans_analysis(netf_feature_list)
     plt_analysis.clustering_table(networks, kmean_predictions, "netf_k-means", group_name)
 
+    plt_analysis.cluster_feature_table(networks, kmean_predictions, "netf_k-means", netf_feature_list, netf_feature_names, filenames, group_name = group_name)
+
     # DBSCAN
     dbscan_predictions = dbscan_analysis(netf_feature_list)
     plt_analysis.clustering_table(networks, dbscan_predictions,"netf_DBSCAN", group_name)

@@ -222,7 +222,6 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
     columns = ["Song", "Cluster"] + feature_names[1:] # Removing the Song Column Header (that comes repeated) from feature_names
     # columns = ["Song", "Cluster"] + feature_names # Removing the Song Column Header (that comes repeated) from feature_names
 
-    print(len(columns))
 
     colors = []
     for i in range(len(final_list)): # For each row
