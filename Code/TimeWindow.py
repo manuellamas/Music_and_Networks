@@ -188,7 +188,7 @@ if __name__ == "__main__":
         list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
 
         if len(list_files) == 0:
-            print("The folder is empty")
+            print("The folder does not have any MIDI files")
             exit()
 
         print("Running for the following files:")
