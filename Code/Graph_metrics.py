@@ -12,7 +12,9 @@ import networkx.algorithms.community as nx_comm
 #     # return 0
 #     return num_self_loops
 
-def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph, i.e., number of directed pairs of nodes that are connected by at least one edge
+def multidigraph_unique_edges(G):
+    """ Gives the number of unique edges of a graph, i.e., number of directed pairs of nodes that are connected by at least one edge """
+
     if isinstance(G,nx.multidigraph.MultiDiGraph):
         total_unique_edges = 0
         for node in G:
@@ -25,7 +27,9 @@ def multidigraph_unique_edges(G): # Gives the number of unique edges of a graph,
 
 def list_betweenness_centrality(G, normalize = False):
     """ Returns a list with all betweenness centrality values """
-    betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = "weight")
+
+    # betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = "weight") # Using weight
+    betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = None)
 
     rounded_values = []
 
@@ -73,25 +77,19 @@ def average_indegree(G, normalize = False, weighted = False):
             total_degree += degree
 
         if normalize:
-            total_degree = total_degree/(G.number_of_nodes()**2) # For Directed Unweighted Grahs
+            total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs
             # total_degree = total_degree/(G.number_of_nodes() - 1) * G.number_of_nodes() # For Undirected (Unweighted) Graphs
 
     else:
-        for node, degree in G.in_degree(): # Summing in-degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
+        for node, degree in G.in_degree(weight = None): # Summing in-degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
             total_degree += degree
 
         if normalize:
-            total_degree = total_degree/(G.number_of_nodes()**2) # For Directed Unweighted Grahs
+            total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs
+            # total_degree = total_degree/(129**2) # Dividing for the entire number of pairs between all possible notes. Because all graphs will be within this
 
 
-    # if total_degree > 1:
-    #     print("Avg Deg Higher than 1")
-    #     print("Num Self-loops", count_self_loops(G))
-    #     print(total_degree, G.number_of_nodes())
-    #     for node, degree in G.degree():
-    #         print(degree)
-
-
+    total_degree /= G.number_of_nodes() # The average of the values
     return total_degree
 
 
@@ -105,7 +103,11 @@ def average_betweenness(G, normalize = False):
 
     if total/len(between_list) > 1:
         print("Avg Bet Higher than 1")
-    return total/len(between_list)
+
+    # Get the average value
+    total /= G.number_of_nodes()
+
+    return total
 
 
 def average_closeness(G, normalize = False):
