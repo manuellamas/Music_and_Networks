@@ -13,7 +13,11 @@ __pycache__
 # Plots
 Plots
 
-# Synthetic Representations
+# NetF Temporary CSV for going for "communicating" from Python to R and vice-versa
+Code/Music_NetF/*.csv
+
+# Synthetic MIDIs and their Representations
+MIDI_files/synthetic
 Synthetic_Representations
 
 # graphml files
@@ -24,6 +28,9 @@ graphml_files
 
 # Log file
 MIDI_file_info.txt
+
+# Melody Tracks
+Melody_Tracks
 
 # SongArena - Used to place two files so that they can be compared
 # SongArena

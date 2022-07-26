@@ -1,4 +1,4 @@
-""" Analyze several songs by resorting to Data Science tools, K-means,... """
+""" Analyze several songs by resorting to k-means """
 
 import sys
 import config
@@ -23,15 +23,29 @@ import TimeWindow
 def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max_num_nodes):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
+    feature_name_list = [] # Name of features for the table plots
 
     # Normalizing all values except clustering that by default is already "normalized"
 
+    # Average In-degree
     feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
-    feature_list.append(G.number_of_nodes() / max_num_nodes)
+    feature_name_list.append("Avg. In-Degree")
 
+    # Average Betweenness Centrality
+    # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True) / 1) # Dividing by a parameter to make it not weigh as much
+    # feature_name_list.append("Avg. Betweenness Coef.")
 
-    # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
+    # Average Closeness Centrality
     # feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
+    # feature_name_list.append("Avg. Closeness Coef.")
+
+    # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
+    # feature_list.append(G.number_of_nodes() / max_num_nodes)
+    # feature_name_list.append("# Nodes")
+
+
+
+
     # feature_list.append(Graph_metrics.average_clustering(G))
     # feature_list.append(nx.average_shortest_path_length(G))
     # feature_list.append(nx.density(G))
@@ -74,7 +88,7 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # else:
     #     feature_list.append(0)
 
-    return feature_list
+    return feature_list, feature_name_list
 
 
 
@@ -189,15 +203,16 @@ if __name__ == "__main__":
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
         print("\n\n---\n" + filename + "\n---\n\n")
-        networks_feature_list.append(music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes))
+        features, feature_names = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
+        networks_feature_list.append(features)
 
 
                 
         # # Features from Time Window
         # networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
-    feature_names = ["Song", "Avg. In-Degree", "# Nodes"]
-    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef."]
+    feature_names = ["Song"] + feature_names
+    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "# Nodes"]
     # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
 
 
@@ -205,33 +220,42 @@ if __name__ == "__main__":
     # feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
-    # Feature Table
-    plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
-    # plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, type = "time")
+    # Feature Table (Possibly DEPRECATED)
+    ## Feature table is now being outputted together with the cluster table 
+    ## plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
+    ## plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, type = "time")
+    ## ----------------------------------------------------- ##
 
 
     ##############
     # Clustering #
     ##############
 
+    # Adding the features obtained through Time Window on the "Main" set of features
     # for i in range(len(networks_feature_list)):
     #     networks_feature_list[i] += networks_feature_time_list[i] # Adding these features for the clustering
 
-    # k-means
-    kmean_predictions = kmeans_analysis(networks_feature_list)
-    plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name)
 
+    ## k-means
+    kmean_predictions = kmeans_analysis(networks_feature_list)
+    ## plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name) # Currently being outputted together with the feature table
     plt_analysis.cluster_feature_table(networks, kmean_predictions, "k-means", networks_feature_list, feature_names, filenames, group_name = group_name)
 
+
+    # Time Window
     # kmean_predictions = kmeans_analysis(networks_feature_time_list)
     # plt_analysis.clustering_table(networks, kmean_predictions, "time_k-means", group_name)
+    # -----
 
-    # DBSCAN
-    dbscan_predictions = dbscan_analysis(networks_feature_list)
-    plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name)
 
+    ## DBSCAN
+    # dbscan_predictions = dbscan_analysis(networks_feature_list)
+    # plt_analysis.clustering_table(networks, dbscan_predictions,"DBSCAN", group_name)
+
+    # Time Window
     # dbscan_predictions = dbscan_analysis(networks_feature_time_list)
     # plt_analysis.clustering_table(networks, dbscan_predictions,"time_DBSCAN", group_name)
+    # -----
 
 
 
