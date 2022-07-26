@@ -3,8 +3,11 @@
 import pandas as pd
 import mido
 
-import os.path
 import sys
+import os.path
+from os import listdir
+
+import config
 
 # Code associated to short and long rests nodes
 SHORTREST_NOTE = 128
@@ -178,9 +181,6 @@ def note_mapping_dict(G):
 def midi_get_track(mid_file):
     """ Creates a MIDI file that contains only the specified track of another MIDI """
 
-    #!!!!!!!!!!!!!!!!!!!!!!!!!#
-    ## CURRENTLY NOT WORKING ##
-    #!!!!!!!!!!!!!!!!!!!!!!!!!#
 
     melody_track_index = melody_track(mid_file)
     meta_track_index = first_meta_track(mid_file)
@@ -202,7 +202,9 @@ def midi_get_track(mid_file):
     for msg in mid_melody_track:
         track.append(msg)
 
-    new_mid.save("melody_track.mid")
+    filename = midi_filename(mid_file)
+
+    new_mid.save("Melody_Tracks\\" + filename + "_melody_track.mid")
 
     return
 
@@ -215,11 +217,32 @@ if __name__ == "__main__":
     parent_directory = os.path.split(program_directory)[0]
 
     try:
-        file_path = sys.argv[-1]
-        mid_file = mido.MidiFile(file_path, clip = True)
+        if sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
 
-        filename = midi_filename(mid_file)
-        midi_file_overview(mid_file, filename)
-        midi_get_track(mid_file)
+            file_path = sys.argv[-1]
+            mid_file = mido.MidiFile(file_path, clip = True)
+
+            filename = midi_filename(mid_file)
+            midi_file_overview(mid_file, filename)
+            midi_get_track(mid_file)
+        else: # Run for all MIDI in a folder
+            files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
+
+            # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
+            list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
+
+            if len(list_files) == 0:
+                print("The folder does not have any MIDI files")
+                exit()
+
+            print("Running for the following files:")
+            for mid in list_files:
+                print(mid)
+
+            for mid in list_files:
+                mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
+                midi_get_track(mid_file)
+
     except:
-        print("No path to a MIDI was provided")
+        print("No path to a MIDI or Folder was provided")
+        print("Check if 'Melody_Tracks' folder exists at Root")
