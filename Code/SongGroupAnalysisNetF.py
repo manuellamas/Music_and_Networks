@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     # NetF Feature Table
     netf_feature_names = ["Song", "NVG - k", "NVG - d", "NVG - S", "NVG - C", "NVG - Q", "HVG - k" , "HVG - d", "HVG - S", "HVG - C", "HVG - Q", "QG - k", "QG - d", "QG - S", "QG - C", "QG - Q"]
-    plt_analysis.feature_table(netf_feature_list, netf_feature_names, filenames, group_name, type = "netf")
+    # plt_analysis.feature_table(netf_feature_list, netf_feature_names, filenames, group_name, type = "netf")
 
 
 
@@ -121,13 +121,12 @@ if __name__ == "__main__":
 
     # k-means
     kmean_predictions = kmeans_analysis(netf_feature_list)
-    plt_analysis.clustering_table(networks, kmean_predictions, "netf_k-means", group_name)
-
+    # plt_analysis.clustering_table(networks, kmean_predictions, "netf_k-means", group_name) # Just the clustering without the features values
     plt_analysis.cluster_feature_table(networks, kmean_predictions, "netf_k-means", netf_feature_list, netf_feature_names, filenames, group_name = group_name)
 
     # DBSCAN
-    dbscan_predictions = dbscan_analysis(netf_feature_list)
-    plt_analysis.clustering_table(networks, dbscan_predictions,"netf_DBSCAN", group_name)
+    # dbscan_predictions = dbscan_analysis(netf_feature_list)
+    # plt_analysis.clustering_table(networks, dbscan_predictions,"netf_DBSCAN", group_name)
 
 
 
