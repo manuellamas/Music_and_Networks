@@ -32,12 +32,12 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     feature_name_list.append("Avg. In-Degree")
 
     # Average Betweenness Centrality
-    # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True) / 1) # Dividing by a parameter to make it not weigh as much
-    # feature_name_list.append("Avg. Betweenness Coef.")
+    feature_list.append(Graph_metrics.average_betweenness(G, normalize = True) / 1) # Dividing by a parameter to make it not weigh as much
+    feature_name_list.append("Avg. Betweenness Coef.")
 
     # Average Closeness Centrality
-    # feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
-    # feature_name_list.append("Avg. Closeness Coef.")
+    feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
+    feature_name_list.append("Avg. Closeness Coef.")
 
     # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
     # feature_list.append(G.number_of_nodes() / max_num_nodes)
@@ -186,8 +186,8 @@ if __name__ == "__main__":
 
     # Feature List
     networks_feature_list = [] # Each entry is relative to a song
+    networks_feature_time_list = [] # Features from TimeWindow
 
-    # networks_feature_time_list = [] # Features from TimeWindow
     filenames = []
     for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
         filenames.append(filename) # Listing filenames for the feature table
@@ -208,16 +208,17 @@ if __name__ == "__main__":
 
 
                 
-        # # Features from Time Window
-        # networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
+        # Features from Time Window
+        networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
+    # Features Names - Main
     feature_names = ["Song"] + feature_names
     # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "# Nodes"]
     # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
 
 
-    # # Features Names - Time Window
-    # feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
+    # Features Names - Time Window
+    feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
     # Feature Table (Possibly DEPRECATED)
@@ -243,8 +244,8 @@ if __name__ == "__main__":
 
 
     # Time Window
-    # kmean_predictions = kmeans_analysis(networks_feature_time_list)
-    # plt_analysis.clustering_table(networks, kmean_predictions, "time_k-means", group_name)
+    kmean_predictions = kmeans_analysis(networks_feature_time_list)
+    plt_analysis.clustering_table(networks, kmean_predictions, "time_k-means", group_name)
     # -----
 
 
