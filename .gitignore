@@ -16,9 +16,11 @@ Plots
 # NetF Temporary CSV for going for "communicating" from Python to R and vice-versa
 Code/Music_NetF/*.csv
 
-# Synthetic MIDIs and their Representations
+# Synthetic MIDIs
 MIDI_files/synthetic
-Synthetic_Representations
+
+# Music Representations
+Music_Representations
 
 # graphml files
 graphml_files

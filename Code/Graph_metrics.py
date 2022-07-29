@@ -73,12 +73,14 @@ def average_indegree(G, normalize = False, weighted = False):
     total_degree = 0
 
     if weighted:
-        for node, degree in G.in_degree(weight = "weight"): # Summing in-degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes
+        for node, degree in G.in_degree(weight = "weight"): # Summing in-degrees. Since it's weighted the total can be anything >= 0
             total_degree += degree
 
-        if normalize:
-            total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs
-            # total_degree = total_degree/(G.number_of_nodes() - 1) * G.number_of_nodes() # For Undirected (Unweighted) Graphs
+        # Normalizing by the dataset, so it's done after all features have been collected
+
+        # if normalize:
+        #     total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs
+        #     # total_degree = total_degree/(G.number_of_nodes() - 1) * G.number_of_nodes() # For Undirected (Unweighted) Graphs
 
     else:
         for node, degree in G.in_degree(weight = None): # Summing in-degrees. Since we're allowing self-loops the total degree ranges from [0,n^2], n being the total number of nodes

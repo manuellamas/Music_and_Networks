@@ -24,12 +24,18 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
     feature_name_list = [] # Name of features for the table plots
+    features_to_normalize = [] # Names of features to normalize (min/max) i.e., the according to the whole set of graphs/songs
 
     # Normalizing all values except clustering that by default is already "normalized"
 
-    # Average In-degree
+    # Average In-degree Unweighted
     feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
     feature_name_list.append("Avg. In-Degree")
+
+    # Average In-degree Weighted
+    feature_list.append(Graph_metrics.average_indegree(G, normalize = False, weighted = True)) # Normalizing bellow min/max corresponding to the whole dataset
+    feature_name_list.append("Avg. In-Degree W")
+    features_to_normalize.append("Avg. In-Degree W")
 
     # Average Betweenness Centrality
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = True) / 1) # Dividing by a parameter to make it not weigh as much
@@ -46,13 +52,20 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
 
 
 
-    # feature_list.append(Graph_metrics.average_clustering(G))
-    # feature_list.append(nx.average_shortest_path_length(G))
-    # feature_list.append(nx.density(G))
+    feature_list.append(Graph_metrics.average_clustering(G))
+    feature_name_list.append("Avg. Clustering Coef.")
 
-    # modularity, num_communities = Graph_metrics.modularity_louvain(G)
-    # feature_list.append(modularity)
+    feature_list.append(nx.average_shortest_path_length(G))
+    feature_name_list.append("Avg. Shortest Path Lengths")
+
+    feature_list.append(nx.density(G))
+    feature_name_list.append("Density")
+
+    modularity, num_communities = Graph_metrics.modularity_louvain(G)
+    feature_list.append(modularity)
+    feature_name_list.append("Modularity")
     # feature_list.append(num_communities)
+    # feature_name_list.append("#Communities")
 
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -88,7 +101,7 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # else:
     #     feature_list.append(0)
 
-    return feature_list, feature_name_list
+    return feature_list, feature_name_list, features_to_normalize
 
 
 
@@ -203,7 +216,7 @@ if __name__ == "__main__":
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
         print("\n\n---\n" + filename + "\n---\n\n")
-        features, feature_names = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
+        features, feature_names, features_to_normalize = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
         networks_feature_list.append(features)
 
 
@@ -211,10 +224,39 @@ if __name__ == "__main__":
         # Features from Time Window
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
 
+
+    # Normalizing Min-Max
+    feature_indices_to_norm = []
+    for i, feature in enumerate(feature_names):
+        if feature in features_to_normalize:
+            feature_indices_to_norm.append(i)
+
+
+    for feature_index in feature_indices_to_norm: # Per Feature to be normalized
+        # Finding the min and max values
+        min_feature_value = networks_feature_list[0][feature_index]
+        max_feature_value = networks_feature_list[0][feature_index]
+        for i in range(1, len(networks_feature_list)): # Per Song
+            song_feature_value = networks_feature_list[i][feature_index]
+            min_feature_value = min(min_feature_value, song_feature_value)
+            max_feature_value = max(max_feature_value, song_feature_value)
+        
+        # Normalizing
+        for i in range(len(networks_feature_list)): # Per Song
+            networks_feature_list[i][feature_index] -= min_feature_value
+            networks_feature_list[i][feature_index] /= (max_feature_value - min_feature_value)
+            
+
+
+
+
+
+
+
     # Features Names - Main
     feature_names = ["Song"] + feature_names
     # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "# Nodes"]
-    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
+    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path Lengths", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
 
 
     # Features Names - Time Window
