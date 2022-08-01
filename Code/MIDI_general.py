@@ -210,6 +210,39 @@ def midi_get_track(mid_file):
 
 
 
+def get_chosen_tracks():
+    """ Obtain the manually specified track from the file 'Chosen_Tracks.txt """
+
+    # Open file to read
+    with open("Chosen_Tracks.txt", "r") as f:
+        list_MIDI = f.readlines()
+
+    # Reorder
+    # Split each line by spaces and get first element to sort alphabetically per filename
+    list_MIDI.sort(key = lambda m: m.split(" ")[0], reverse = True)
+
+    list_MIDI = [line.rstrip()for line in list_MIDI] # Removing all new lines (to create the dictionary and because it wasn't the last one that didn't have a newline)
+
+    list_MIDI_file = [line + "\n" for line in list_MIDI] # Adding to every line
+    list_MIDI_file[-1] = list_MIDI_file[-1].rstrip() # Removing newline of last entry
+
+    # Write the reordered list
+    with open("Chosen_Tracks.txt", "w") as f:
+        f.writelines(list_MIDI_file)
+
+
+    # Create a dictionary which maps the filename to the chosen track
+    dict_tracks = {}
+    for file in list_MIDI:
+        entry = file.split(" ")
+        dict_tracks[entry[0]] = entry[1] # To each midi file we match it's chosen track index
+
+    
+
+    return dict_tracks
+
+
+
 
 if __name__ == "__main__":
     # Python File (Project) Location
