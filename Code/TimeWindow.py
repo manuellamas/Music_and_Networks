@@ -13,13 +13,13 @@ import Graph_metrics
 import Plot.Plotting_Time_Window as plt_time_window
 import MIDI_general
 
-def time_window_metrics(mid_file, eps = -1, plot = True):
+def time_window_metrics(mid_file, eps = -1, plot = True, track_index = None):
     G = nx.DiGraph() # Creating a directed graph
 
     program = None # Getting the track's program from the first program_chage (if there is any)
 
     # Working with single track
-    output = Music_Mapping.get_notes(mid_file, get_track_program = True) # A list with entries as [note, start_time, end_time]
+    output = Music_Mapping.get_notes(mid_file, get_track_program = True, track_index = track_index) # A list with entries as [note, start_time, end_time]
     if len(output) == 2:
         notes, program = output
     else:
@@ -149,8 +149,8 @@ def time_window_metrics(mid_file, eps = -1, plot = True):
 
 
 
-def time_window_features(mid_file):
-    metrics_list = time_window_metrics(mid_file, plot = False)
+def time_window_features(mid_file, track_index = None):
+    metrics_list = time_window_metrics(mid_file, plot = False, track_index = track_index)
     """ Creating features for a single song, looking at metrics overtime """
     features = [] # Average Metric 1, Variation Metric 2, Average Metric 2,...
     for metric in metrics_list:

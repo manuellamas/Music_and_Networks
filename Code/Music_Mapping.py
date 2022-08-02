@@ -9,6 +9,8 @@ def get_notes(mid_file , get_track_program = False, track_index = None, ticks = 
     """ Obtaining a list of the notes from a specific track from a MIDI file (MIDI Object)
     Returns a list with entries as [note, start_time, end_time] """
 
+
+
     if track_index is None:
         # Dealing with just one track for now, so we automatically pick the track with the most notes (if there's a tie, the first to occur gets picked)
         melody_track_index = melody_track(mid_file)
@@ -246,12 +248,12 @@ def get_note_pairs(notes, eps = -1, window = False):
 
 # -------------------- Graph Creation --------------------
 # DiGraph Weighted
-def graph_note_pairs_weighted(mid_file, eps = -1, ticks = False):
+def graph_note_pairs_weighted(mid_file, eps = -1, ticks = False, track_index = None):
     """ Creates a (Simple Directed) Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
     G = nx.DiGraph() # Creating a directed graph
 
     # # Working with single track
-    notes, total_ticks = get_notes(mid_file, ticks =  True) # Obtaining a list of notes, each entry of the list is of the form
+    notes, total_ticks = get_notes(mid_file, ticks =  True, track_index = track_index) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
     # Working with all tracks by "merging" the notes into a single (ordered) list

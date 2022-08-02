@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from Plotting import check_dir
 
 import mido
-from MIDI_general import midi_filename, midi_num_to_note
+import MIDI_general
 from Music_Mapping import get_notes, get_notes_rest
 
 
@@ -47,7 +47,7 @@ def get_midi_note_list(mid_file, with_rests = True, track_index = None):
 def format_y_ticks(value, tick_number):
     print(value)
     if int(value) == float(value):
-        midi_num_to_note(int(value))
+        MIDI_general.midi_num_to_note(int(value))
     else:
         return value
 
@@ -73,7 +73,7 @@ def plot_track(mid_file, with_rests = True, track_index = None):
     fig, ax = plt.subplots()
 
     note_list = get_midi_note_list(mid_file, with_rests, track_index) # Note list
-    filename = midi_filename(mid_file) # Getting the filename
+    filename = MIDI_general.midi_filename(mid_file) # Getting the filename
 
     note_order = [i for i in range(1, len(note_list) + 1)] # Just the order of the notes. 1,2,3,...
     # note_list being the notes numbers
@@ -175,10 +175,15 @@ if __name__ == "__main__":
         for mid in list_files:
             print(mid)
 
+        tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
         for mid in list_files: # Do this for all (.mid) files of the folder
             mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
+            ## To plot just one track
+            # filename = MIDI_general.midi_filename(mid_file)
+            # track_index = MIDI_general.track_from_dict(filename, tracks_indices)
             # plot_track(mid_file, with_rests = True)
+
             plot_all_tracks(mid_file, with_rests = True)
 
 

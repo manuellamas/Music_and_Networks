@@ -221,7 +221,9 @@ def get_chosen_tracks():
     # Split each line by spaces and get first element to sort alphabetically per filename
     list_MIDI.sort(key = lambda m: m.split(" ")[0], reverse = True)
 
-    list_MIDI = [line.rstrip()for line in list_MIDI] # Removing all new lines (to create the dictionary and because it wasn't the last one that didn't have a newline)
+    list_MIDI = [line for line in list_MIDI if line.rstrip() != ""] # Ignoring empty lines or that just contain whitespace
+
+    list_MIDI = [line.rstrip() for line in list_MIDI] # Removing all new lines (to create the dictionary and because it wasn't the last one that didn't have a newline)
 
     list_MIDI_file = [line + "\n" for line in list_MIDI] # Adding to every line
     list_MIDI_file[-1] = list_MIDI_file[-1].rstrip() # Removing newline of last entry
@@ -235,11 +237,25 @@ def get_chosen_tracks():
     dict_tracks = {}
     for file in list_MIDI:
         entry = file.split(" ")
-        dict_tracks[entry[0]] = entry[1] # To each midi file we match it's chosen track index
-
-    
+        dict_tracks[entry[0]] = int(entry[1]) # To each midi file we match its chosen track index
 
     return dict_tracks
+
+
+
+def track_from_dict(filename, tracks_indices):
+    """ Getting the track index from the file "Chosen_Tracks.txt" if it exists, else going for None (melody track) and warning the user """
+
+    if filename in tracks_indices:
+        print(filename, tracks_indices[filename])
+        return tracks_indices[filename]
+
+    else:
+        # print(filename, "No track assigned")
+        print(filename, "NONE")
+        return None # WHich will default to the "melody track"
+
+    # return
 
 
 

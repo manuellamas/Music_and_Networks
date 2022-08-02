@@ -115,7 +115,6 @@ def add_noise_to_track(track, percentage = 0.1, max_deviation = 5):
         message_on.note += note_noise
         message_off.note += note_noise
 
-        print(message_on)
 
 
     return track

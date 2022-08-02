@@ -57,13 +57,17 @@ if __name__ == "__main__":
     # Create the Graphs
     networks = []
     labels = [] # To distinguish each artist/band on plots
+
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
+
     for i in range(len(list_files)):
         label = list_folders[i]
         for mid in list_files[i]:
             mid_file = mido.MidiFile(dirs[i] + "\\" + mid, clip = True)
 
-            network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file)
             filename = MIDI_general.midi_filename(mid_file)
+            track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+            network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file, track_index = track_index)
 
             networks.append([network, mid_file, filename, notes])
             labels.append(label)

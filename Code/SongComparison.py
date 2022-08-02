@@ -55,12 +55,15 @@ if __name__ == "__main__":
         print("Looking into the files", list_files)
 
     # Create the Graphs
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
+    
     networks = []
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file)
         filename = MIDI_general.midi_filename(mid_file)
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+        network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file, track_index = track_index)
 
         networks.append([network, mid_file, filename, notes])
 

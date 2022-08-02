@@ -9,7 +9,7 @@ import csv
 import subprocess
 
 
-from MIDI_general import midi_filename
+import MIDI_general
 from Music_Mapping import get_notes, get_notes_rest
 import Plot.Plotting_Time_Series as plt_time_series
 
@@ -53,8 +53,12 @@ def features_from_MIDI_series_group(mid_file_list, num_quantiles):
 
     all_series = [] # List of all time series (one per each midi file)
 
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
+
     for mid_file in mid_file_list:
-        notes = get_notes(mid_file) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
+        filename = MIDI_general.midi_filename(mid_file)
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+        notes = get_notes(mid_file, track_index = track_index) # Obtaining a list of notes, each entry of the list is of the form [note, time_start, time_end]
         # notes = get_notes_rest(mid_file) # Obtaining a list of notes (with rests), each entry of the list is of the form [note, time_start, time_end]
 
         series = []
@@ -102,7 +106,7 @@ if __name__ == "__main__":
         series = features_from_MIDI_series(mid_file)
 
         # Plotting
-        filename = midi_filename(mid_file)
+        filename = MIDI_general.midi_filename(mid_file)
         plt_time_series.simple_time_series_plot(series, filename)
 
     elif sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
@@ -111,7 +115,7 @@ if __name__ == "__main__":
         series = features_from_MIDI_series(mid_file)
 
         # Plotting
-        filename = midi_filename(mid_file)
+        filename = MIDI_general.midi_filename(mid_file)
         plt_time_series.simple_time_series_plot(series, filename)
 
     else: # Run for every .mid file in the folder
@@ -133,5 +137,5 @@ if __name__ == "__main__":
             series = features_from_MIDI_series(mid_file)
 
             # Plotting
-            filename = midi_filename(mid_file)
+            filename = MIDI_general.midi_filename(mid_file)
             plt_time_series.simple_time_series_plot(series, filename)

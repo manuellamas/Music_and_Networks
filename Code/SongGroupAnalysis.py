@@ -178,12 +178,17 @@ if __name__ == "__main__":
 
     max_num_nodes = 0 # The max number of nodes of a Graph within this set
 
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
+
+    print("\n-----\nChosen Tracks:\n")
 
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True)
         filename = MIDI_general.midi_filename(mid_file)
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+
+        network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True, track_index = track_index)
 
         nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
         network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
@@ -215,14 +220,14 @@ if __name__ == "__main__":
             print("This MIDI file is of type 2 (asynchronous) and so the length can't be computed")
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
-        print("\n\n---\n" + filename + "\n---\n\n")
         features, feature_names, features_to_normalize = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
         networks_feature_list.append(features)
 
 
-                
+
         # Features from Time Window
-        networks_feature_time_list.append(TimeWindow.time_window_features(mid_file))
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+        networks_feature_time_list.append(TimeWindow.time_window_features(mid_file, track_index = track_index))
 
 
     # Normalizing Min-Max
