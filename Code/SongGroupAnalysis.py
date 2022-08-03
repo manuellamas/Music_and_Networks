@@ -28,22 +28,30 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
 
     # Normalizing all values except clustering that by default is already "normalized"
 
-    # Average In-degree Unweighted
-    feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
-    feature_name_list.append("Avg. In-Degree")
+    # # Average In-degree Unweighted
+    # feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
+    # feature_name_list.append("Avg. In-degree")
 
     # Average In-degree Weighted
     feature_list.append(Graph_metrics.average_indegree(G, normalize = False, weighted = True)) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name_list.append("Avg. In-Degree W")
-    features_to_normalize.append("Avg. In-Degree W")
+    feature_name_list.append("Avg. In-degree W")
+    features_to_normalize.append("Avg. In-degree W")
 
-    # Average Betweenness Centrality
-    feature_list.append(Graph_metrics.average_betweenness(G, normalize = True) / 1) # Dividing by a parameter to make it not weigh as much
-    feature_name_list.append("Avg. Betweenness Coef.")
+    # # Average Betweenness Centrality
+    # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
+    # feature_name_list.append("Avg. Betweenness Coef.")
 
-    # Average Closeness Centrality
-    feature_list.append(Graph_metrics.average_closeness(G, normalize = True))
-    feature_name_list.append("Avg. Closeness Coef.")
+    # Average Betweenness Centrality Weighted
+    feature_list.append(Graph_metrics.average_betweenness(G, normalize = True, weighted =  True))
+    feature_name_list.append("Avg. Betweenness Coef. W")
+
+    # # Average Closeness Centrality (Normalized by default)
+    # feature_list.append(Graph_metrics.average_closeness(G))
+    # feature_name_list.append("Avg. Closeness Coef.")
+
+    # Average Closeness Centrality (Normalized by default) Weighted
+    feature_list.append(Graph_metrics.average_closeness(G, weighted = True))
+    feature_name_list.append("Avg. Closeness Coef. W")
 
     # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
     # feature_list.append(G.number_of_nodes() / max_num_nodes)
@@ -51,14 +59,16 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
 
 
 
-
-    feature_list.append(Graph_metrics.average_clustering(G))
+    # Average Clustering Coefficient
+    feature_list.append(Graph_metrics.average_clustering(G)) # Doesn't use weight and is normalized by default
     feature_name_list.append("Avg. Clustering Coef.")
 
-    feature_list.append(nx.average_shortest_path_length(G))
-    feature_name_list.append("Avg. Shortest Path Lengths")
+    # Average Shortest Path Length (Normalized) Weighted
+    feature_list.append(nx.average_shortest_path_length(G, weight = "weight")) # Normalizing bellow min/max corresponding to the whole dataset
+    feature_name_list.append("Avg. Shortest Path Lengths W")
+    features_to_normalize.append("Avg. Shortest Path Lengths W")
 
-    feature_list.append(nx.density(G))
+    feature_list.append(nx.density(G)) # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.density.html?highlight=density#networkx.classes.function.density
     feature_name_list.append("Density")
 
     modularity, num_communities = Graph_metrics.modularity_louvain(G)
@@ -67,10 +77,6 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # feature_list.append(num_communities)
     # feature_name_list.append("#Communities")
 
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!
-    # For new features -> Don't forget to add the features names to feature_names and feature_time_names
-    # !!!!!!!!!!!!!!!!!!!!!!!!!
 
     # # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
     # if time_length != 0:
@@ -267,12 +273,6 @@ if __name__ == "__main__":
     # Features Names - Time Window
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
-
-    # Feature Table (Possibly DEPRECATED)
-    ## Feature table is now being outputted together with the cluster table 
-    ## plt_analysis.feature_table(networks_feature_list, feature_names, filenames, group_name)
-    ## plt_analysis.feature_table(networks_feature_time_list, feature_time_names, filenames, group_name, type = "time")
-    ## ----------------------------------------------------- ##
 
 
     ##############

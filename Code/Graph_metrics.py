@@ -25,11 +25,13 @@ def multidigraph_unique_edges(G):
         return G.number_of_edges()
 
 
-def list_betweenness_centrality(G, normalize = False):
+def list_betweenness_centrality(G, normalize = False, weighted = False):
     """ Returns a list with all betweenness centrality values """
 
-    # betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = "weight") # Using weight
-    betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = None)
+    if weighted:
+        betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = "weight") # Using weight
+    else:
+        betw_values = nx.betweenness_centrality(G, normalized = normalize, weight = None)
 
     rounded_values = []
 
@@ -39,9 +41,14 @@ def list_betweenness_centrality(G, normalize = False):
 
     return rounded_values
 
-def list_closeness_centrality(G, normalize = False):
-    """ Returns a list with all closeness centrality values (normalized) """
-    centr_values = nx.closeness_centrality(G, distance = "weight")
+def list_closeness_centrality(G, weighted = False):
+    """ Returns a list with all closeness centrality values """
+
+    if weighted:
+        centr_values = nx.closeness_centrality(G, distance = "weight")
+    else:
+        centr_values = nx.closeness_centrality(G)
+
 
     rounded_values = []
 
@@ -95,10 +102,10 @@ def average_indegree(G, normalize = False, weighted = False):
     return total_degree
 
 
-def average_betweenness(G, normalize = False):
+def average_betweenness(G, normalize = False, weighted = False):
     """ Returns the average betweenness centrality of a node """
     total = 0
-    between_list = list_betweenness_centrality(G, normalize = normalize)
+    between_list = list_betweenness_centrality(G, normalize = normalize, weighted = weighted)
 
     for value in between_list:
         total += value
@@ -112,10 +119,10 @@ def average_betweenness(G, normalize = False):
     return total
 
 
-def average_closeness(G, normalize = False):
+def average_closeness(G, weighted = False):
     """ Returns the average closeness centrality of a node """
     total = 0
-    closeness_list = list_closeness_centrality(G)
+    closeness_list = list_closeness_centrality(G, weighted = weighted)
 
     for value in closeness_list:
         total += value

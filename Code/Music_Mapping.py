@@ -95,55 +95,6 @@ def get_notes_rest(mid_file, track_index = None):
 
 
 
-""" DEPRECATED """
-def merge_tracks(mid_file):
-    """ Merge all tracks notes from a MIDI file into a single (ordered list) """
-
-    all_notes = [] # Contains all notes from the previously analyzed tracks
-    merge_all_notes = [] # List were notes from both all_notes and track_notes are being merged. Is created on each iteration
-    track_notes = [] # Notes of the track currently being analyzed
-
-    # Add the first track's notes directly in merge_all_notes
-    first_track = 0 # Index of first track with notes (i.e. not a "Meta" track)
-    all_notes = get_notes(mid_file, track_index = first_track)
-    while len(all_notes) == 0 and first_track < len(mid_file.tracks) - 1:
-        first_track += 1
-        all_notes = get_notes(mid_file, track_index = first_track)
-
-    for track_index in range(1 + first_track, len(mid_file.tracks)): # Adding all tracks of a song one by one
-        track_notes = get_notes(mid_file, track_index = track_index)
-
-        new_track_pointer = 0 # Pointer to the next note to analyze in the new track - tracks_notes
-        all_notes_pointer = 0 # Pointer to the next note to analyze in all_notes
-
-        # Analyze both track_notes and all_notes with a pointer in each (for the starting time of a node)
-        # and add note instances to all notes by moving along both track_notes and all_notes simultaneously
-        # Add the notes (smaller starting time first) on all_notes
-
-        while new_track_pointer < len(track_notes) and all_notes_pointer < len(all_notes):
-            if track_notes[new_track_pointer][1] < all_notes[all_notes_pointer][1]:
-                merge_all_notes.append(track_notes[new_track_pointer])
-                new_track_pointer += 1
-
-            else: # if all_notes note occurs earlier OR at the same time
-                merge_all_notes.append(all_notes[all_notes_pointer])
-                all_notes_pointer += 1
-
-
-        while new_track_pointer < len(track_notes): # Add track_notes notes if we haven't yet gone through the whole list
-            merge_all_notes.append(track_notes[new_track_pointer])
-            new_track_pointer += 1
-
-        while all_notes_pointer < len(all_notes): # Add all_notes notes if we haven't yet gone through the whole list
-            merge_all_notes.append(all_notes[all_notes_pointer])
-            all_notes_pointer += 1
-
-
-        # Update the list
-        all_notes = merge_all_notes
-        merge_all_notes = [] # Reset the list for the next iteration
-
-    return all_notes
 # -------------------- Obtaining list of notes End --------------------
 
 
@@ -272,35 +223,6 @@ def graph_note_pairs_weighted(mid_file, eps = -1, ticks = False, track_index = N
         return G, notes, notes_duration, total_ticks
 
 
-
-
-""" DEPRECATED """
-# MultiDiGraph (non-weighted) with an (optional) maximum interval eps between notes
-# Not using it for now since it doesn't work with "common" algorithms metrics
-def graph_note_multigraph(mid_file, eps = -1): # MultiDiGraph
-    """ Creates a Graph where each pair of notes that distance at most eps from each other originate a (directed) edge """
-
-    G = nx.MultiDiGraph() # Creating a directed multigraph
-    notes = get_notes(mid_file)
-
-    # def graph_note_multigraph(notes, eps, ticks_per_beat): # MultiDiGraph
-    # Calculate how long is a tick.
-    # ticks_per_beat
-    # print("One tick is:",)
-
-    if eps == -1:
-        for i in range(len(notes)-1):
-            G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
-
-    else:
-        # List of notes with entries as [note, start_time, end_time]
-        for i in range(len(notes)-1):
-            if notes[i+1][1] - notes[i][1] <= 1 and notes[i+1][1] - notes[i][1] > 0:
-                print(notes[i], notes[i+1])
-            if notes[i+1][1] - notes[i][1] < eps: # Only notes that are separated by at most epsilon ticks
-                G.add_edges_from([(notes[i][0], notes[i+1][0])], start = notes[i][1], end = notes[i+1][2])
-
-    return G, notes
 
 # ------------------------------------------------------------
 
