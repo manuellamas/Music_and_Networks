@@ -389,9 +389,9 @@ def valley(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, st
 
 if __name__ == "__main__":
     midi_synthetic(midi_fixed_note)
-    midi_synthetic(midi_fixed_note, tempo = 100_000)
-    midi_synthetic(midi_fixed_note, note_duration = 100)
-    midi_synthetic(midi_fixed_note, note = 126)
+    # midi_synthetic(midi_fixed_note, tempo = 100_000)
+    # midi_synthetic(midi_fixed_note, note_duration = 100)
+    # midi_synthetic(midi_fixed_note, note = 126)
 
     midi_synthetic(midi_repeat_aabb, up = True)
     midi_synthetic(midi_repeat_aabb, up = False)

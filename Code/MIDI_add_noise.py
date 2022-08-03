@@ -133,6 +133,6 @@ if __name__ == "__main__":
             add_noise(mid_file)
 
         else: # If parameters were specified
-            percentage = sys.argv[2]
-            max_deviation = sys.argv[3]
+            percentage = float(sys.argv[2])
+            max_deviation = int(sys.argv[3])
             add_noise(mid_file, percentage, max_deviation)
