@@ -108,8 +108,9 @@ def add_noise_to_track(track, percentage = 0.1, max_deviation = 5):
         else:
             max_increment = max_deviation
 
-
-        note_noise = random.randint(max_decrement, max_increment)
+        note_noise = 0
+        while note_noise == 0: # To make sure that there exists noise on that note (i.e. that the incremented/subtracted value isn't 0)
+            note_noise = random.randint(max_decrement, max_increment)
 
  
         message_on.note += note_noise
