@@ -146,7 +146,6 @@ def plot_track(mid_file, with_rests = True, track_index = None):
 
 
 if __name__ == "__main__":
-    # Input
     if sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
         mid = sys.argv[-1] # The path to the MIDI file given as argument
         mid_file = mido.MidiFile(mid, clip = True)
