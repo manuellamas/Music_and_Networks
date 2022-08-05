@@ -17,48 +17,49 @@ from Music_Mapping import graph_note_pairs_weighted
 
 
 
-# Read simple examples of networkx
-# G = nx.Graph()
-# G.add_edges_from([(0,1), (0,2), (1,2)])
-# nx.draw(G, with_labels = True)
-
-# plt.show()
-# G = graph_note_pairs_weighted(mid_file)
-
-
-
-
-## Replicate them
-## Create the graph (objet)
-## From the graph object create its graph representation (as simple as possible)
-# Tweak details
-
-## Allow it in bulk (i.e. choosing a directory)
-
-
-
-
 def create_graph_vis(G, filename):
     """ Creates a visualisation of a graph through a graph (networkx) object """
 
-    nx.draw(G, with_labels = True)
-
-
-
-
-    # Title
+    ## Title
     if track_index is None: # If it's not specified the track was the "melody" track
         filename += "_track_" + "melody"
     else:
         filename += "_track_" + str(track_index)
+    plt.title(filename)
 
 
-    plot_filename = filename + ".png"
-    representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
-    check_dir(representations_dir) # Checking if directory folder exists
+
+
+    ## Graph
+    pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
+
+    plt.figure(figsize=(12,12)) # Increasing canvas' size
+    nx.draw(G, with_labels = True, pos = pos, node_size = 400)
+
+    # for edge in G.edges(data = "weight"):
+    #     # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
+    #     nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = "red")
+
+
+
+
+    # Get maximum and minimum value of node degree
+
+    # Create a function that takes those two as input and a third which is the node to be changed's in-degree
+
+    # for node in G.nodes(data = "weight"):
+        # Get Node's indegree
+
+        # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = )
+
+
+    # Do something similar to edges' thickness, or maybe color using a color pallete that indicates it
 
 
     ## Exporting to PNG
+    plot_filename = filename + ".png"
+    representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
+    check_dir(representations_dir) # Checking if directory folder exists
 
     plt.savefig(representations_dir + "\\" + plot_filename)
     plt.close()
@@ -70,7 +71,6 @@ def create_graph_vis(G, filename):
 
 
 if __name__ == "__main__":
-    print("Hello")
     if sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
         mid = sys.argv[-1] # The path to the MIDI file given as argument
         mid_file = mido.MidiFile(mid, clip = True)
