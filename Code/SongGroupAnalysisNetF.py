@@ -62,8 +62,8 @@ if __name__ == "__main__":
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
         filename = MIDI_general.midi_filename(mid_file)
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
 
         network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file, track_index = track_index)
 
@@ -100,21 +100,9 @@ if __name__ == "__main__":
         netf_feature_list.append(netf_float) # Each entry is a list with the netf features of a midi file
 
 
-    # # Running the Rscript once per file
-    # filenames = []
-    # for i in range(len(networks)):
-    #     filenames.append(networks[i][2])
-
-    #     # Converting the values, that came as strings from the CSV, to floats
-    #     netf_strings = MIDITimeSeries.series_from_MIDI(networks[i][1])
-    #     netf_float = []
-    #     for i in range(len(netf_strings)):
-    #         netf_float.append(float(netf_strings[i]))
-    #     netf_feature_list.append(netf_float)
 
     # NetF Feature Table
     netf_feature_names = ["Song", "NVG - k", "NVG - d", "NVG - S", "NVG - C", "NVG - Q", "HVG - k" , "HVG - d", "HVG - S", "HVG - C", "HVG - Q", "QG - k", "QG - d", "QG - S", "QG - C", "QG - Q"]
-    # plt_analysis.feature_table(netf_feature_list, netf_feature_names, filenames, group_name, type = "netf")
 
 
 
@@ -123,15 +111,19 @@ if __name__ == "__main__":
     # NetF Clustering #
     ###################
 
-    # k-means
+    ## k-means
     kmean_predictions = kmeans_analysis(netf_feature_list)
     # plt_analysis.clustering_table(networks, kmean_predictions, "netf_k-means", group_name) # Just the clustering without the features values
     plt_analysis.cluster_feature_table(networks, kmean_predictions, "netf_k-means", netf_feature_list, netf_feature_names, filenames, group_name = group_name)
+    # -----
 
-    # DBSCAN
+
+
+
+    ## DBSCAN
     # dbscan_predictions = dbscan_analysis(netf_feature_list)
     # plt_analysis.clustering_table(networks, dbscan_predictions,"netf_DBSCAN", group_name)
-
+    # -----
 
 
 
