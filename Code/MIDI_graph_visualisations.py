@@ -34,26 +34,60 @@ def create_graph_vis(G, filename):
     pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
 
     plt.figure(figsize=(12,12)) # Increasing canvas' size
-    nx.draw(G, with_labels = True, pos = pos, node_size = 400)
+    # nx.draw(G, with_labels = True, pos = pos, node_size = 400)
+    nx.draw(G, with_labels = True, pos = pos)
+
+
+
+
+
+    # Do something similar to edges' thickness, or maybe color using a color pallete that indicates it
+
 
     # for edge in G.edges(data = "weight"):
     #     # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
     #     nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = "red")
 
 
+    ## Adjust this for edge's weight
+    # min_value = list(G.nodes)[0]
+    # max_value = list(G.nodes)[0]
+    # print(G.nodes(data = True))
+    # print(G.nodes(data = "weight"))
+    # for node in G:
+    #     print(node)
+    #     print(int(node))
+    #     max_value = max(max_value, node)
+    #     min_value = min(min_value, node)
 
 
-    # Get maximum and minimum value of node degree
+
+
+
+    ### Setting Node's size as its relative indegree value
+
+    ## Get maximum and minimum value of node degree
+
+    # Initializing both max and min values as the graph's "first" node's in-degree. "First" node of the list created from the directory (which represents the Graph and holds no order)
+    min_value = G.in_degree(list(G.nodes)[0])
+    max_value = G.in_degree(list(G.nodes)[0])
+    for node in G:
+        max_value = max(max_value, G.in_degree(node))
+        min_value = min(min_value, G.in_degree(node))
+
 
     # Create a function that takes those two as input and a third which is the node to be changed's in-degree
 
-    # for node in G.nodes(data = "weight"):
-        # Get Node's indegree
+    node_size_min = 100
+    node_size_max = 500
 
-        # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = )
+    for node in G.nodes:
+        # Get Node's indegree as a relative value (mapping from [min_value, max_value] to [node_size_min, node_size_max])
+        relative_value = node_size_min + (node_size_max - node_size_min)/(max_value - min_value)*(node - min_value)
+
+        nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
 
 
-    # Do something similar to edges' thickness, or maybe color using a color pallete that indicates it
 
 
     ## Exporting to PNG
