@@ -130,7 +130,8 @@ def create_graph_vis(G, filename):
                 edge_color = i - 1
                 break
         # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
-        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes) # node_size isn't used to draw here but to determine edge position
+        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.2") # node_size isn't used to draw here but to determine edge position
+        # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
 
 
 
@@ -186,6 +187,7 @@ if __name__ == "__main__":
         print("Running for the following files:")
         for mid in list_files:
             print(mid)
+        print("\n-----\n")
 
         tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
         for mid in list_files: # Do this for all (.mid) files of the folder
