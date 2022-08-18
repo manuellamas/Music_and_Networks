@@ -35,13 +35,50 @@ def create_graph_vis(G, filename):
 
     plt.figure(figsize=(12,12)) # Increasing canvas' size
     # nx.draw(G, with_labels = True, pos = pos, node_size = 400)
-    nx.draw(G, with_labels = True, pos = pos)
+    # nx.draw(G, with_labels = True, pos = pos)
+    nx.draw(G, nodelist = [], edgelist = [], with_labels = True, pos = pos) # Not drawing Nodes and Edges because they're already drawn later
 
 
 
+    #################
+    # Drawing Nodes #
+    #################
+
+    ### Setting Node's size as its relative indegree value
+
+    ## Get maximum and minimum value of node degree
+    # Initializing both max and min values as the graph's "first" node's in-degree. "First" node of the list created from the directory (which represents the Graph and holds no order)
+    min_node_indegree_value = G.in_degree(list(G.nodes)[0])
+    max_node_indegree_value = G.in_degree(list(G.nodes)[0])
+    for node in G.nodes:
+        min_node_indegree_value = min(min_node_indegree_value, G.in_degree(node))
+        max_node_indegree_value = max(max_node_indegree_value, G.in_degree(node))
 
 
-    # Do something similar to edges' thickness, or maybe color using a color pallete that indicates it
+
+    node_size_min = 200
+    node_size_max = 500
+
+    node_sizes = [] # Used to determine edge positioning when drawing edges
+    if len(G.nodes) > 1:
+        for node in G.nodes:
+            # Get Node's indegree as a relative value (mapping from [min_value, max_value] to [node_size_min, node_size_max])
+            relative_value = node_size_min + (node_size_max - node_size_min)/(max_node_indegree_value - min_node_indegree_value)*(node - min_node_indegree_value)
+
+            node_sizes.append(relative_value)
+            nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
+            # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value, label = str(node))
+
+        # nx.draw_networkx_labels(G, pos = pos)
+    else:
+        # nx.draw_networkx_nodes(G, pos, nodelist = [list(G)[0]], node_size = 300) # Same as below as it defaults nodelist to list(G)
+        nx.draw_networkx_nodes(G, pos, node_size = 300)
+        node_sizes.append(300) # Setting size for when the raph contains only one node
+
+
+    #################
+    # Drawing Edges #
+    #################
 
 
     # https://www.color-hex.com/color-palette/2539
@@ -75,12 +112,13 @@ def create_graph_vis(G, filename):
     edge_weight_divisons.append(max_edge_weight_value)
 
 
-    ## TESTING
-    print(edge_weight_divisons)
-    for i in range(num_edge_divisions):
-        print(min_edge_weight_value + i*edge_interval_length, min_edge_weight_value + (i+1)*edge_interval_length)
-        # print(min+i*ui,min+(i+1)*ui)
-    ## TESTING
+    # ## TESTING
+    # print(edge_weight_divisons)
+    # for i in range(num_edge_divisions):
+    #     print(i, min_edge_weight_value + i*edge_interval_length, min_edge_weight_value + (i+1)*edge_interval_length)
+    #     # print(min+i*ui,min+(i+1)*ui)
+    # print("\n-----\n")
+    # ## TESTING
 
 
     ## -----
@@ -94,30 +132,9 @@ def create_graph_vis(G, filename):
                 edge_color = i - 1
                 break
         # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
-        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color])
+        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes) # node_size isn't used to draw here but to determine edge position
 
 
-
-    ### Setting Node's size as its relative indegree value
-
-    ## Get maximum and minimum value of node degree
-    # Initializing both max and min values as the graph's "first" node's in-degree. "First" node of the list created from the directory (which represents the Graph and holds no order)
-    min_node_indegree_value = G.in_degree(list(G.nodes)[0])
-    max_node_indegree_value = G.in_degree(list(G.nodes)[0])
-    for node in G.nodes:
-        min_node_indegree_value = min(min_node_indegree_value, G.in_degree(node))
-        max_node_indegree_value = max(max_node_indegree_value, G.in_degree(node))
-
-
-
-    node_size_min = 100
-    node_size_max = 500
-
-    for node in G.nodes:
-        # Get Node's indegree as a relative value (mapping from [min_value, max_value] to [node_size_min, node_size_max])
-        relative_value = node_size_min + (node_size_max - node_size_min)/(max_node_indegree_value - min_node_indegree_value)*(node - min_node_indegree_value)
-
-        nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
 
 
 
