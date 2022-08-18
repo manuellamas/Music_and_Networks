@@ -60,9 +60,8 @@ def create_graph_vis(G, filename):
     node_size_max = 500
 
     node_sizes = [] # Used to determine edge positioning when drawing edges
-    if len(G.nodes) > 1:
-        print(min_node_indegree_value, max_node_indegree_value)
-        print(node_size_min, node_size_max)
+    # if len(G.nodes) > 1:
+    if max_node_indegree_value != min_node_indegree_value:
         for node in G.nodes:
             # Current node in-degree
             node_indegree = G.in_degree(node)
@@ -75,10 +74,14 @@ def create_graph_vis(G, filename):
             # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value, label = str(node))
 
         # nx.draw_networkx_labels(G, pos = pos)
-    else:
-        # nx.draw_networkx_nodes(G, pos, nodelist = [list(G)[0]], node_size = 300) # Same as below as it defaults nodelist to list(G)
-        nx.draw_networkx_nodes(G, pos, node_size = 300)
-        node_sizes.append(300) # Setting size for when the raph contains only one node
+    else: # If all nodes have the same in-degree value
+        node_fixed_size = int((node_size_max-node_size_min)/2) # Fix size for all nodes
+        
+        # nx.draw_networkx_nodes(G, pos, nodelist = [list(G)[0]], node_size = node_fixed_size) # Same as below as it defaults nodelist to list(G)
+        nx.draw_networkx_nodes(G, pos, node_size = node_fixed_size)
+
+        node_sizes = [node_fixed_size for i in range(len(list(G.nodes)))] # Setting the same size for all nodes
+        # node_sizes.append(node_fixed_size) # Setting the same size for all nodes
 
 
     #################
@@ -115,16 +118,6 @@ def create_graph_vis(G, filename):
     
     edge_weight_divisons = [min_edge_weight_value + i*edge_interval_length for i in range(num_edge_divisions - 1)]
     edge_weight_divisons.append(max_edge_weight_value)
-
-
-    # ## TESTING
-    # print(edge_weight_divisons)
-    # for i in range(num_edge_divisions):
-    #     print(i, min_edge_weight_value + i*edge_interval_length, min_edge_weight_value + (i+1)*edge_interval_length)
-    #     # print(min+i*ui,min+(i+1)*ui)
-    # print("\n-----\n")
-    # ## TESTING
-
 
     ## -----
 
