@@ -61,9 +61,14 @@ def create_graph_vis(G, filename):
 
     node_sizes = [] # Used to determine edge positioning when drawing edges
     if len(G.nodes) > 1:
+        print(min_node_indegree_value, max_node_indegree_value)
+        print(node_size_min, node_size_max)
         for node in G.nodes:
+            # Current node in-degree
+            node_indegree = G.in_degree(node)
+
             # Get Node's indegree as a relative value (mapping from [min_value, max_value] to [node_size_min, node_size_max])
-            relative_value = node_size_min + (node_size_max - node_size_min)/(max_node_indegree_value - min_node_indegree_value)*(node - min_node_indegree_value)
+            relative_value = node_size_min + (node_size_max - node_size_min)/(max_node_indegree_value - min_node_indegree_value)*(node_indegree - min_node_indegree_value)
 
             node_sizes.append(relative_value)
             nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
