@@ -116,7 +116,7 @@ def kmeans_analysis(networks_features):
     num_clusters = np.arange(2, min(5, len(networks_features))) # The 5 here where did it come from?
     results = {}
     for size in num_clusters:
-        kmeans = KMeans(n_clusters = size).fit(networks_features)
+        kmeans = KMeans(n_clusters = size).fit(networks_features) # The algorithm used by default is Lloyd's https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
         predictions = kmeans.predict(networks_features)
         results[size] = silhouette_score(networks_features, predictions)
 

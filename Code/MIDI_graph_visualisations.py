@@ -130,7 +130,7 @@ def create_graph_vis(G, filename):
                 edge_color = i - 1
                 break
         # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
-        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.2") # node_size isn't used to draw here but to determine edge position
+        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.15") # node_size isn't used to draw here but to determine edge position
         # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
 
 

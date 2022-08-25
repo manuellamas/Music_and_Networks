@@ -275,6 +275,24 @@ def midi_random_tendency(track, note_duration = NOTE_DURATION, note_spacing = NO
 
 
 
+#####################################
+## Examples to place in the thesis ##
+#####################################
+
+def midi_mapping_example(track):
+    notes_list = [60, 62, 60, 64, 64, 60, 62]
+
+    for note in notes_list:
+        message_on = mido.Message('note_on', note = note, velocity = VELOCITY, time = NOTE_SPACING)
+        track.append(message_on)
+
+        message_off = mido.Message('note_off', note = note, velocity = VELOCITY, time = NOTE_DURATION)
+        track.append(message_off)
+
+    return "mapping_example", NOTE_DURATION, NOTE_SPACING
+
+
+
 ##################################################
 #------------------------------------------------#
 ##################################################
@@ -424,7 +442,9 @@ if __name__ == "__main__":
 
 
 
-
+    # Examples
+    # To exemplify mapping
+    midi_synthetic(midi_mapping_example)
 
 
 
