@@ -282,7 +282,7 @@ def get_chosen_tracks():
     # Create a dictionary which maps the filename to the chosen track
     dict_tracks = {}
     for file in list_MIDI:
-        entry = file.split(" ")
+        entry = file.rsplit(" ", maxsplit = 1)
         dict_tracks[entry[0]] = int(entry[1]) # To each midi file we match its chosen track index
 
     return dict_tracks
