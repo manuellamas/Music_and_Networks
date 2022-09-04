@@ -210,6 +210,52 @@ def midi_get_track(mid_file):
 
 
 
+def midi_split_tracks(mid_file):
+    """ Creates a MIDI file per non meta track in the original MIDI """
+
+
+    # melody_track_index = melody_track(mid_file)
+    # print("The chosen track was:", melody_track_index)
+    meta_track_index = first_meta_track(mid_file)
+    # new_mid = mido.MidiFile()
+
+    if meta_track_index is not None: # Adding a MetaTrack (if it exists)
+        new_meta_track = mido.MidiTrack()
+        # new_mid.tracks.append(new_meta_track)
+
+        meta_track = mid_file.tracks[meta_track_index]
+        for msg in meta_track:
+            new_meta_track.append(msg)
+
+    # print("Meta track is", meta_track_index)
+    # for i, track in enumerate(mid_file.tracks):
+    #     print('Track {}: {}'.format(i, track.name))
+    #     for msg in track:
+    #         print(msg)
+
+    # print("\n\n-----\n\n")
+
+    for i, track in enumerate(mid_file.tracks):
+        new_mid = mido.MidiFile()
+
+        if meta_track_index is not None:
+            if i == meta_track_index: continue # Don't create a MIDI for the meta track
+            new_mid.tracks.append(new_meta_track)
+
+        new_track = mido.MidiTrack()
+        new_mid.tracks.append(new_track)
+
+        for msg in track:
+            new_track.append(msg)
+
+        filename = midi_filename(mid_file)
+
+        new_mid.save("Split_Tracks\\" + filename + "_track" + str(i).zfill(2) + ".mid")
+
+    return
+
+
+
 def get_chosen_tracks():
     """ Obtain the manually specified track from the file 'Chosen_Tracks.txt """
 
@@ -265,33 +311,38 @@ if __name__ == "__main__":
     program_directory = os.path.dirname(__file__) # Where the Python script being ran is
     parent_directory = os.path.split(program_directory)[0]
 
-    try:
-        if sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
+    # try:
+    if sys.argv[-1][-3:].lower() == "mid": # Run for one specific .mid file
 
-            file_path = sys.argv[-1]
-            mid_file = mido.MidiFile(file_path, clip = True)
+        file_path = sys.argv[-1]
+        mid_file = mido.MidiFile(file_path, clip = True)
 
-            filename = midi_filename(mid_file)
-            midi_file_overview(mid_file, filename)
-            midi_get_track(mid_file)
-        else: # Run for all MIDI in a folder
-            files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
+        filename = midi_filename(mid_file)
+        midi_file_overview(mid_file, filename)
+        
+        # midi_get_track(mid_file)
+        midi_split_tracks(mid_file)
+    else: # Run for all MIDI in a folder
+        files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
 
-            # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
-            list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
+        # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
+        list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
 
-            if len(list_files) == 0:
-                print("The folder does not have any MIDI files")
-                exit()
+        if len(list_files) == 0:
+            print("The folder does not have any MIDI files")
+            exit()
 
-            print("Running for the following files:")
-            for mid in list_files:
-                print(mid)
+        print("Running for the following files:")
+        for mid in list_files:
+            print(mid)
 
-            for mid in list_files:
-                mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-                midi_get_track(mid_file)
+        for mid in list_files:
+            mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
+        
+            # midi_get_track(mid_file)
+            midi_split_tracks(mid_file)
 
-    except:
-        print("No path to a MIDI or Folder was provided")
-        print("Check if 'Melody_Tracks' folder exists at Root")
+    # except:
+    #     print("No path to a MIDI or Folder was provided")
+    #     # print("Check if 'Melody_Tracks' folder exists at Root")
+    #     print("Check if 'Split_Tracks' folder exists at Root")
