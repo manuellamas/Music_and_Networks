@@ -42,8 +42,9 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # feature_name_list.append("Avg. Betweenness Coef.")
 
     # Average Betweenness Centrality Weighted
-    feature_list.append(Graph_metrics.average_betweenness(G, normalize = True, weighted =  True))
+    feature_list.append(Graph_metrics.average_betweenness(G, normalize = False, weighted =  True))
     feature_name_list.append("Avg. Betweenness Coef. W")
+    features_to_normalize.append("Avg. Betweenness Coef. W")
 
     # # Average Closeness Centrality (Normalized by default)
     # feature_list.append(Graph_metrics.average_closeness(G))
@@ -52,6 +53,7 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # Average Closeness Centrality (Normalized by default) Weighted
     feature_list.append(Graph_metrics.average_closeness(G, weighted = True))
     feature_name_list.append("Avg. Closeness Coef. W")
+    features_to_normalize.append("Avg. Closeness Coef. W")
 
     # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
     # feature_list.append(G.number_of_nodes() / max_num_nodes)

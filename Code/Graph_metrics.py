@@ -85,8 +85,8 @@ def average_indegree(G, normalize = False, weighted = False):
 
         # Normalizing by the dataset, so it's done after all features have been collected
 
-        # if normalize:
-        #     total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs
+        if normalize:
+            total_degree = total_degree/(G.number_of_nodes()) # For Directed Unweighted Grahs (with loops)
         #     # total_degree = total_degree/(G.number_of_nodes() - 1) * G.number_of_nodes() # For Undirected (Unweighted) Graphs
 
     else:
