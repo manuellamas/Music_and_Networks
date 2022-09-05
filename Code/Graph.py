@@ -69,8 +69,11 @@ if __name__ == "__main__":
             Plotting.degree_distribution_scatter_plot(G, filename)
             Plotting.edges_rank(G, filename)
 
-            G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
+            # G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
             nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + ".graphml") # Exporting graph to a graphml file
+
+
+
         else: # Run for every MIDI in a folder
             files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
 

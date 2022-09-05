@@ -53,7 +53,7 @@ def format_y_ticks(value, tick_number):
 
 
 
-def plot_all_tracks(mid_file, with_rests = True, synthetic = True):
+def plot_all_tracks(mid_file, with_rests = True, folder_name = ""):
     """ Plots the representation of all tracks of a MIDI file """
     for track_index, track in enumerate(mid_file.tracks):
 
@@ -64,11 +64,11 @@ def plot_all_tracks(mid_file, with_rests = True, synthetic = True):
                 break
 
         if not empty_track:
-            plot_track(mid_file, with_rests = True, track_index = track_index, synthetic = synthetic)
+            plot_track(mid_file, with_rests = True, track_index = track_index, folder_name = folder_name)
 
 
 
-def plot_track(mid_file, with_rests = True, track_index = None, synthetic = True):
+def plot_track(mid_file, with_rests = True, track_index = None, folder_name = ""):
     """ Plots a representation of a MIDI file specific track (the melody one if not specified) """
     fig, ax = plt.subplots()
 
@@ -124,10 +124,11 @@ def plot_track(mid_file, with_rests = True, track_index = None, synthetic = True
 
     plot_filename = filename + ".png"
 
-    if synthetic:
+    if folder_name == "":
         representations_dir = config.ROOT + "\\Music_Representations"
     else:
-        representations_dir = config.ROOT + "\\Music_Representations\\Songs"
+        representations_dir = config.ROOT + "\\Music_Representations\\Songs" + "\\" + folder_name + "_representations"
+        # representations_dir = config.ROOT + "\\Music_Representations\\Songs" + "\\" + filename # To create a folder for each MIDI
 
     check_dir(representations_dir) # Checking if directory folder exists
 
@@ -156,18 +157,19 @@ if __name__ == "__main__":
         mid_file = mido.MidiFile(mid, clip = True)
 
         # plot_track(mid_file, with_rests = True)
-        plot_all_tracks(mid_file, with_rests = True, synthetic = False)
+        plot_all_tracks(mid_file, with_rests = True, folder_name = "")
     
     else:
         if len(sys.argv) == 1: # Runnning at Code\MIDI_files\synthetic
             print("Running at Code\MIDI_files\synthetic")
             files_directory = config.ROOT + "\\" + "MIDI_files\\synthetic" # Synthetic (generated) files folder
-            synthetic =  True
+            folder_name = ""
 
         else: # Points to another directory
             files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
             synthetic =  False
 
+            folder_name = sys.argv[-1].rsplit("\\")[-1]
 
 
         # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
@@ -190,6 +192,6 @@ if __name__ == "__main__":
             # track_index = MIDI_general.track_from_dict(filename, tracks_indices)
             # plot_track(mid_file, with_rests = True)
 
-            plot_all_tracks(mid_file, with_rests = True, synthetic = synthetic)
+            plot_all_tracks(mid_file, with_rests = True, folder_name = folder_name)
 
 

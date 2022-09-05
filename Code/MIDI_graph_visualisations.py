@@ -17,7 +17,7 @@ from Music_Mapping import graph_note_pairs_weighted
 
 
 
-def create_graph_vis(G, filename):
+def create_graph_vis(G, filename, folder_name = ""):
     """ Creates a visualisation of a graph through a graph (networkx) object """
 
     ## Title
@@ -48,11 +48,11 @@ def create_graph_vis(G, filename):
 
     ## Get maximum and minimum value of node degree
     # Initializing both max and min values as the graph's "first" node's in-degree. "First" node of the list created from the directory (which represents the Graph and holds no order)
-    min_node_indegree_value = G.in_degree(list(G.nodes)[0])
-    max_node_indegree_value = G.in_degree(list(G.nodes)[0])
+    min_node_indegree_value = G.in_degree(list(G.nodes)[0], weight = "weight")
+    max_node_indegree_value = G.in_degree(list(G.nodes)[0], weight = "weight")
     for node in G.nodes:
-        min_node_indegree_value = min(min_node_indegree_value, G.in_degree(node))
-        max_node_indegree_value = max(max_node_indegree_value, G.in_degree(node))
+        min_node_indegree_value = min(min_node_indegree_value, G.in_degree(node, weight = "weight"))
+        max_node_indegree_value = max(max_node_indegree_value, G.in_degree(node, weight = "weight"))
 
 
 
@@ -64,7 +64,7 @@ def create_graph_vis(G, filename):
     if max_node_indegree_value != min_node_indegree_value:
         for node in G.nodes:
             # Current node in-degree
-            node_indegree = G.in_degree(node)
+            node_indegree = G.in_degree(node, weight = "weight")
 
             # Get Node's indegree as a relative value (mapping from [min_value, max_value] to [node_size_min, node_size_max])
             relative_value = node_size_min + (node_size_max - node_size_min)/(max_node_indegree_value - min_node_indegree_value)*(node_indegree - min_node_indegree_value)
@@ -140,7 +140,11 @@ def create_graph_vis(G, filename):
 
     ## Exporting to PNG
     plot_filename = filename + ".png"
-    representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
+    if folder_name == "":
+        representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
+    else:
+        representations_dir = config.ROOT + "\\Music_Graph_Visualisations" + "\\" + folder_name + "graph_vis"
+
     check_dir(representations_dir) # Checking if directory folder exists
 
     plt.savefig(representations_dir + "\\" + plot_filename)
@@ -171,10 +175,11 @@ if __name__ == "__main__":
         if len(sys.argv) == 1: # Runnning at Code\MIDI_files\synthetic
             print("Running at Code\MIDI_files\synthetic")
             files_directory = config.ROOT + "\\" + "MIDI_files\\synthetic" # Synthetic (generated) files folder
+            folder_name = ""
 
         else: # Points to another directory
             files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
-
+            folder_name = sys.argv[-1].rsplit("\\")[-1]
 
 
         # Obtain a list of the file names of all MIDI files in the directory specified. Only those in the "root" and not in a subdirectory
@@ -199,4 +204,4 @@ if __name__ == "__main__":
 
             # Create the graph and its visualisation
             G, notes, notes_duration = graph_note_pairs_weighted(mid_file, track_index = track_index)
-            create_graph_vis(G, filename)
+            create_graph_vis(G, filename, folder_name = folder_name)
