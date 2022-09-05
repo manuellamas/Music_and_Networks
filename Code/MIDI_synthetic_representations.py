@@ -53,7 +53,7 @@ def format_y_ticks(value, tick_number):
 
 
 
-def plot_all_tracks(mid_file, with_rests = True):
+def plot_all_tracks(mid_file, with_rests = True, synthetic = True):
     """ Plots the representation of all tracks of a MIDI file """
     for track_index, track in enumerate(mid_file.tracks):
 
@@ -64,11 +64,11 @@ def plot_all_tracks(mid_file, with_rests = True):
                 break
 
         if not empty_track:
-            plot_track(mid_file, with_rests = True, track_index = track_index)
+            plot_track(mid_file, with_rests = True, track_index = track_index, synthetic = synthetic)
 
 
 
-def plot_track(mid_file, with_rests = True, track_index = None):
+def plot_track(mid_file, with_rests = True, track_index = None, synthetic = True):
     """ Plots a representation of a MIDI file specific track (the melody one if not specified) """
     fig, ax = plt.subplots()
 
@@ -123,7 +123,12 @@ def plot_track(mid_file, with_rests = True, track_index = None):
 
 
     plot_filename = filename + ".png"
-    representations_dir = config.ROOT + "\\Music_Representations"
+
+    if synthetic:
+        representations_dir = config.ROOT + "\\Music_Representations"
+    else:
+        representations_dir = config.ROOT + "\\Music_Representations\\Songs"
+
     check_dir(representations_dir) # Checking if directory folder exists
 
 
@@ -151,15 +156,17 @@ if __name__ == "__main__":
         mid_file = mido.MidiFile(mid, clip = True)
 
         # plot_track(mid_file, with_rests = True)
-        plot_all_tracks(mid_file, with_rests = True)
+        plot_all_tracks(mid_file, with_rests = True, synthetic = False)
     
     else:
         if len(sys.argv) == 1: # Runnning at Code\MIDI_files\synthetic
             print("Running at Code\MIDI_files\synthetic")
             files_directory = config.ROOT + "\\" + "MIDI_files\\synthetic" # Synthetic (generated) files folder
+            synthetic =  True
 
         else: # Points to another directory
             files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
+            synthetic =  False
 
 
 
@@ -183,6 +190,6 @@ if __name__ == "__main__":
             # track_index = MIDI_general.track_from_dict(filename, tracks_indices)
             # plot_track(mid_file, with_rests = True)
 
-            plot_all_tracks(mid_file, with_rests = True)
+            plot_all_tracks(mid_file, with_rests = True, synthetic = synthetic)
 
 
