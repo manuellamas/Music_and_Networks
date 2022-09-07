@@ -110,7 +110,7 @@ def average_betweenness(G, normalize = False, weighted = False):
     for value in between_list:
         total += value
 
-    if total/len(between_list) > 1:
+    if not weighted and total/len(between_list) > 1:
         print("Avg Bet Higher than 1")
 
     # Get the average value
