@@ -13,7 +13,7 @@ import config
 
 
 
-def midi_split_tracks(mid_file, folder_path = ""):
+def midi_split_tracks(mid_file, folder_path = "", full_analysis = ""):
     """ Creates a MIDI file per non meta track in the original MIDI """
 
 
@@ -38,20 +38,28 @@ def midi_split_tracks(mid_file, folder_path = ""):
 
     # print("\n\n-----\n\n")
 
-    if folder_path == "":
-        split_tracks_dir = config.ROOT + "\\Split_Tracks"
-    else:
-        split_tracks_dir = config.ROOT + "\\Split_Tracks\\" + folder_path
-        check_dir(split_tracks_dir)
+    if full_analysis == "":
+        if folder_path == "":
+            split_tracks_dir = config.ROOT + "\\Split_Tracks"
+        else:
+            split_tracks_dir = config.ROOT + "\\Split_Tracks\\" + folder_path
+    else: # Doing full analysis (Graph visualisation, synthetic representation,...)
+        split_tracks_dir = full_analysis + "\\Split_Tracks"
+
+    
+    check_dir(split_tracks_dir)
 
     print("Tracks split at", split_tracks_dir)
 
     for i, track in enumerate(mid_file.tracks):
         new_mid = mido.MidiFile()
 
+        if check_is_track_meta(track): # If the track doesn't contain any note_on or note_off messages, the track will not be created as a separate MIDI
+            continue
+
         if meta_track_index is not None:
             if i == meta_track_index: continue # Don't create a MIDI for the meta track
-            new_mid.tracks.append(new_meta_track)
+            new_mid.tracks.append(new_meta_track) # Add the meta track to all other new MIDIs
 
         new_track = mido.MidiTrack()
         new_mid.tracks.append(new_track)
