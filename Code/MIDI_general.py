@@ -18,15 +18,25 @@ def first_meta_track(mid_file):
     """ Returns the first track that only contains MetaMessages (if it exists) """
 
     for i, track in enumerate(mid_file.tracks):
-        track_is_only_meta = True
-        for msg in track:
-            if not msg.is_meta:
-                track_is_only_meta = False
-                break
-        if track_is_only_meta:
+        if check_is_track_meta(track):
             return i
 
     return None
+
+
+
+def check_is_track_meta(track):
+    """ Checks if a track contains any note_on or note_off message """
+    # If any message is either note_on or note_off, then the track is not "meta", i.e.,
+    # doesn't only contain meta messages or non-meta messages that do not start or end a note
+
+    track_is_only_meta = True
+    for msg in track:
+        if msg.type in ["note_on", "note_off"]: # If any message is either note_on or note_off, then the track is not "meta"
+            track_is_only_meta = False
+            break
+    return track_is_only_meta
+
 
 
 def melody_track(mid_file):
