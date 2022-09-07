@@ -57,7 +57,7 @@ def degree_distribution_histogram(G, filename):
 
 
 
-def degree_distribution_scatter_plot(G, filename):
+def degree_distribution_scatter_plot(G, filename, files_directory = ""):
     degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
     degree_sequence = np.array(degree_sequence_list)
 
@@ -82,8 +82,16 @@ def degree_distribution_scatter_plot(G, filename):
     ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True)) # Sets the ticks to only be integers
 
     plt.scatter(labels, relative_counts, s=10)
+
     plot_filename = filename + "_Degree_Distribution" + ".png"
-    export_directory = config.ROOT + "\\Plots\\Single\\" + plot_filename
+    
+    if files_directory == "":
+        export_directory = config.ROOT + "\\Plots\\Single"
+    else:
+        export_directory = files_directory + "\\SongGroupAnalysis\\Single"
+    check_dir(export_directory)
+
+    export_directory += "\\" + plot_filename
     plt.savefig(export_directory)
     print("Plot at", export_directory)
 
@@ -119,7 +127,7 @@ def edges_rank_network(network, plot_type, top = 20):
 
     return edges_list_formatted
 
-def edges_rank(network, filename, top = 20):
+def edges_rank(network, filename, files_directory = "", top = 20):
     """ Plots a table with the rank of the edges by weight """
 
     edges_list_formatted = edges_rank_network(network, "single", top)
@@ -135,7 +143,16 @@ def edges_rank(network, filename, top = 20):
     fig.tight_layout()
 
     plot_filename = filename + "_Edge_Rank" + ".png"
-    export_directory = config.ROOT + "\\Plots\\Single\\" + plot_filename
+
+    if files_directory == "":
+        export_directory = config.ROOT + "\\Plots\\Single"
+    else:
+        export_directory = files_directory + "\\SongGroupAnalysis\\Single"
+    
+    check_dir(export_directory)
+
+    export_directory += "\\" + plot_filename
+    
     plt.savefig(export_directory)
     print("Plot at", export_directory)
 

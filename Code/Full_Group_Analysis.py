@@ -6,6 +6,8 @@ And creating a folder for each on the original file or folder's directory for ea
 - Time series representation / Synthetic representation
 - Splitting Tracks
 - SongGroup Analysis
+# From Plotting (for each file separately)
+# SongComparison (for the whole)
 (Might add) Graphml through SongGroup Analysis (just change where it's created)
 """
 
@@ -25,7 +27,7 @@ from MIDI_graph_visualisations import create_graph_vis
 from MIDI_synthetic_representations import plot_all_tracks
 from MIDI_tracks import midi_split_tracks
 from SongGroupAnalysis import main_analysis
-
+import Plotting
 
 def print_section_title(section):
     """ To improve readability on command line output (prints) """
@@ -109,6 +111,10 @@ if __name__ == "__main__":
 
             # Split Tracks
             midi_split_tracks(mid_file, full_analysis = files_directory)
+
+            # Graph Metrics Plots
+            Plotting.degree_distribution_scatter_plot(G, filename, files_directory)
+            Plotting.edges_rank(G, filename, files_directory)
 
         # Song Group Analysis
         print_section_title("Song Group Analysis")
