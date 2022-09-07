@@ -114,6 +114,7 @@ if __name__ == "__main__":
             midi_split_tracks(mid_file, full_analysis = files_directory)
 
             # Graph Metrics Plots
+            check_dir(files_directory + "\\SongGroupAnalysis")
             Plotting.degree_distribution_scatter_plot(G, filename, files_directory)
             Plotting.edges_rank(G, filename, files_directory)
 
