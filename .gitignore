@@ -41,6 +41,11 @@ Split_Tracks
 # SongArena - Used to place two files so that they can be compared
 # SongArena
 
+# Output of Full_Group_Analysis
+**/Graph_Visualisations
+**/SongGroupAnalysis
+**/Time_Series_Representation
+
 # Possible routes that are not to be considered for now
 Music_Mapping_Higher_Order.py
 Music_Mapping_Multilayer.py

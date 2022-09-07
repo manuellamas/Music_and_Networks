@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from Plotting import check_dir
+
 import config
 
-def clustering_table(networks, cluster_predictions, model, group_name = "", labels = None, time = False):
+def clustering_table(networks, cluster_predictions, model, files_directory, labels = None, time = False):
     """ Plots a table with the songs/networks and its cluster resulting of the specified model """
 
     cluster_list = []
@@ -79,12 +81,16 @@ def clustering_table(networks, cluster_predictions, model, group_name = "", labe
 
     fig.tight_layout()
 
-    export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clustering.png"
+    # Export to PNG
+    group_name = files_directory.rsplit("\\",1)[-1]
+    export_directory = files_directory + "\\SongGroupAnalysis"
+    check_dir(export_directory)
 
+    plot_filename = group_name + "_" + model + "_clustering.png"
 
-    plt.savefig(export_directory)
+    plt.savefig(export_directory + "\\" + plot_filename)
     plt.close()
-    print("Plot at", export_directory)
+    print("Plot at", export_directory + "\\" + plot_filename)
 
 
 
@@ -167,7 +173,7 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
 
 
 
-def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, file_names, type = None, group_name = "", time = False):
+def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, file_names, type = None, time = False, files_directory = ""):
     """ Seeing the clustering and the features in the same table """
 
     cluster_list = []
@@ -264,11 +270,22 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
 
     fig.tight_layout()
 
-    export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + "_" + model + "_clusteringAndFeatures.png"
+
+    # Export to PNG
+    if files_directory == "":
+        export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis" + plot_filename
+        group_name = ""
+    else:
+        export_directory = files_directory + "\\SongGroupAnalysis"
+        group_name = files_directory.rsplit("\\",1)[-1]
+
+    check_dir(export_directory)
+
+    plot_filename = group_name + "_" + model + "_clusteringAndFeatures.png"
 
 
-    plt.savefig(export_directory, bbox_inches =  "tight")
+    plt.savefig(export_directory + "\\" + plot_filename, bbox_inches =  "tight")
     plt.close()
-    print("Plot at", export_directory)    
+    print("Plot at", export_directory + "\\" + plot_filename)
     
     return

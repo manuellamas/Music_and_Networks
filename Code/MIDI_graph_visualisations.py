@@ -17,7 +17,7 @@ from Music_Mapping import graph_note_pairs_weighted
 
 
 
-def create_graph_vis(G, filename, folder_name = ""):
+def create_graph_vis(G, filename, track_index = None, folder_name = "", full_analysis = "", single_file = False):
     """ Creates a visualisation of a graph through a graph (networkx) object """
 
     ## Title
@@ -140,10 +140,13 @@ def create_graph_vis(G, filename, folder_name = ""):
 
     ## Exporting to PNG
     plot_filename = filename + ".png"
-    if folder_name == "":
-        representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
-    else:
-        representations_dir = config.ROOT + "\\Music_Graph_Visualisations" + "\\" + folder_name + "graph_vis"
+    if full_analysis == "":
+        if folder_name == "":
+            representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
+        else:
+            representations_dir = config.ROOT + "\\Music_Graph_Visualisations" + "\\" + folder_name + "_graph_vis"
+    else: # Doing full analysis (Graph visualisation, synthetic representation,...)
+        representations_dir = full_analysis + "\\Graph_Visualisations"
 
     check_dir(representations_dir) # Checking if directory folder exists
 
