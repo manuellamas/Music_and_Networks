@@ -13,7 +13,7 @@ from Plotting import edges_rank_network
 #------------------------------------------------------------#
 
 # Degree Distribution
-def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None):
+def degree_distribution_comparison_plot(networks, line = True, scale = "linear", plot_folder = None, files_directory = ""):
     """ Creates a plot of a network's degree distribution linear (or loglog if specified) """
     fig1, ax1 = plt.subplots()
 
@@ -21,7 +21,7 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
         G, midi_file, midi_title, notes = network
 
 
-        degree_sequence_list = sorted([d for n, d in G.degree()], reverse = True)
+        degree_sequence_list = sorted([d for n, d in G.degree(weight = "weight")], reverse = True)
         degree_sequence = np.array(degree_sequence_list)
 
         labels, counts = np.unique(degree_sequence, return_counts=True)
@@ -58,30 +58,34 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
     plt.legend(loc="upper right")
 
     # Exporting to PNG
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
     if scale == "loglog":
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution_LogLog" + ".png")
-        print("Plot at", plot_folder + group_name + "Degree_Distribution_LogLog" + ".png")
+        plt.savefig(plot_folder + "\\" + group_name + "Degree_Distribution_LogLog" + ".png")
+        print("Plot at", plot_folder + "\\" + group_name + "Degree_Distribution_LogLog" + ".png")
     else:
-        plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Degree_Distribution" + ".png")
-        print("Plot at", plot_folder + group_name + "Degree_Distribution" + ".png")
+        plt.savefig(plot_folder + "\\" + group_name + "Degree_Distribution" + ".png")
+        print("Plot at", plot_folder + "\\" + group_name + "Degree_Distribution" + ".png")
     
     plt.close()
 
 # Betweenness Centrality
-def betwenness_comparison_plot(networks, line = True, plot_folder = None):
+def betwenness_comparison_plot(networks, line = True, plot_folder = None, files_directory = ""):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True)
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True, weighted = True)
 
         betweenness_sequence_list = sorted(betwenness_values, reverse = True)
         betwenness_sequence = np.array(betweenness_sequence_list)
@@ -112,19 +116,23 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None):
     plt.legend(loc="upper right")
 
     # Exporting to PNG
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "Betweenness_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + group_name + "Betweenness_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "Betweenness_Distribution" + ".png")
 
 
 # Betweenness Centrality (Side-by-side)
-def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
+def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None, files_directory = ""):
     """ Creates a plot of the betweenness centrality distribution of a Graph """
     fig, axs = plt.subplots(len(networks))
     # fig.subplots_adjust(wspace=0.2)
@@ -142,7 +150,7 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
         G, midi_file, midi_title, notes = network
         ax = axs[ax_num]
 
-        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True)
+        betwenness_values = Graph_metrics.list_betweenness_centrality(G, normalize = True, weighted = True)
 
         betweenness_sequence_list = sorted(betwenness_values, reverse = True)
         betwenness_sequence = np.array(betweenness_sequence_list)
@@ -183,27 +191,31 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None):
         ax.set(ylim=(min_y_value, max_y_value))
 
     # Exporting to PNG
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
     # plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
+    plt.savefig(plot_folder + "\\" + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
     plt.close()
-    print("Plot at", plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
 
 
 # Closeness Centrality
-def closeness_comparison_plot(networks, line = True, plot_folder = None):
+def closeness_comparison_plot(networks, line = True, plot_folder = None, files_directory = ""):
     """ Creates a plot of the closeness centrality distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
     for network in networks:
         G, midi_file, midi_title, notes = network
 
-        closeness_values = Graph_metrics.list_closeness_centrality(G)
+        closeness_values = Graph_metrics.list_closeness_centrality(G, weighted = True)
 
         closeness_sequence_list = sorted(closeness_values, reverse = True)
         closeness_sequence = np.array(closeness_sequence_list)
@@ -234,19 +246,23 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None):
     plt.legend(loc="upper right")
 
     # Exporting to PNG
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Closeness_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "Closeness_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + group_name + "Closeness_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "Closeness_Distribution" + ".png")
 
 
 # Clustering Coefficient
-def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
+def clustering_coef_comparison_plot(networks, line = True, plot_folder = None, files_directory = ""):
     """ Creates a plot of the clustering coefficient distribution of a Graph """
     fig1, ax1 = plt.subplots()
 
@@ -284,19 +300,23 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None):
     plt.legend(loc="upper right")
 
     # Exporting to PNG
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "Clustering_Coefficient_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + group_name + "Clustering_Coefficient_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "Clustering_Coefficient_Distribution" + ".png")
 
 
 # Edge Ranking Table (Comparison)
-def edges_rank_comparison(networks, top = 20, plot_folder = None):
+def edges_rank_comparison(networks, top = 20, plot_folder = None, files_directory = ""):
     """ Plots a table with the rank of the edges by weight - Comparing several songs """
 
     edges_list_all = [[] for x in range(top)]
@@ -365,12 +385,16 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None):
 
     # Exporting to PNG
     group_name = ""
-    if plot_folder is not None:
-        group_name = plot_folder + "_"
-        plot_folder += "\\" 
+    if files_directory == "":
+        if plot_folder is not None:
+            group_name = plot_folder + "_"
+            plot_folder = config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder
+        else:
+            plot_folder = ""
     else:
-        plot_folder = ""
+        plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
+        group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Edge_Rank" + ".png", bbox_inches='tight')
+    plt.savefig(plot_folder + "\\" + group_name + "Edge_Rank" + ".png", bbox_inches='tight')
     plt.close()
-    print("Plot at", plot_folder + group_name + "Edge_Rank" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "Edge_Rank" + ".png")
