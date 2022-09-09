@@ -42,6 +42,16 @@ def graph_display_info(G):
 
 
 
+def create_graphml(network, filename, relabel = False):
+    """ Create a graphml of a NetworkX network, with or without relabeling of the music note codes """
+    if relabel:
+        network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
+    nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+
+    return
+
+
+
 # ----- Main ----- #
 if __name__ == "__main__":
     # Python File (Project) Location
@@ -69,8 +79,7 @@ if __name__ == "__main__":
             Plotting.degree_distribution_scatter_plot(G, filename)
             Plotting.edges_rank(G, filename)
 
-            # G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
-            nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + ".graphml") # Exporting graph to a graphml file
+            create_graphml(G, filename, relabel = True)
 
 
 
@@ -97,7 +106,6 @@ if __name__ == "__main__":
             
                 G, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file, track_index = track_index) #, mid_file.ticks_per_beat) # I'm currently not using the ticks_per_beat might use them in the future
 
-                G = nx.relabel_nodes(G, MIDI_general.note_mapping_dict(G)) # Adding labels according to the notes
-                nx.write_graphml(G, config.ROOT + "\\graphml_files\\" + filename + ".graphml") # Exporting graph to a graphml file
+                create_graphml(G, filename, relabel = True)
 
 
