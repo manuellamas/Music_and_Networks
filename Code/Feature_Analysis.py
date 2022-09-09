@@ -174,9 +174,10 @@ def create_networks(files_directory, max_nodes = True):
 
 
 
-def feature_analysis():
+def feature_analysis(files_directory):
     """ Displaying a set of features for a dataset """
-    
+    networks = create_networks(files_directory)
+    music_data(networks)
 
     return
 

@@ -97,7 +97,7 @@ def main_analysis(files_directory):
 
     # Normalizing Features Min-Max
     networks_feature_list = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
-            
+
 
 
 
@@ -107,10 +107,12 @@ def main_analysis(files_directory):
     feature_time_names = ["Song", "Avg. Degree (avg overtime)", "Avg. Degree (var overtime)", "Avg. Between (avg overtime)", "Avg. Between (var overtime)", "Avg. Closeness (avg overtime)", "Avg. Closeness (var overtime)", "Avg. ClusterCoeff (avg overtime)", "Avg. ClusterCoeff (var overtime)", "Density"] # Time Window Features
 
 
-
     ##############
     # Clustering #
     ##############
+
+    # Feature Table
+    # plt_analysis.feature_table(networks_feature_list, feature_names, filenames, files_directory)
 
     # Adding the features obtained through Time Window on the "Main" set of features
     # for i in range(len(networks_feature_list)):
@@ -120,7 +122,7 @@ def main_analysis(files_directory):
     ## k-means
     kmean_predictions = kmeans_analysis(networks_feature_list)
     ## plt_analysis.clustering_table(networks, kmean_predictions, "k-means", group_name) # Currently being outputted together with the feature table
-    plt_analysis.cluster_feature_table(networks, kmean_predictions, "k-means", networks_feature_list, feature_names, filenames, files_directory = files_directory)
+    plt_analysis.cluster_feature_table(networks, kmean_predictions, "k-means", networks_feature_list, feature_names, files_directory = files_directory)
 
 
     # Time Window

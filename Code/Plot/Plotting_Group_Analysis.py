@@ -94,7 +94,7 @@ def clustering_table(networks, cluster_predictions, model, files_directory, labe
 
 
 
-def feature_table(network_features, feature_names, file_names, group_name = "", type = None):
+def feature_table(network_features, feature_names, file_names, files_directory, type = None):
     """ Plots a table with all features being analyzed """
 
 
@@ -102,6 +102,7 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
 
     for i in range(len(network_features)): # Going through every song
         # File Name
+        # network_feature_list[i].append(file_names[i])
         network_feature_list[i].append(file_names[i])
 
         # Features
@@ -134,37 +135,37 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
     tab.set_fontsize(8)
     tab.auto_set_column_width(col = list(range(len(columns)))) # Sets Column width automatically
 
-    cells = tab.properties()["celld"]
 
     row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
 
-    # Aligning the cells of the first column (0) to the left (excluding the header row)
-    for i in range(1, len(network_feature_list) + 1): # For each row. +1 because the column headers cells are included
-        cells[i, 0].set_text_props(ha = "left") # Aligning column 0 to the left
-        cells[i, 0].PAD = 0.05 # Setting padding. Since it's aligned to the left (I think) it's only controlling the padding to the left side (and not up and down as well)
-        cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
-
-
-    # Aligning the cells of all columns except the first one(0) to the right (excluding the header row)
-    # Overriding the cellLoc = "center"
-    for j in range(1, len(columns)):
-        for i in range(1, len(network_feature_list) + 1): # For each row. +1 because the column headers cells are included
-            cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
-            cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
-
-
-
+    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
 
     fig.tight_layout()
 
+
+    ###################
+    # Exporting Image #
+    ###################
+
+    # Adapting plot filename to the type
     features_type = "_features"
     if type == "time":
         features_type = "_time_features"
     elif type == "netf":
         features_type = "_netf_features"
 
+    # Getting the folder's name
+    group_name = files_directory.rsplit("\\")[-1]
 
-    export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis\\" + group_name + features_type + ".png"
+    # Creating the directory if it doesn't already exist
+    export_directory = files_directory + "\\FeatureAnalysis"
+    check_dir(export_directory)
+
+    # Setting the plot file name and the full path of the file to be created with it
+    plot_filename = group_name + features_type + ".png"
+    export_directory += "\\" + plot_filename
+
+    # Saving and closing the file
     plt.savefig(export_directory, bbox_inches='tight')
     plt.close()
     print("Plot at", export_directory)
@@ -173,7 +174,7 @@ def feature_table(network_features, feature_names, file_names, group_name = "", 
 
 
 
-def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, file_names, type = None, time = False, files_directory = ""):
+def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, files_directory = ""):
     """ Seeing the clustering and the features in the same table """
 
     cluster_list = []
@@ -248,30 +249,16 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
     tab.auto_set_column_width(col=list(range(len(columns)))) # Sets Column width automatically
 
 
-
-    cells = tab.properties()["celld"]
-
-    # Aligning the cells of the first column (0) to the left (excluding the header row)
-    for i in range(1, len(final_list) + 1): # For each row. +1 because the column headers cells are included
-        cells[i, 0].set_text_props(ha = "left") # Aligning column 0 to the left
-        cells[i, 0].PAD = 0.05 # Setting padding. Since it's aligned to the left (I think) it's only controlling the padding to the left side (and not up and down as well)
-        # cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
-
-
-    # Aligning the cells of all columns except the first one(0) to the right (excluding the header row)
-    # Overriding the cellLoc = "center"
-    for j in range(1, len(columns)):
-        for i in range(1, len(network_feature_list) + 1): # For each row. +1 because the column headers cells are included
-            cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
-            # cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
-
-
-
+    tab = modify_table(tab, num_rows = len(final_list), num_columns = len(columns))
 
     fig.tight_layout()
 
 
-    # Export to PNG
+    ###################
+    # Exporting Image #
+    ###################
+
+    # Adapting plot directory according to files_directory
     if files_directory == "":
         export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis" + plot_filename
         group_name = ""
@@ -289,3 +276,26 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
     print("Plot at", export_directory + "\\" + plot_filename)
     
     return
+
+
+
+def modify_table(tab, num_rows, num_columns, row_colors = None):
+    cells = tab.properties()["celld"]
+
+    # First column (0) (excluding the header row)
+    for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
+        cells[i, 0].set_text_props(ha = "left") # Aligning column 0 to the left
+        cells[i, 0].PAD = 0.05 # Setting padding. Since it's aligned to the left (I think) it's only controlling the padding to the left side (and not up and down as well)
+        if row_colors is not None:
+            cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
+
+
+    # All columns except the first one(0) (excluding the header row)
+    # Overriding the cellLoc = "center"
+    for j in range(1, num_columns):
+        for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
+            cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
+        if row_colors is not None:
+            cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
+
+    return tab
