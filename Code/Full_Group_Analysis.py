@@ -1,4 +1,4 @@
-""" 
+"""
 Running the following programs on the specified file or folder:
 And creating a folder for each on the original file or folder's directory for easier access
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             plot_all_tracks(mid_file, with_rests = True, full_analysis = files_directory)
 
             # Split Tracks
-            midi_split_tracks(mid_file, full_analysis = files_directory)
+            # midi_split_tracks(mid_file, full_analysis = files_directory)
 
             # Graph Metrics Plots
             check_dir(files_directory + "\\SongGroupAnalysis")
@@ -123,8 +123,8 @@ if __name__ == "__main__":
         main_analysis(files_directory)
 
         # Song Comparison Plots
-        print_section_title("Song Comparison Plots")
-        main_song_comparison_plots(files_directory)
+        # print_section_title("Song Comparison Plots")
+        # main_song_comparison_plots(files_directory)
 
 
 

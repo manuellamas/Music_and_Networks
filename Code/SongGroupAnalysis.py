@@ -20,10 +20,12 @@ import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
 
-def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max_num_nodes):
+from Feature_Analysis import normalize_min_max
+
+def music_data(G, num_notes_normalized = None, num_notes = None, time_length = None, total_ticks = None, max_num_nodes = None):
     """ From a network obtains a list of features to be compared to other songs """
     feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
-    feature_name_list = [] # Name of features for the table plots
+    feature_name_list = ["Song"] # Name of features for the table plots (plus "Song")
     features_to_normalize = [] # Names of features to normalize (min/max) i.e., the according to the whole set of graphs/songs
 
     # Normalizing all values except clustering that by default is already "normalized"
@@ -96,18 +98,22 @@ def music_data(G, num_notes_normalized, num_notes, time_length, total_ticks, max
     # else:
     #     feature_list.append(0)
     #     feature_list.append(0)
+    # feature_name_list.append("Nodes per seconds")
+    # feature_name_list.append("Edges per seconds")
 
     # # Notes per duration (ticks)
     # if num_notes != 0:
     #     feature_list.append(num_notes/total_ticks) # Length of music (number of notes in track)
     # else:
     #     feature_list.append(0)
+    # feature_name_list.append("Note per ticks")
 
     # # Notes per duration (seconds)
     # if num_notes_normalized != 0:
     #     feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
     # else:
     #     feature_list.append(0)
+    # feature_name_list.append("Note per seconds")
 
     return feature_list, feature_name_list, features_to_normalize
 
@@ -139,7 +145,6 @@ def dbscan_analysis(network_features):
     db_clusters = db.labels_
 
     return db_clusters
-
 
 
 
@@ -203,17 +208,18 @@ def main_analysis(files_directory):
     for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
         filenames.append(filename) # Listing filenames for the feature table
 
-        # Obtaining Time Length in seconds (if possible)
-        time_length_seconds = 0
-        note_density = 0
-        try:
-            time_length_seconds = mid_file.length
-            note_density = len(notes)/time_length_seconds
-        except:
-            print("This MIDI file is of type 2 (asynchronous) and so the length can't be computed")
-            print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
+        # # Obtaining Time Length in seconds (if possible)
+        # time_length_seconds = 0
+        # note_density = 0
+        # try:
+        #     time_length_seconds = mid_file.length
+        #     note_density = len(notes)/time_length_seconds
+        # except:
+        #     print("This MIDI file is of type 2 (asynchronous) and so the length can't be computed")
+        #     print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
-        features, feature_names, features_to_normalize = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
+        # features, feature_names, features_to_normalize = music_data(network, note_density, len(notes), time_length_seconds, total_ticks, max_num_nodes) # Currently getting feature_names repeatedly but only need it a single time
+        features, feature_names, features_to_normalize = music_data(network) # Currently getting feature_names repeatedly but only need it a single time
         networks_feature_list.append(features)
 
 
@@ -223,38 +229,13 @@ def main_analysis(files_directory):
         networks_feature_time_list.append(TimeWindow.time_window_features(mid_file, track_index = track_index))
 
 
-    # Normalizing Min-Max
-    feature_indices_to_norm = []
-    for i, feature in enumerate(feature_names):
-        if feature in features_to_normalize:
-            feature_indices_to_norm.append(i)
 
-
-    for feature_index in feature_indices_to_norm: # Per Feature to be normalized
-        # Finding the min and max values
-        min_feature_value = networks_feature_list[0][feature_index]
-        max_feature_value = networks_feature_list[0][feature_index]
-        for i in range(1, len(networks_feature_list)): # Per Song
-            song_feature_value = networks_feature_list[i][feature_index]
-            min_feature_value = min(min_feature_value, song_feature_value)
-            max_feature_value = max(max_feature_value, song_feature_value)
-        
-        # Normalizing
-        for i in range(len(networks_feature_list)): # Per Song
-            networks_feature_list[i][feature_index] -= min_feature_value
-            networks_feature_list[i][feature_index] /= (max_feature_value - min_feature_value)
+    # Normalizing Features Min-Max
+    networks_feature_list = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
             
 
 
 
-
-
-
-
-    # Features Names - Main
-    feature_names = ["Song"] + feature_names
-    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "# Nodes"]
-    # feature_names = ["Song", "Avg. In-Degree", "Avg. Betweenness Coef.", "Avg. Closeness Coef.", "Avg. Clustering Coef.", "Avg. Shortest Path Lengths", "Density", "Modularity", "#Communities", "Nodes per seconds", "Edges per seconds", "Note per ticks", "Note per seconds"]
 
 
     # Features Names - Time Window
