@@ -2,23 +2,17 @@
 
 import sys
 import config
-import os.path
-from os import listdir
-
-import mido
 
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
 import numpy as np
 
-import Music_Mapping
 import MIDI_general
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
 
-from Graph import create_graphml
-from Feature_Analysis import normalize_min_max, music_data
+from Feature_Analysis import normalize_min_max, music_data, create_networks
 
 
 
@@ -61,41 +55,8 @@ def main_analysis(files_directory):
     """
 
 
-    # Obtain a list of the file names of all MIDI files in the directory (SongArena by Default). Only those in the "root" and not in a subdirectory
-    list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
+    networks, max_num_nodes = create_networks(files_directory)
 
-    list_files.sort() # Sorts the list alphabetically
-
-    if len(list_files) == 0:
-        print("The folder is empty")
-        exit()
-
-    print("Running for the following files:")
-    for mid in list_files:
-        print(mid)
-
-    # Create the Graphs
-    networks = []
-
-    max_num_nodes = 0 # The max number of nodes of a Graph within this set
-
-    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
-
-    print("\n-----\nChosen Tracks:\n")
-
-    for mid in list_files:
-        mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-
-        filename = MIDI_general.midi_filename(mid_file)
-        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
-
-        network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True, track_index = track_index)
-
-        create_graphml(network, filename)
-
-        networks.append([network, mid_file, filename, notes, notes_duration, total_ticks])
-
-        max_num_nodes = max(max_num_nodes, network.number_of_nodes())
 
 
     ##################
@@ -105,6 +66,8 @@ def main_analysis(files_directory):
     # Feature List
     networks_feature_list = [] # Each entry is relative to a song
     networks_feature_time_list = [] # Features from TimeWindow
+
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
 
     filenames = []
     for network, mid_file, filename, notes, notes_duration, total_ticks in networks:

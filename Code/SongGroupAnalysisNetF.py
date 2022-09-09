@@ -2,54 +2,18 @@
 
 import sys
 import config
-import os.path
-from os import listdir
 
-import mido
-
-import Music_Mapping
-import MIDI_general
 import Plot.Plotting_Group_Analysis as plt_analysis
 import MIDITimeSeries
 
 from SongGroupAnalysis import *
 
-from Graph import create_graphml
-
-
-
 
 
 def main_analysis_netf(files_directory):
-    # Obtain a list of the file names of all MIDI files in the directory (SongArena by Default). Only those in the "root" and not in a subdirectory
-    list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
-
-    if len(list_files) == 0:
-        print("The folder is empty")
-        exit()
-
-    print("Running for the following files:")
-    for mid in list_files:
-        print(mid)
-
-    # Create the Graphs
-    networks = []
-    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
-
-    for mid in list_files:
-        mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
-
-        filename = MIDI_general.midi_filename(mid_file)
-        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
-
-        network, notes, notes_duration = Music_Mapping.graph_note_pairs_weighted(mid_file, track_index = track_index)
-
-        create_graphml(network, filename)
-
-        networks.append([network, mid_file, filename, notes])
 
 
-
+    networks = create_networks(files_directory, max_nodes = False)
 
 
 
@@ -62,7 +26,7 @@ def main_analysis_netf(files_directory):
     # Running the Rscript only once
     filenames = []
     networks_midi_files = []
-    for i in range(len(networks)):
+    for i in range(len(networks)): # For each song/network
         networks_midi_files.append(networks[i][1]) # Storing the mid_files (objects)
         filenames.append(networks[i][2]) # Saving the filenames
     netf_all_series_strings = MIDITimeSeries.features_from_MIDI_series_group(networks_midi_files, num_quantiles = 8)

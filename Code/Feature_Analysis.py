@@ -11,9 +11,16 @@
 # It should only need minor adaptations
 # [python - How can I get the output of a matplotlib plot as an SVG? - Stack Overflow](https://stackoverflow.com/questions/24525111/how-can-i-get-the-output-of-a-matplotlib-plot-as-an-svg)
 
-import networkx as nx
+import os.path
+from os import listdir
 
+import networkx as nx
+import mido
+
+import Music_Mapping
+import MIDI_general
 import Graph_metrics
+from Graph import create_graphml
 
 
 
@@ -115,9 +122,61 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
 
 
+def create_networks(files_directory, max_nodes = True):
+    """
+    From a directory with MIDI files
+    Creates a list that has an entry per song
+    Each of those entries being a list itself with a network and a few values associated with it
+    for further processing
+    """
+
+    # Obtain a list of the file names of all MIDI files in the directory (SongArena by Default). Only those in the "root" and not in a subdirectory
+    list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
+
+    list_files.sort() # Sorts the list alphabetically
+
+    if len(list_files) == 0:
+        print("The folder is empty")
+        exit()
+
+    print("Running for the following files:")
+    for mid in list_files:
+        print(mid)
+
+    # Create the Graphs
+    networks = []
+
+    max_num_nodes = 0 # The max number of nodes of a Graph within this set
+
+    tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
+
+    print("\n-----\nChosen Tracks:\n")
+
+    for mid in list_files:
+        mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
+
+        filename = MIDI_general.midi_filename(mid_file)
+        track_index = MIDI_general.track_from_dict(filename, tracks_indices)
+
+        network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True, track_index = track_index)
+
+        create_graphml(network, filename)
+
+        networks.append([network, mid_file, filename, notes, notes_duration, total_ticks])
+
+        max_num_nodes = max(max_num_nodes, network.number_of_nodes())
+
+    if max_nodes:
+        return networks, max_num_nodes
+    else:
+        return networks
+
+
+
+
 def feature_analysis():
     """ Displaying a set of features for a dataset """
-
+    
 
     return
 
