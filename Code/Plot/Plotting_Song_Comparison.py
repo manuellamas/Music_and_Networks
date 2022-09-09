@@ -69,11 +69,11 @@ def degree_distribution_comparison_plot(networks, line = True, scale = "linear",
         group_name = files_directory.rsplit("\\")[-1]
 
     if scale == "loglog":
-        plt.savefig(plot_folder + "\\" + group_name + "Degree_Distribution_LogLog" + ".png")
-        print("Plot at", plot_folder + "\\" + group_name + "Degree_Distribution_LogLog" + ".png")
+        plt.savefig(plot_folder + "\\" + group_name + "_" + "Degree_Distribution_LogLog" + ".png")
+        print("Plot at", plot_folder + "\\" + group_name + "_" + "Degree_Distribution_LogLog" + ".png")
     else:
-        plt.savefig(plot_folder + "\\" + group_name + "Degree_Distribution" + ".png")
-        print("Plot at", plot_folder + "\\" + group_name + "Degree_Distribution" + ".png")
+        plt.savefig(plot_folder + "\\" + group_name + "_" + "Degree_Distribution" + ".png")
+        print("Plot at", plot_folder + "\\" + group_name + "_" + "Degree_Distribution" + ".png")
     
     plt.close()
 
@@ -126,9 +126,9 @@ def betwenness_comparison_plot(networks, line = True, plot_folder = None, files_
         plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
         group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(plot_folder + "\\" + group_name + "Betweenness_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "_" + "Betweenness_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + "\\" + group_name + "Betweenness_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "_" + "Betweenness_Distribution" + ".png")
 
 
 # Betweenness Centrality (Side-by-side)
@@ -201,10 +201,10 @@ def betwenness_comparison_plot_sides(networks, line = True, plot_folder = None, 
         plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
         group_name = files_directory.rsplit("\\")[-1]
 
-    # plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
-    plt.savefig(plot_folder + "\\" + group_name + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
+    # plt.savefig(config.ROOT + "\\Plots\\SongComparisonOutputFiles\\" + plot_folder + group_name + "_" + "Betweenness_Distribution_(side-by-side)" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "_" + "Betweenness_Distribution_(side-by-side)" + ".png", bbox_inches = "tight") # bbox_inches tries to fit the legends on the figure
     plt.close()
-    print("Plot at", plot_folder + "\\" + group_name + "Betweenness_Distribution_(side-by-side)" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "_" + "Betweenness_Distribution_(side-by-side)" + ".png")
 
 
 # Closeness Centrality
@@ -256,9 +256,9 @@ def closeness_comparison_plot(networks, line = True, plot_folder = None, files_d
         plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
         group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(plot_folder + "\\" + group_name + "Closeness_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "_" + "Closeness_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + "\\" + group_name + "Closeness_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "_" + "Closeness_Distribution" + ".png")
 
 
 # Clustering Coefficient
@@ -310,9 +310,9 @@ def clustering_coef_comparison_plot(networks, line = True, plot_folder = None, f
         plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
         group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(plot_folder + "\\" + group_name + "Clustering_Coefficient_Distribution" + ".png")
+    plt.savefig(plot_folder + "\\" + group_name + "_" + "Clustering_Coefficient_Distribution" + ".png")
     plt.close()
-    print("Plot at", plot_folder + "\\" + group_name + "Clustering_Coefficient_Distribution" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "_" + "Clustering_Coefficient_Distribution" + ".png")
 
 
 # Edge Ranking Table (Comparison)
@@ -395,6 +395,6 @@ def edges_rank_comparison(networks, top = 20, plot_folder = None, files_director
         plot_folder = files_directory + "\\SongGroupAnalysis\\Comparison"
         group_name = files_directory.rsplit("\\")[-1]
 
-    plt.savefig(plot_folder + "\\" + group_name + "Edge_Rank" + ".png", bbox_inches='tight')
+    plt.savefig(plot_folder + "\\" + group_name + "_" + "Edge_Rank" + ".png", bbox_inches='tight')
     plt.close()
-    print("Plot at", plot_folder + "\\" + group_name + "Edge_Rank" + ".png")
+    print("Plot at", plot_folder + "\\" + group_name + "_" + "Edge_Rank" + ".png")
