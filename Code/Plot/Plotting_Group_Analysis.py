@@ -5,6 +5,190 @@ from Plotting import check_dir
 
 import config
 
+
+
+
+def feature_table(network_features, feature_names, file_names, files_directory, type = None):
+    """ Plots a table with all features being analyzed """
+
+
+    network_feature_list = [[] for i in range(len(network_features))]
+
+    for i in range(len(network_features)): # Going through every song
+        # File Name
+        # network_feature_list[i].append(file_names[i])
+        network_feature_list[i].append(file_names[i])
+
+        # Features
+        network_feature_list[i] += network_features[i] # Adding the features to the list
+        
+        if len(network_feature_list[i]) != len(feature_names): # For the networks that don't have the length feature for some reason
+            network_feature_list[i].append(0)
+
+        for j in range(1, len(network_feature_list[i])): # Rounding Values
+            network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
+
+
+
+
+
+
+    fig, ax = plt.subplots()
+    fig.patch.set_visible(False) # Removing 'background'
+    ax.axis("off") # Hide axes
+
+
+    columns = feature_names
+
+
+
+    # rows = [] #, rowLabels = rows
+    tab = ax.table(cellText = network_feature_list, colLabels = columns, loc = "center", cellLoc = "center")
+    tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
+
+    tab.set_fontsize(8)
+    tab.auto_set_column_width(col = list(range(len(columns)))) # Sets Column width automatically
+
+
+    row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
+
+    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
+
+    fig.tight_layout()
+
+
+    ###################
+    # Exporting Image #
+    ###################
+
+    # Adapting plot filename to the type
+    features_type = "_features"
+    if type == "time":
+        features_type = "_time_features"
+    elif type == "netf":
+        features_type = "_netf_features"
+
+    # Getting the folder's name
+    group_name = files_directory.rsplit("\\")[-1]
+
+    # Creating the directory if it doesn't already exist
+    export_directory = files_directory + "\\FeatureAnalysis"
+    check_dir(export_directory)
+
+    # Setting the plot file name and the full path of the file to be created with it
+    plot_filename = group_name + features_type + ".png"
+    export_directory += "\\" + plot_filename
+
+    # Saving and closing the file
+    plt.savefig(export_directory, bbox_inches='tight')
+    plt.close()
+    print("Plot at", export_directory)
+
+    return
+
+
+
+def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, files_directory = ""):
+    """ Seeing the clusters and the features in the same table """
+
+    cluster_list = []
+    for i in range(len(networks)):
+        cluster_list.append([networks[i][2], cluster_predictions[i]]) # filename
+
+
+
+    network_feature_list = [[] for i in range(len(network_features))]
+
+    for i in range(len(network_features)): # Going through every song
+        # File Name
+        # network_feature_list[i].append(file_names[i])
+
+        # Features
+        network_feature_list[i] += network_features[i] # Adding the features to the list
+        
+        # if len(network_feature_list[i]) != len(feature_names): # For the networks that don't have the length feature for some reason
+        #     network_feature_list[i].append(0)
+
+        for j in range(0, len(network_feature_list[i])): # Rounding Values
+            network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
+
+
+
+    # Join cluster_list and network_feature_list
+    final_list = []
+    for i in range(len(networks)): # Per row
+        final_list.append(cluster_list[i] + network_feature_list[i])
+
+
+
+
+
+
+
+
+
+    fig, ax = plt.subplots()
+    fig.patch.set_visible(False) # Removing 'background'
+    ax.axis("off") # Hide axes
+
+    color_list = ["#ffffb3", "#ff803e", "#ffff68", "#ffa6bd", "#ffc100", "#ffcea2", "#ff8170"]
+    # color_list = ["#ffffb300", "#ff803e75", "#ffff6800", "#ffa6bdd7", "#ffc10020", "#ffcea262", "#ff817066"]
+    color_right = "green"
+    color_wrong = "red"
+
+    columns = ["Song", "Cluster"] + feature_names[1:] # Removing the Song Column Header (that comes repeated) from feature_names
+    # columns = ["Song", "Cluster"] + feature_names # Removing the Song Column Header (that comes repeated) from feature_names
+
+
+    colors = []
+    for i in range(len(final_list)): # For each row
+        chosen_color = color_list[cluster_predictions[i]]
+        colors.append([chosen_color for i in range(len(columns))])
+
+
+
+
+
+
+
+    rows = [] #, rowLabels = rows
+    tab = ax.table(cellText = final_list, colLabels = columns, loc = "center", cellLoc = "center", cellColours=colors)
+
+    tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
+    tab.set_fontsize(8)
+    tab.auto_set_column_width(col=list(range(len(columns)))) # Sets Column width automatically
+
+
+    tab = modify_table(tab, num_rows = len(final_list), num_columns = len(columns))
+
+    fig.tight_layout()
+
+
+    ###################
+    # Exporting Image #
+    ###################
+
+    # Adapting plot directory according to files_directory
+    if files_directory == "":
+        export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis" + plot_filename
+        group_name = ""
+    else:
+        export_directory = files_directory + "\\SongGroupAnalysis"
+        group_name = files_directory.rsplit("\\",1)[-1]
+
+    check_dir(export_directory)
+
+    plot_filename = group_name + "_" + model + "_clusteringAndFeatures.png"
+
+
+    plt.savefig(export_directory + "\\" + plot_filename, bbox_inches =  "tight")
+    plt.close()
+    print("Plot at", export_directory + "\\" + plot_filename)
+    
+    return
+
+
+
 def clustering_table(networks, cluster_predictions, model, files_directory, labels = None, time = False):
     """ Plots a table with the songs/networks and its cluster resulting of the specified model """
 
@@ -94,190 +278,9 @@ def clustering_table(networks, cluster_predictions, model, files_directory, labe
 
 
 
-def feature_table(network_features, feature_names, file_names, files_directory, type = None):
-    """ Plots a table with all features being analyzed """
-
-
-    network_feature_list = [[] for i in range(len(network_features))]
-
-    for i in range(len(network_features)): # Going through every song
-        # File Name
-        # network_feature_list[i].append(file_names[i])
-        network_feature_list[i].append(file_names[i])
-
-        # Features
-        network_feature_list[i] += network_features[i] # Adding the features to the list
-        
-        if len(network_feature_list[i]) != len(feature_names): # For the networks that don't have the length feature for some reason
-            network_feature_list[i].append(0)
-
-        for j in range(1, len(network_feature_list[i])): # Rounding Values
-            network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
-
-
-
-
-
-
-    fig, ax = plt.subplots()
-    fig.patch.set_visible(False) # Removing 'background'
-    ax.axis("off") # Hide axes
-
-
-    columns = feature_names
-
-
-
-    # rows = [] #, rowLabels = rows
-    tab = ax.table(cellText = network_feature_list, colLabels = columns, loc = "center", cellLoc = "center")
-    tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
-
-    tab.set_fontsize(8)
-    tab.auto_set_column_width(col = list(range(len(columns)))) # Sets Column width automatically
-
-
-    row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
-
-    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
-
-    fig.tight_layout()
-
-
-    ###################
-    # Exporting Image #
-    ###################
-
-    # Adapting plot filename to the type
-    features_type = "_features"
-    if type == "time":
-        features_type = "_time_features"
-    elif type == "netf":
-        features_type = "_netf_features"
-
-    # Getting the folder's name
-    group_name = files_directory.rsplit("\\")[-1]
-
-    # Creating the directory if it doesn't already exist
-    export_directory = files_directory + "\\FeatureAnalysis"
-    check_dir(export_directory)
-
-    # Setting the plot file name and the full path of the file to be created with it
-    plot_filename = group_name + features_type + ".png"
-    export_directory += "\\" + plot_filename
-
-    # Saving and closing the file
-    plt.savefig(export_directory, bbox_inches='tight')
-    plt.close()
-    print("Plot at", export_directory)
-
-    return
-
-
-
-def cluster_feature_table(networks, cluster_predictions, model, network_features, feature_names, files_directory = ""):
-    """ Seeing the clustering and the features in the same table """
-
-    cluster_list = []
-    for i in range(len(networks)):
-        cluster_list.append([networks[i][2], cluster_predictions[i]]) # filename
-
-
-
-    network_feature_list = [[] for i in range(len(network_features))]
-
-    for i in range(len(network_features)): # Going through every song
-        # File Name
-        # network_feature_list[i].append(file_names[i])
-
-        # Features
-        network_feature_list[i] += network_features[i] # Adding the features to the list
-        
-        # if len(network_feature_list[i]) != len(feature_names): # For the networks that don't have the length feature for some reason
-        #     network_feature_list[i].append(0)
-
-        for j in range(0, len(network_feature_list[i])): # Rounding Values
-            network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
-
-
-
-    # Join cluster_list and network_feature_list
-    final_list = []
-    for i in range(len(networks)): # Per row
-        final_list.append(cluster_list[i] + network_feature_list[i])
-
-
-
-
-
-
-
-
-
-
-
-
-
-    fig, ax = plt.subplots()
-    fig.patch.set_visible(False) # Removing 'background'
-    ax.axis("off") # Hide axes
-
-    color_list = ["#ffffb3", "#ff803e", "#ffff68", "#ffa6bd", "#ffc100", "#ffcea2", "#ff8170"]
-    # color_list = ["#ffffb300", "#ff803e75", "#ffff6800", "#ffa6bdd7", "#ffc10020", "#ffcea262", "#ff817066"]
-    color_right = "green"
-    color_wrong = "red"
-
-    columns = ["Song", "Cluster"] + feature_names[1:] # Removing the Song Column Header (that comes repeated) from feature_names
-    # columns = ["Song", "Cluster"] + feature_names # Removing the Song Column Header (that comes repeated) from feature_names
-
-
-    colors = []
-    for i in range(len(final_list)): # For each row
-        chosen_color = color_list[cluster_predictions[i]]
-        colors.append([chosen_color for i in range(len(columns))])
-
-
-
-
-
-
-
-    rows = [] #, rowLabels = rows
-    tab = ax.table(cellText = final_list, colLabels = columns, loc = "center", cellLoc = "center", cellColours=colors)
-
-    tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
-    tab.set_fontsize(8)
-    tab.auto_set_column_width(col=list(range(len(columns)))) # Sets Column width automatically
-
-
-    tab = modify_table(tab, num_rows = len(final_list), num_columns = len(columns))
-
-    fig.tight_layout()
-
-
-    ###################
-    # Exporting Image #
-    ###################
-
-    # Adapting plot directory according to files_directory
-    if files_directory == "":
-        export_directory = config.ROOT + "\\Plots\\SongGroupAnalysis" + plot_filename
-        group_name = ""
-    else:
-        export_directory = files_directory + "\\SongGroupAnalysis"
-        group_name = files_directory.rsplit("\\",1)[-1]
-
-    check_dir(export_directory)
-
-    plot_filename = group_name + "_" + model + "_clusteringAndFeatures.png"
-
-
-    plt.savefig(export_directory + "\\" + plot_filename, bbox_inches =  "tight")
-    plt.close()
-    print("Plot at", export_directory + "\\" + plot_filename)
-    
-    return
-
-
+#####################
+# Support Functions #
+#####################
 
 def modify_table(tab, num_rows, num_columns, row_colors = None):
     cells = tab.properties()["celld"]
