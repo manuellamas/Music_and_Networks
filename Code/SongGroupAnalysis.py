@@ -6,117 +6,19 @@ import os.path
 from os import listdir
 
 import mido
-import networkx as nx
 
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
 import numpy as np
-import scipy as sp
 
 import Music_Mapping
 import MIDI_general
-import Graph_metrics
 import Plot.Plotting_Group_Analysis as plt_analysis
 import TimeWindow
 
 from Graph import create_graphml
-from Feature_Analysis import normalize_min_max
-
-def music_data(G, num_notes_normalized = None, num_notes = None, time_length = None, total_ticks = None, max_num_nodes = None):
-    """ From a network obtains a list of features to be compared to other songs """
-    feature_list = [] # average degree, average betweenness, average closeness, average clustering coef
-    feature_name_list = ["Song"] # Name of features for the table plots (plus "Song")
-    features_to_normalize = [] # Names of features to normalize (min/max) i.e., the according to the whole set of graphs/songs
-
-    # Normalizing all values except clustering that by default is already "normalized"
-
-    # # Average In-degree Unweighted
-    # feature_list.append(Graph_metrics.average_indegree(G, normalize = True, weighted = False))
-    # feature_name_list.append("Avg. In-degree")
-
-    # Average In-degree Weighted
-    feature_list.append(Graph_metrics.average_indegree(G, normalize = False, weighted = True)) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name_list.append("Avg. In-degree W")
-    features_to_normalize.append("Avg. In-degree W")
-
-    # # Average Betweenness Centrality
-    # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
-    # feature_name_list.append("Avg. Betweenness Coef.")
-
-    # Average Betweenness Centrality Weighted
-    feature_list.append(Graph_metrics.average_betweenness(G, normalize = False, weighted =  True))
-    feature_name_list.append("Avg. Betweenness Coef. W")
-    features_to_normalize.append("Avg. Betweenness Coef. W")
-
-    # # Average Closeness Centrality (Normalized by default)
-    # feature_list.append(Graph_metrics.average_closeness(G))
-    # feature_name_list.append("Avg. Closeness Coef.")
-
-    # Average Closeness Centrality (Normalized by default) Weighted
-    feature_list.append(Graph_metrics.average_closeness(G, weighted = True))
-    feature_name_list.append("Avg. Closeness Coef. W")
-    features_to_normalize.append("Avg. Closeness Coef. W")
-
-    # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
-    # feature_list.append(G.number_of_nodes() / max_num_nodes)
-    # feature_name_list.append("# Nodes")
-
-
-
-    # Average Clustering Coefficient
-    feature_list.append(Graph_metrics.average_clustering(G)) # Doesn't use weight and is normalized by default
-    feature_name_list.append("Avg. Clustering Coef.")
-
-    # Average Shortest Path Length (Normalized) Weighted
-    feature_list.append(nx.average_shortest_path_length(G, weight = "weight")) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name_list.append("Avg. Shortest Path Lengths W")
-    features_to_normalize.append("Avg. Shortest Path Lengths W")
-
-    feature_list.append(nx.density(G)) # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.density.html?highlight=density#networkx.classes.function.density
-    feature_name_list.append("Density")
-
-    modularity, num_communities = Graph_metrics.modularity_louvain(G)
-    feature_list.append(modularity)
-    feature_name_list.append("Modularity")
-    # feature_list.append(num_communities)
-    # feature_name_list.append("#Communities")
-
-
-    # # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
-    # if time_length != 0:
-    #     # Nodes per duration
-    #     if G.number_of_nodes() != 0:
-    #         feature_list.append(G.number_of_nodes() / time_length)
-    #     else:
-    #         feature_list.append(0)
-
-    #     # Edges per duration
-    #     if G.number_of_edges():
-    #         feature_list.append(G.number_of_edges() / time_length)
-    #     else:
-    #         feature_list.append(0)
-    # else:
-    #     feature_list.append(0)
-    #     feature_list.append(0)
-    # feature_name_list.append("Nodes per seconds")
-    # feature_name_list.append("Edges per seconds")
-
-    # # Notes per duration (ticks)
-    # if num_notes != 0:
-    #     feature_list.append(num_notes/total_ticks) # Length of music (number of notes in track)
-    # else:
-    #     feature_list.append(0)
-    # feature_name_list.append("Note per ticks")
-
-    # # Notes per duration (seconds)
-    # if num_notes_normalized != 0:
-    #     feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
-    # else:
-    #     feature_list.append(0)
-    # feature_name_list.append("Note per seconds")
-
-    return feature_list, feature_name_list, features_to_normalize
+from Feature_Analysis import normalize_min_max, music_data
 
 
 

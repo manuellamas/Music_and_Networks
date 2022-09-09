@@ -5,11 +5,11 @@ import os.path
 from os import listdir
 
 import mido
-import networkx as nx
 
 import Music_Mapping
 import MIDI_general
 import Plot.Plotting_Group_Analysis as plt_analysis
+import Feature_Analysis as feature_analysis
 import SongGroupAnalysis as song_analysis
 
 
@@ -83,9 +83,9 @@ if __name__ == "__main__":
             print("This song '" + filename + "'should probably be removed, or the analysis done without the length")
 
         if time_length == 0:
-            networks_feature_list.append(song_analysis.music_data(network, 0, 0))
+            networks_feature_list.append(feature_analysis.music_data(network, 0, 0))
         else:
-            networks_feature_list.append(song_analysis.music_data(network, len(notes)/time_length, time_length))
+            networks_feature_list.append(feature_analysis.music_data(network, len(notes)/time_length, time_length))
 
 
     # k-means
