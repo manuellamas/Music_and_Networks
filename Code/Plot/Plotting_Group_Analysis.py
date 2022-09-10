@@ -1,14 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Plotting import check_dir
+from Plotting import check_dir, interval_mapping
 
 import config
 
 
 
 
-def feature_table(network_features, feature_names, file_names, files_directory, type = None):
+def feature_table(network_features, feature_names, file_names, files_directory, model = None):
     """ Plots a table with all features being analyzed """
 
 
@@ -25,8 +25,14 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
         if len(network_feature_list[i]) != len(feature_names): # For the networks that don't have the length feature for some reason
             network_feature_list[i].append(0)
 
-        for j in range(1, len(network_feature_list[i])): # Rounding Values
-            network_feature_list[i][j] = "{:.3f}".format(network_feature_list[i][j])
+
+    # Making a different list because the values as numbers will be used for the ordering of the colours
+    # To round values in text to appear in the table
+    network_feature_list_text = [x[:] for x in network_feature_list] # For a deep copy we need to copy the nested lists and not just the "main" list
+
+    for i in range(len(network_features)): # Going through every song
+        for j in range(1, len(network_feature_list_text[i])): # Rounding Values
+            network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
 
 
 
@@ -43,16 +49,60 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
 
 
     # rows = [] #, rowLabels = rows
-    tab = ax.table(cellText = network_feature_list, colLabels = columns, loc = "center", cellLoc = "center")
+    tab = ax.table(cellText = network_feature_list_text, colLabels = columns, loc = "center", cellLoc = "center")
     tab.auto_set_font_size(False) # Makes font size not automatic and instead choose a font size below
 
     tab.set_fontsize(8)
     tab.auto_set_column_width(col = list(range(len(columns)))) # Sets Column width automatically
 
+    ##########
+    # Colors #
+    ##########
 
-    row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
+    num_songs = len(network_feature_list)
+    num_features = len(network_feature_list[0]) # Any index would do
 
-    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
+
+    min_feature_values = []
+    max_feature_values = []
+    for j in range(1, num_features): # Columns
+        min_value = network_feature_list[0][j]
+        max_value = network_feature_list[0][j]
+
+        for i in range(num_songs): # Rows
+            # Song i, Feature j
+            min_value = min(min_value, network_feature_list[i][j])
+            max_value = max(max_value, network_feature_list[i][j])
+
+        min_feature_values.append(min_value)
+        max_feature_values.append(max_value)
+
+
+
+
+
+    # A Matrix with len(network_feature_list) + 1 rows and len(columns) columns
+    cell_colors = [[[] for j in range(len(columns))] for i in range(len(network_feature_list) + 1)]
+
+    for col_index in range(len(columns)): # Features
+        for row_index in range(1, len(network_feature_list) + 1): # Songs
+            if col_index == 0:
+                cell_colors[row_index][col_index] = "white"
+
+            else:
+                # Mapping the value from [min,max] to [1,0] because for (1,1,1) we get white (min_value) and for (1,1,0) we get "full" red (max_value)
+                color_value = interval_mapping(network_feature_list[row_index - 1][col_index] ,[min_feature_values[col_index - 1], max_feature_values[col_index - 1]], [1, 0]) # col_index - 1 to skip the first column (without numbers) and row_index because it's considering the headers. It needs some clarity... pni
+
+                cell_colors[row_index][col_index] = (1, color_value, color_value) # Red with varying (at the same "pace") Green and Blue
+
+
+
+    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), cell_colors = cell_colors)
+
+    # To alternate colors for readability
+    # row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
+    # tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
+    
 
     fig.tight_layout()
 
@@ -61,11 +111,11 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     # Exporting Image #
     ###################
 
-    # Adapting plot filename to the type
+    # Adapting plot filename to the model
     features_type = "_features"
-    if type == "time":
+    if model == "time":
         features_type = "_time_features"
-    elif type == "netf":
+    elif model == "netf":
         features_type = "_netf_features"
 
     # Getting the folder's name
@@ -282,8 +332,12 @@ def clustering_table(networks, cluster_predictions, model, files_directory, labe
 # Support Functions #
 #####################
 
-def modify_table(tab, num_rows, num_columns, row_colors = None):
+def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = None):
     cells = tab.properties()["celld"]
+
+    # cell_colors has indices [0, num_rows + 1][0, num_columns] So, including header
+    # num_rows should be changed to match the total number of rows, just like num_columns is
+
 
     # First column (0) (excluding the header row)
     for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
@@ -291,6 +345,8 @@ def modify_table(tab, num_rows, num_columns, row_colors = None):
         cells[i, 0].PAD = 0.05 # Setting padding. Since it's aligned to the left (I think) it's only controlling the padding to the left side (and not up and down as well)
         if row_colors is not None:
             cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
+        elif cell_colors is not None:
+            cells[i, 0].set(fc = cell_colors[i][0]) # Setting colors for...
 
 
     # All columns except the first one(0) (excluding the header row)
@@ -300,5 +356,7 @@ def modify_table(tab, num_rows, num_columns, row_colors = None):
             cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
             if row_colors is not None:
                 cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
+            elif cell_colors is not None:
+                cells[i, j].set(fc = cell_colors[i][j]) # Setting colors for...
 
     return tab

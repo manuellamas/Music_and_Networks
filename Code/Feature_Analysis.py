@@ -1,11 +1,5 @@
 """ Display the values of a set of Features (metrics) on a dataset of MIDI files """
 
-# Similar to how SongGroupAnalysis work
-# But this time make the code more readable, compact and modular
-# One Function One Action whenever possible
-
-# Remember that I'll also use this (or at least have a function that uses this) for the tests with the Random Models.
-# Where I'll create n instances of it and take the average and standard deviation and show it.
 
 # Test exporting it as SVG so that there's better quality on the LaTeX file^
 # It should only need minor adaptations
@@ -180,8 +174,6 @@ def create_networks(files_directory, max_nodes = True):
 def feature_analysis(files_directory):
     """ Displaying a set of features for a dataset """
     networks = create_networks(files_directory, max_nodes = False)
-    print("files_directory", files_directory)
-    print("len networks",len(networks))
 
     networks_feature_list = []
     filenames_list = []
@@ -193,7 +185,7 @@ def feature_analysis(files_directory):
 
     networks_features = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
 
-    feature_table(networks_features, feature_names, filenames_list, files_directory, type = None)
+    feature_table(networks_features, feature_names, filenames_list, files_directory, model = None)
 
     return
 
