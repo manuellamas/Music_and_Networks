@@ -111,8 +111,6 @@ def main_analysis(files_directory):
     # Clustering #
     ##############
 
-    # Feature Table
-    # plt_analysis.feature_table(networks_feature_list, feature_names, filenames, files_directory)
 
     # Adding the features obtained through Time Window on the "Main" set of features
     # for i in range(len(networks_feature_list)):
@@ -160,11 +158,11 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         print("Running at Song Arena")
         files_directory = config.ROOT + "\\SongArena" # Where the MIDI files to be analyzed are
-        group_name = "SongArena"
+        # group_name = "SongArena"
 
     elif len(sys.argv) == 2:
         files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
-        group_name = sys.argv[-1].rsplit('\\', 1)[-1] # Used to denote the folder
+        # group_name = sys.argv[-1].rsplit('\\', 1)[-1] # Used to denote the folder
 
     else:
         print("Too many arguments")

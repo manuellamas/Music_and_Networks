@@ -11,8 +11,11 @@
 # It should only need minor adaptations
 # [python - How can I get the output of a matplotlib plot as an SVG? - Stack Overflow](https://stackoverflow.com/questions/24525111/how-can-i-get-the-output-of-a-matplotlib-plot-as-an-svg)
 
+import sys
 import os.path
 from os import listdir
+
+import config
 
 import networkx as nx
 import mido
@@ -21,7 +24,7 @@ import Music_Mapping
 import MIDI_general
 import Graph_metrics
 from Graph import create_graphml
-
+from Plot.Plotting_Group_Analysis import feature_table
 
 
 
@@ -176,8 +179,21 @@ def create_networks(files_directory, max_nodes = True):
 
 def feature_analysis(files_directory):
     """ Displaying a set of features for a dataset """
-    networks = create_networks(files_directory)
-    music_data(networks)
+    networks = create_networks(files_directory, max_nodes = False)
+    print("files_directory", files_directory)
+    print("len networks",len(networks))
+
+    networks_feature_list = []
+    filenames_list = []
+    # for network in networks:
+    for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
+        features, feature_names, features_to_normalize = music_data(network)
+        networks_feature_list.append(features)
+        filenames_list.append(filename)
+
+    networks_features = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
+
+    feature_table(networks_features, feature_names, filenames_list, files_directory, type = None)
 
     return
 
@@ -212,4 +228,16 @@ def normalize_min_max(feature_list, feature_names, features_to_normalize):
 
 
 if __name__ == "__main__":
-    pass
+    # Directory Target
+    if len(sys.argv) == 1:
+        print("Running at Song Arena")
+        files_directory = config.ROOT + "\\SongArena" # Where the MIDI files to be analyzed are
+
+    elif len(sys.argv) == 2:
+        files_directory = config.ROOT + "\\" + sys.argv[-1] # Where the MIDI files are
+
+    else:
+        print("Too many arguments")
+        exit()
+
+    feature_analysis(files_directory)

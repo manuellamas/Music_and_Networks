@@ -16,6 +16,7 @@ And creating a folder for each on the original file or folder's directory for ea
 import sys
 from os import listdir
 import os.path
+from Feature_Analysis import feature_analysis
 from Plotting import check_dir
 
 import mido
@@ -118,9 +119,13 @@ if __name__ == "__main__":
             Plotting.degree_distribution_scatter_plot(G, filename, files_directory)
             Plotting.edges_rank(G, filename, files_directory)
 
+        # Feature Analysis
+        print_section_title("Feature Analysis")
+        feature_analysis(files_directory)
+
         # Song Group Analysis (k-means)
-        print_section_title("Song Group Analysis")
-        main_analysis(files_directory)
+        # print_section_title("Song Group Analysis")
+        # main_analysis(files_directory)
 
         # Song Comparison Plots
         # print_section_title("Song Comparison Plots")

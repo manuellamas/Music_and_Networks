@@ -298,7 +298,7 @@ def modify_table(tab, num_rows, num_columns, row_colors = None):
     for j in range(1, num_columns):
         for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
             cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
-        if row_colors is not None:
-            cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
+            if row_colors is not None:
+                cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
 
     return tab
