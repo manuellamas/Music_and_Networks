@@ -10,7 +10,7 @@ import os.path
 import Graph_metrics
 import MIDI_general
 
-# Support Function
+# Support Functions
 def check_dir(dir):
     """ Checks if directory exists, else it creates it """
 
@@ -21,6 +21,14 @@ def check_dir(dir):
         mkdir(dir)
         print("The following directory was created", dir)
 
+
+
+def interval_mapping(value_from_source, source, image):
+    """ Maps (linearly) a value from interval source [a, b], to interval image [c,d] """
+    a, b = source
+    c, d = image
+
+    return (value_from_source - a)*(d - c)/(b - a) + c
 
 
 
