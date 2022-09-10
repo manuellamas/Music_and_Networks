@@ -45,6 +45,7 @@ Split_Tracks
 **/Graph_Visualisations
 **/SongGroupAnalysis
 **/Time_Series_Representation
+**/FeatureAnalysis
 
 # Possible routes that are not to be considered for now
 Music_Mapping_Higher_Order.py
