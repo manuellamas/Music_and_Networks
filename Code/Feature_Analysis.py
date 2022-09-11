@@ -1,10 +1,6 @@
 """ Display the values of a set of Features (metrics) on a dataset of MIDI files """
 
 
-# Test exporting it as SVG so that there's better quality on the LaTeX file^
-# It should only need minor adaptations
-# [python - How can I get the output of a matplotlib plot as an SVG? - Stack Overflow](https://stackoverflow.com/questions/24525111/how-can-i-get-the-output-of-a-matplotlib-plot-as-an-svg)
-
 import sys
 import os.path
 from os import listdir

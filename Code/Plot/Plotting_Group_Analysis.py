@@ -104,7 +104,7 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     # tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), row_colors = row_colors)
     
 
-    fig.tight_layout()
+    # fig.tight_layout()
 
 
     ###################
@@ -150,9 +150,6 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
     network_feature_list = [[] for i in range(len(network_features))]
 
     for i in range(len(network_features)): # Going through every song
-        # File Name
-        # network_feature_list[i].append(file_names[i])
-
         # Features
         network_feature_list[i] += network_features[i] # Adding the features to the list
         
@@ -338,6 +335,7 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
     # cell_colors has indices [0, num_rows + 1][0, num_columns] So, including header
     # num_rows should be changed to match the total number of rows, just like num_columns is
 
+    CELL_HEIGHT = 0.055
 
     # First column (0) (excluding the header row)
     for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
@@ -347,16 +345,18 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
             cells[i, 0].set(fc = row_colors[i]) # Setting alternating colors for better readability
         elif cell_colors is not None:
             cells[i, 0].set(fc = cell_colors[i][0]) # Setting colors for...
+        cells[i,0].set(height = CELL_HEIGHT) # Adjust Cell's height
 
 
     # All columns except the first one(0) (excluding the header row)
     # Overriding the cellLoc = "center"
     for j in range(1, num_columns):
         for i in range(1, num_rows + 1): # For each row. +1 because the column headers cells are included
-            cells[i, j].set_text_props(ha = "right") # Aligning column j to the right
+            cells[i, j].set_text_props(ha = "center") # Aligning column j to the center
             if row_colors is not None:
                 cells[i, j].set(fc = row_colors[i]) # Setting alternating colors for better readability
             elif cell_colors is not None:
                 cells[i, j].set(fc = cell_colors[i][j]) # Setting colors for...
+            cells[i,j].set(height = CELL_HEIGHT) # Adjust Cell's height
 
     return tab
