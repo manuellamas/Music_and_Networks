@@ -7,9 +7,12 @@ import mido
 import random
 from numpy import sign
 
+import config
+from Plotting import check_dir
+
 
 # def midi_synthetic(tempo = 361445, midi_generator, **args):
-def midi_synthetic(midi_generator, tempo = 361445, **args):
+def midi_synthetic(midi_generator, tempo = 361445, files_directory = "", **args):
     """ Generate a MIDI file for testing """
 
     # New midi file
@@ -48,7 +51,11 @@ def midi_synthetic(midi_generator, tempo = 361445, **args):
 
 
     # Saving the file
-    mid_path = "MIDI_files/synthetic/" + title + "_d" + str(note_duration) + "_t" + str(tempo) + ".mid"
+    if files_directory == "":
+        mid_path = "MIDI_files/synthetic/" + title + "_d" + str(note_duration) + "_t" + str(tempo) + ".mid"
+    else:
+        mid_path = files_directory + "\\" + title + "_d" + str(note_duration) + "_t" + str(tempo) + ".mid"
+
     mid.save(mid_path)
     
     return
@@ -293,6 +300,63 @@ def midi_mapping_example(track):
 
 
 
+def midi_timeline_example1(track):
+    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = NOTE_SPACING)
+    track.append(message_on)
+
+    message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = 30)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 20)
+    track.append(message_off)
+
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 10)
+    track.append(message_off)
+
+
+
+    return "timeline_example1", NOTE_DURATION, NOTE_SPACING
+
+
+
+def midi_timeline_example2(track):
+    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = NOTE_SPACING)
+    track.append(message_on)
+
+    message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = NOTE_SPACING)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = NOTE_DURATION)
+    track.append(message_off)
+
+    message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = NOTE_DURATION)
+    track.append(message_off)
+
+
+
+    return "timeline_example2", NOTE_DURATION, NOTE_SPACING
+
+
+
+def midi_timeline_example3(track):
+    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = NOTE_SPACING)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = NOTE_DURATION)
+    track.append(message_off)
+
+    message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = NOTE_SPACING)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = NOTE_DURATION)
+    track.append(message_off)
+
+
+
+    return "timeline_example3", NOTE_DURATION, NOTE_SPACING
+
+
+
 ##################################################
 #------------------------------------------------#
 ##################################################
@@ -446,5 +510,12 @@ if __name__ == "__main__":
     # To exemplify mapping
     midi_synthetic(midi_mapping_example)
 
+    # To exemplify order given overlap due to mapping
+    files_path = config.ROOT + "\\Dataset_Analysis\\Timeline_Bar_Test"
+    check_dir(files_path)
+
+    midi_synthetic(midi_timeline_example1, files_directory = files_path)
+    midi_synthetic(midi_timeline_example2, files_directory = files_path)
+    midi_synthetic(midi_timeline_example3, files_directory = files_path)
 
 
