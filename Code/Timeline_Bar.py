@@ -27,17 +27,13 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
 
     # Saving lists of notes and their times for the ticks and mapping
     list_times = []
+
     list_notes = []
     for n in notes:
-        # list_notes.append(n[2]) # Note code
-        # list_times.append(n[0]) # Start time of a note
-        # list_times.append(n[1]) # End time of a note
-
-
-        # New
         list_notes.append(n[0]) # Note code
         list_times.append(n[1]) # Start time of a note
         list_times.append(n[2]) # End time of a note
+
 
     # Sort list given each elements' first occurrence position
     list_times = list(set(list_times))
@@ -76,19 +72,25 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
     fig, ax = plt.subplots()
     ax.add_collection(bars)
     ax.autoscale()
+    
+    fig.set_size_inches(6.4, 4.8, forward=True) # Defining the figure/window size
+    plt.subplots_adjust(bottom = 0.17)
 
     # Xticks
-    ax.set_xticks(list_times)
+    # ax.set_xticks(list_times)
+    ax.tick_params(axis = "x", labelrotation = 90)
 
     # Yticks
     ax.set_yticks(list_notes)
 
     # Axis Labels
-    ax.set_xlabel('ticks')
-    ax.set_ylabel('MIDI note codes')
+    ax.set_xlabel('ticks', labelpad = 9) # labelpad padding between the label and the ticks
+    ax.set_ylabel('MIDI note codes', labelpad = 6)
 
     ax.spines[['top', 'right']].set_visible(False) # Hides right and top axis
 
+
+    # Export
     if files_directory[-3:].lower() == "mid":
         files_directory = files_directory.rsplit("\\",1)[0]
 
