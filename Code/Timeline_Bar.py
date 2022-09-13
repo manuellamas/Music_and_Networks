@@ -97,7 +97,7 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
     export_directory = files_directory + "\\Timeline_Bar"
     check_dir(export_directory)
 
-    export_directory += "\\" + filename + ".png"
+    export_directory += "\\" + filename + "_timeline_bar" + ".png"
 
     # plt.savefig(export_directory, bbox_inches='tight')
     plt.savefig(export_directory)
