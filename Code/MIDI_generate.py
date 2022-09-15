@@ -11,12 +11,12 @@ import config
 from Plotting import check_dir
 
 
-# def midi_synthetic(tempo = 361445, midi_generator, **args):
-def midi_synthetic(midi_generator, tempo = 361445, files_directory = "", **args):
+# def midi_synthetic(midi_generator, tempo = 361445, files_directory = "", **args):
+def midi_synthetic(midi_generator, tempo = 300_000, ticks_per_beat = 480, files_directory = "", **args):
     """ Generate a MIDI file for testing """
 
     # New midi file
-    mid = mido.MidiFile(type = 1)
+    mid = mido.MidiFile(type = 1, ticks_per_beat = ticks_per_beat)
 
     meta_track = mido.MidiTrack() # Track with values and settings
     mid.tracks.append(meta_track)
@@ -536,8 +536,13 @@ def valley(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, st
 
 
 if __name__ == "__main__":
+    main_path = config.ROOT + "\\MIDI_files\\synthetic"
+    print("Plotting at", main_path)
+    check_dir(main_path)
+
     midi_synthetic(midi_fixed_note)
-    # midi_synthetic(midi_fixed_note, tempo = 100_000)
+    # midi_synthetic(midi_fixed_note, tempo = 10_000)
+    # midi_synthetic(midi_fixed_note, tempo = 300_000)
     # midi_synthetic(midi_fixed_note, note_duration = 100)
     # midi_synthetic(midi_fixed_note, note = 126)
 
@@ -578,6 +583,7 @@ if __name__ == "__main__":
 
     # To exemplify order given overlap due to mapping
     files_path = config.ROOT + "\\Dataset_Analysis\\Timeline_Bar_Test"
+    print("Plotting at", files_path)
     check_dir(files_path)
 
     for example in midi_timeline_examples:
