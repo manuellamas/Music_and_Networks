@@ -49,7 +49,7 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
 
     for i, unique_value in enumerate(list_notes):
         # colormapping[unique_value] = color_list[i]
-        colormapping[unique_value] = "C" + str(i) # Using Matplotlib's default color cycle https://matplotlib.org/3.5.1/tutorials/colors/colors.html#:~:text=default%20color%20cycle
+        colormapping[unique_value] = "C" + str(i) # Using Matplotlib's default color cycle https://matplotlib.org/3.5.1/tutorials/colors/colors.html#:~:text=default%20color%20cycle Convert to RGBA to see exactly which ones they are
 
 
     verts = []
