@@ -78,6 +78,8 @@ def midi_file_overview(mid_file, filename):
     
     file.write("\n----------\n\n")
 
+    file.write("ticks_per_beat: " + str(mid_file.ticks_per_beat) + "\n\n")
+
     # Lists all the tracks 'main info'
     for i, track in enumerate(mid_file.tracks):
         file.write("{}: {}\n\n" .format(i,track))
