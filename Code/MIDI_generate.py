@@ -11,12 +11,13 @@ import config
 from Plotting import check_dir
 
 
-# def midi_synthetic(midi_generator, tempo = 361445, files_directory = "", **args):
-def midi_synthetic(midi_generator, tempo = 300_000, ticks_per_beat = 480, files_directory = "", **args):
+def midi_synthetic(midi_generator, tempo = 500_000, ticks_per_beat = 480, files_directory = "", **args):
     """ Generate a MIDI file for testing """
 
     # New midi file
     mid = mido.MidiFile(type = 1, ticks_per_beat = ticks_per_beat)
+    """ both tempo and ticks_per_beat have as default (given as parameter to this function) the default values set as attributes when creating a MIDI file
+    see all attributes on the source of mido.MidiFile() """
 
     meta_track = mido.MidiTrack() # Track with values and settings
     mid.tracks.append(meta_track)
@@ -544,7 +545,7 @@ def valley(track, note_duration = NOTE_DURATION, note_spacing = NOTE_SPACING, st
 
 if __name__ == "__main__":
     main_path = config.ROOT + "\\MIDI_files\\synthetic"
-    print("Plotting at", main_path)
+    print("Creating MIDI at", main_path)
     check_dir(main_path)
 
     midi_synthetic(midi_fixed_note)
@@ -590,7 +591,7 @@ if __name__ == "__main__":
 
     # To exemplify order given overlap due to mapping
     files_path = config.ROOT + "\\Dataset_Analysis\\Timeline_Bar_Test"
-    print("Plotting at", files_path)
+    print("Creating MIDI at", files_path)
     check_dir(files_path)
 
     for example in midi_timeline_examples:
