@@ -308,6 +308,24 @@ def midi_mapping_example(track):
 
 
 
+def midi_messages_example(track):
+    notes_list = [
+        [45, "on"],
+        [60, "on"],
+        [45, "off"],
+        [45, "on"],
+        [60, "off"],
+        [45, "off"]
+        ]
+
+    for note, state in notes_list:
+        message_on = mido.Message('note_' + state, note = note, velocity = VELOCITY, time = 20)
+        track.append(message_on)
+
+    return "messages_example", NOTE_DURATION, NOTE_SPACING
+
+
+
 def midi_timeline_example1(track):
     message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = NOTE_SPACING)
     track.append(message_on)
@@ -588,6 +606,8 @@ if __name__ == "__main__":
     # Examples
     # To exemplify mapping
     midi_synthetic(midi_mapping_example)
+    # To explain how our mapping works from the messages
+    midi_synthetic(midi_messages_example)
 
     # To exemplify order given overlap due to mapping
     files_path = config.ROOT + "\\Dataset_Analysis\\Timeline_Bar_Test"
