@@ -384,13 +384,36 @@ def midi_timeline_example3(track):
 
 
 def midi_timeline_example4(track):
+    # message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = 20)
+    # track.append(message_on)
+
+    # message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = 20)
+    # track.append(message_on)
+
+    # message_on = mido.Message('note_on', note = 52, velocity = VELOCITY, time = 20)
+    # track.append(message_on)
+
+    # message_on = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 20)
+    # track.append(message_on)
+
+    # message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 20)
+    # track.append(message_off)
+
+    # message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
+    # track.append(message_off)
     message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = 20)
     track.append(message_on)
 
-    message_on = mido.Message('note_on', note = 52, velocity = VELOCITY, time = 20)
+    message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = 20)
     track.append(message_on)
 
-    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
+    message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 30)
+    track.append(message_off)
+
+    message_on = mido.Message('note_on', note = 52, velocity = VELOCITY, time = 10)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 40)
     track.append(message_off)
 
     message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = 20)
@@ -399,8 +422,8 @@ def midi_timeline_example4(track):
     message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 20)
     track.append(message_off)
 
-    message_on = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 20)
-    track.append(message_on)
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
+    track.append(message_off)
 
 
 
@@ -424,18 +447,43 @@ def midi_timeline_example5(track):
     message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 20)
     track.append(message_off)
 
-    message_on = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 20)
-    track.append(message_on)
-
-    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = 20)
-    track.append(message_on)
-
-    message_on = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
-    track.append(message_on)
+    message_off = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 20)
+    track.append(message_off)
 
 
 
     return "timeline_example5", NOTE_DURATION, NOTE_SPACING
+
+
+
+def midi_timeline_example6(track):
+    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = 20)
+    track.append(message_on)
+
+    message_on = mido.Message('note_on', note = 52, velocity = VELOCITY, time = 20)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
+    track.append(message_off)
+
+    message_on = mido.Message('note_on', note = 51, velocity = VELOCITY, time = 20)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 51, velocity = VELOCITY, time = 20)
+    track.append(message_off)
+
+    message_off = mido.Message('note_off', note = 52, velocity = VELOCITY, time = 20)
+    track.append(message_off)
+
+    message_on = mido.Message('note_on', note = 50, velocity = VELOCITY, time = 20)
+    track.append(message_on)
+
+    message_off = mido.Message('note_off', note = 50, velocity = VELOCITY, time = 20)
+    track.append(message_off)
+
+
+
+    return "timeline_example6", NOTE_DURATION, NOTE_SPACING
 
 
 
@@ -445,6 +493,7 @@ midi_timeline_examples = [
     ,midi_timeline_example3
     ,midi_timeline_example4
     ,midi_timeline_example5
+    ,midi_timeline_example6
     ]
 
 
