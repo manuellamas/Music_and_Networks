@@ -32,8 +32,9 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average In-degree Weighted
     feature_list.append(Graph_metrics.average_indegree(G, normalize = False, weighted = True)) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name_list.append("Avg. In-degree W")
-    features_to_normalize.append("Avg. In-degree W")
+    feature_name = "Avg.\nIn-degree W"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     # # Average Betweenness Centrality
     # feature_list.append(Graph_metrics.average_betweenness(G, normalize = True))
@@ -41,8 +42,9 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Betweenness Centrality Weighted
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = False, weighted =  True))
-    feature_name_list.append("Avg. Betweenness Coef. W")
-    features_to_normalize.append("Avg. Betweenness Coef. W")
+    feature_name = "Avg. Betweenness\nCoef. W"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     # # Average Closeness Centrality (Normalized by default)
     # feature_list.append(Graph_metrics.average_closeness(G))
@@ -50,8 +52,9 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Closeness Centrality (Normalized by default) Weighted
     feature_list.append(Graph_metrics.average_closeness(G, weighted = True))
-    feature_name_list.append("Avg. Closeness Coef. W")
-    features_to_normalize.append("Avg. Closeness Coef. W")
+    feature_name = "Avg. Closeness\nCoef. W"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     # Number of Nodes normalized by the maximum number of nodes of the graphs being analysed
     # feature_list.append(G.number_of_nodes() / max_num_nodes)
@@ -61,12 +64,13 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Clustering Coefficient
     feature_list.append(Graph_metrics.average_clustering(G)) # Doesn't use weight and is normalized by default
-    feature_name_list.append("Avg. Clustering Coef.")
+    feature_name_list.append("Avg. Clustering\nCoef.")
 
     # Average Shortest Path Length (Normalized) Weighted
     feature_list.append(nx.average_shortest_path_length(G, weight = "weight")) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name_list.append("Avg. Shortest Path Lengths W")
-    features_to_normalize.append("Avg. Shortest Path Lengths W")
+    feature_name = "Avg. Shortest Path\nLengths W"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     feature_list.append(nx.density(G)) # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.density.html?highlight=density#networkx.classes.function.density
     feature_name_list.append("Density")

@@ -359,4 +359,11 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
                 cells[i, j].set(fc = cell_colors[i][j]) # Setting colors for...
             cells[i,j].set(height = CELL_HEIGHT) # Adjust Cell's height
 
+
+    # Changing just the Header
+    for i in range(num_columns):
+        # cells[0,i].set(fc = "blue")
+        cells[0,i].set(height = 2 * CELL_HEIGHT)
+
+
     return tab
