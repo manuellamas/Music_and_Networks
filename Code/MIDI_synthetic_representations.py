@@ -53,7 +53,7 @@ def format_y_ticks(value, tick_number):
 
 
 
-def plot_all_tracks(mid_file, with_rests = True, folder_name = "", one_song = False, full_analysis = ""):
+def plot_all_tracks(mid_file, files_directory = "", with_rests = True, folder_name = "", one_song = False, full_analysis = ""):
     """ Plots the representation of all tracks of a MIDI file """
     for track_index, track in enumerate(mid_file.tracks):
 
@@ -64,11 +64,11 @@ def plot_all_tracks(mid_file, with_rests = True, folder_name = "", one_song = Fa
                 break
 
         if not empty_track:
-            plot_track(mid_file, with_rests = True, track_index = track_index, folder_name = folder_name, one_song = one_song, full_analysis = full_analysis)
+            plot_track(mid_file, files_directory, with_rests = True, track_index = track_index, folder_name = folder_name, one_song = one_song, full_analysis = full_analysis)
 
 
 
-def plot_track(mid_file, with_rests = True, track_index = None, folder_name = "", one_song = False, full_analysis = ""):
+def plot_track(mid_file, files_directory, with_rests = True, track_index = None, folder_name = "", one_song = False, full_analysis = ""):
     """ Plots a representation of a MIDI file specific track (the melody one if not specified) """
     fig, ax = plt.subplots()
 
@@ -131,7 +131,7 @@ def plot_track(mid_file, with_rests = True, track_index = None, folder_name = ""
             if one_song: # Creates folder for just one song
                 representations_dir = config.ROOT + "\\Music_Representations\\Songs" + "\\" + filename # To create a folder for each MIDI
             else: # Creates folder for running for all songs of a folder
-                representations_dir = config.ROOT + "\\Music_Representations\\Songs" + "\\" + folder_name + "_representations"
+                representations_dir = files_directory + "\\Time_Series_Representation"
     else: # Doing full analysis (Graph visualisation, synthetic representation,...)
         representations_dir = full_analysis + "\\Time_Series_Representation"
 
@@ -198,6 +198,6 @@ if __name__ == "__main__":
             # track_index = MIDI_general.track_from_dict(filename, tracks_indices)
             # plot_track(mid_file, with_rests = True)
 
-            plot_all_tracks(mid_file, with_rests = True, folder_name = folder_name)
+            plot_all_tracks(mid_file, files_directory, with_rests = True, folder_name = folder_name)
 
 
