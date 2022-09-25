@@ -93,7 +93,9 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
                 # Mapping the value from [min,max] to [1,0] because for (1,1,1) we get white (min_value) and for (1,1,0) we get "full" red (max_value)
                 color_value = interval_mapping(network_feature_list[row_index - 1][col_index] ,[min_feature_values[col_index - 1], max_feature_values[col_index - 1]], [1, 0]) # col_index - 1 to skip the first column (without numbers) and row_index because it's considering the headers. It needs some clarity... pni
 
-                cell_colors[row_index][col_index] = (1, color_value, color_value) # Red with varying (at the same "pace") Green and Blue
+                cell_colors[row_index][col_index] = (1, color_value, color_value) # Red with varying (at the same "pace") Green and Blue. Of the three Red has the best pair contrast and (black numbers) readability
+                # cell_colors[row_index][col_index] = (color_value, color_value, 1) # Blue with varying (at the same "pace") Green and Blue
+                # cell_colors[row_index][col_index] = (color_value, 1, color_value) # Green with varying (at the same "pace") Green and Blue
 
 
 
