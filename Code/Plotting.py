@@ -7,7 +7,6 @@ import config
 from os import mkdir
 import os.path
 
-import Graph_metrics
 import MIDI_general
 
 # Support Functions
@@ -28,7 +27,10 @@ def interval_mapping(value_from_source, source, image):
     a, b = source
     c, d = image
 
-    return (value_from_source - a)*(d - c)/(b - a) + c
+    if a == b:
+        return (c + d) / 2
+    else:
+        return (value_from_source - a)*(d - c)/(b - a) + c
 
 
 
