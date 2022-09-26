@@ -48,6 +48,8 @@ Split_Tracks
 **/FeatureAnalysis
 **/Timeline_Bar
 
+**/Noise_added
+
 # Possible routes that are not to be considered for now
 Music_Mapping_Higher_Order.py
 Music_Mapping_Multilayer.py
