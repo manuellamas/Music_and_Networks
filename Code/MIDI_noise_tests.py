@@ -33,14 +33,3 @@ if __name__ == "__main__":
 
     add_noise_batch_multiple_instances(files_directory, PERCENTAGE, MAX_DEVIATION, num_instances = NUM_INSTANCES)
 
-
-
-    ## To run several noise parameters
-    # noise_parameters = [
-    #     [0.1 , 5]
-    #     ,[0.2 , 5]
-    #     ,[0.3 , 3]
-    # ]
-
-    # for percentage, max_deviation in noise_parameters:
-    #     add_noise_batch(files_directory, percentage, max_deviation)

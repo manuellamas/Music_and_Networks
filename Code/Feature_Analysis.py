@@ -157,7 +157,7 @@ def create_networks(files_directory, max_nodes = True):
 
         network, notes, notes_duration, total_ticks = Music_Mapping.graph_note_pairs_weighted(mid_file, ticks = True, track_index = track_index)
 
-        create_graphml(network, filename)
+        create_graphml(network, filename, files_directory)
 
         networks.append([network, mid_file, filename, notes, notes_duration, total_ticks])
 

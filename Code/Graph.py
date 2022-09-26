@@ -42,11 +42,14 @@ def graph_display_info(G):
 
 
 
-def create_graphml(network, filename, relabel = False):
+def create_graphml(network, filename, files_directory, relabel = False):
     """ Create a graphml of a NetworkX network, with or without relabeling of the music note codes """
     if relabel:
         network = nx.relabel_nodes(network, MIDI_general.note_mapping_dict(network)) # Adding labels according to the notes
-    nx.write_graphml(network, config.ROOT + "\\graphml_files\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+
+    dir = files_directory + "\\graphml_files"
+    Plotting.check_dir(dir)
+    nx.write_graphml(network, dir + "\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
 
     return
 
