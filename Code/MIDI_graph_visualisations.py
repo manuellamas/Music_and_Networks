@@ -133,7 +133,8 @@ def create_graph_vis(G, filename, track_index = None, folder_name = "", full_ana
         nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.15") # node_size isn't used to draw here but to determine edge position
         # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
 
-
+    # Adding edge labels corresponding to the their weight
+    nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8)
 
 
 
