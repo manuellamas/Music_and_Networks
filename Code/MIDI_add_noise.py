@@ -160,7 +160,7 @@ def add_noise_batch_multiple_instances(files_directory, percentage = 0.1, max_de
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
 
-        for i in range(num_instances):
+        for i in range(1, num_instances + 1): # Starting at one so that filenames are more intuitive
             add_noise(mid_file, files_directory, percentage, max_deviation, track_to_add_noise_index, instance_num = i)
 
 
