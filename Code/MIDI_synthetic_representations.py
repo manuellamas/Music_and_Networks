@@ -109,13 +109,17 @@ def plot_track(mid_file, files_directory, with_rests = True, track_index = None,
         filename += "_track_" + str(track_index)
 
     # title = "Representation of " + filename
-    plt.title(filename)
+    # plt.title(filename)
 
 
     # Axis Labels
-    ax.set_xlabel('Order')
-    ax.set_ylabel('Note')
+    ax.set_xlabel('Order', fontsize = 14)
+    ax.set_ylabel('Note', fontsize = 14)
 
+
+    # Ticks Text Size
+    ax.tick_params(axis='both', which='major', labelsize = 14)
+    # ax.tick_params(axis='both', which='minor', labelsize=8)
 
     # Legend
     # plt.legend(loc="upper left")
