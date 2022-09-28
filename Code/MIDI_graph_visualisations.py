@@ -17,7 +17,7 @@ from Music_Mapping import graph_note_pairs_weighted
 
 
 
-def create_graph_vis(G, filename, track_index = None, folder_name = "", full_analysis = "", single_file = False):
+def create_graph_vis(G, filename, track_index = None, full_analysis = "", single_file = False, files_directory = ""):
     """ Creates a visualisation of a graph through a graph (networkx) object """
 
     ## Title
@@ -141,11 +141,19 @@ def create_graph_vis(G, filename, track_index = None, folder_name = "", full_ana
 
     ## Exporting to PNG
     plot_filename = filename + ".png"
+    # if full_analysis == "":
+    #     if folder_name == "":
+    #         representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
+    #     else:
+    #         representations_dir = config.ROOT + "\\Music_Graph_Visualisations" + "\\" + folder_name + "_graph_vis"
+    # else: # Doing full analysis (Graph visualisation, synthetic representation,...)
+    #     representations_dir = full_analysis + "\\Graph_Visualisations"
+    
     if full_analysis == "":
-        if folder_name == "":
+        if single_file:
             representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
         else:
-            representations_dir = config.ROOT + "\\Music_Graph_Visualisations" + "\\" + folder_name + "_graph_vis"
+            representations_dir = files_directory + "\\Graph_Visualisations"
     else: # Doing full analysis (Graph visualisation, synthetic representation,...)
         representations_dir = full_analysis + "\\Graph_Visualisations"
 
@@ -173,7 +181,7 @@ if __name__ == "__main__":
 
         # Create the graph and its visualisation
         G, notes, notes_duration = graph_note_pairs_weighted(mid_file, track_index = track_index)
-        create_graph_vis(G, filename)
+        create_graph_vis(G, filename, single_file = True)
     
     else:
         if len(sys.argv) == 1: # Runnning at Code\MIDI_files\synthetic
@@ -208,4 +216,4 @@ if __name__ == "__main__":
 
             # Create the graph and its visualisation
             G, notes, notes_duration = graph_note_pairs_weighted(mid_file, track_index = track_index)
-            create_graph_vis(G, filename, folder_name = folder_name)
+            create_graph_vis(G, filename, files_directory = files_directory)
