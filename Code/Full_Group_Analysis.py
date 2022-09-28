@@ -120,8 +120,11 @@ if __name__ == "__main__":
             Plotting.edges_rank(G, filename, files_directory)
 
         # Feature Analysis
-        print_section_title("Feature Analysis")
-        feature_analysis(files_directory)
+        print_section_title("Feature Analysis (Normalized values)")
+        feature_analysis(files_directory, normalized = True)
+
+        print_section_title("Feature Analysis (Absolute values)")
+        feature_analysis(files_directory, normalized = False)
 
         # Song Group Analysis (k-means)
         # print_section_title("Song Group Analysis")

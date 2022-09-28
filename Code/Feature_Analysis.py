@@ -171,7 +171,7 @@ def create_networks(files_directory, max_nodes = True):
 
 
 
-def feature_analysis(files_directory):
+def feature_analysis(files_directory, normalized = True):
     """ Displaying a set of features for a dataset """
     networks = create_networks(files_directory, max_nodes = False)
 
@@ -183,9 +183,12 @@ def feature_analysis(files_directory):
         networks_feature_list.append(features)
         filenames_list.append(filename)
 
-    networks_features = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
+    if normalized:
+        networks_features = normalize_min_max(networks_feature_list, feature_names, features_to_normalize)
+    else:
+        networks_features = networks_feature_list
 
-    feature_table(networks_features, feature_names, filenames_list, files_directory, model = None)
+    feature_table(networks_features, feature_names, filenames_list, files_directory, model = None, normalized = normalized)
 
     return
 

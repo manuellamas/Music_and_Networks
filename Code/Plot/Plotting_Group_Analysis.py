@@ -8,7 +8,7 @@ import config
 
 
 
-def feature_table(network_features, feature_names, file_names, files_directory, model = None):
+def feature_table(network_features, feature_names, file_names, files_directory, model = None, normalized = True):
     """ Plots a table with all features being analyzed """
 
 
@@ -128,8 +128,9 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     check_dir(export_directory)
 
     # Setting the plot file name and the full path of the file to be created with it
-    plot_filename = group_name + features_type + ".png"
-    export_directory += "\\" + plot_filename
+    plot_filename = group_name + features_type
+    if normalized: plot_filename += "_norm"
+    export_directory += "\\" + plot_filename + ".png"
 
     # Saving and closing the file
     plt.savefig(export_directory, bbox_inches='tight')
