@@ -49,7 +49,7 @@ def create_graphml(network, filename, files_directory, relabel = False):
 
     dir = files_directory + "\\graphml_files"
     Plotting.check_dir(dir)
-    nx.write_graphml(network, dir + "\\" + filename + "_Graph.graphml") # Exporting graph to a graphml file
+    nx.write_graphml(network, dir + "\\" + filename + ".graphml") # Exporting graph to a graphml file
 
     return
 
