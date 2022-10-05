@@ -84,8 +84,13 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
     ax.set_yticks(list_notes)
 
     # Axis Labels
-    ax.set_xlabel('ticks', labelpad = 9) # labelpad padding between the label and the ticks
+    ax.set_xlabel('Ticks', labelpad = 9) # labelpad padding between the label and the ticks
     ax.set_ylabel('MIDI note codes', labelpad = 6)
+    # ax.set_xlabel('Ticks', labelpad = 9, fontsize = 14) # labelpad padding between the label and the ticks
+    # ax.set_ylabel('MIDI note codes', labelpad = 6, fontsize = 14)
+
+    # Ticks Text Size
+    # ax.tick_params(axis='both', which='major', labelsize = 14)
 
     ax.spines[['top', 'right']].set_visible(False) # Hides right and top axis
 
