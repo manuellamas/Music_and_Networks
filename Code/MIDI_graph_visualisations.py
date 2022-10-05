@@ -33,29 +33,28 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
     """
     Specific parameters for Synthetic_Set_1 graphs to display in the thesis
 
-    straight_fixed_octave_up
-    - circular
-    - edge label -> label_pos = 0.5
-
     peak_fixed_octave
     peaks_small_large_constant
-    - circular
+    - kamada_kawai
     - edge label -> label_pos = 0.3
-
 
     peaks_small_large_rising
     - spiral -> resolution = 3.00
     - edge label -> label_pos = 0.3
 
-    straight_rising_octave_up
-    - spiral -> resolution = 3.00
-    - edge label -> label_pos = 0.5
-
-
     random_fixed
     random_fully
     - pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
     - edge label -> label_pos = 0.3
+
+    repeat_aabb_up
+    straight_fixed_octave_up
+    - circular
+    - edge label -> label_pos = 0.5
+
+    straight_rising_octave_up
+    - spiral -> resolution = 3.00
+    - edge label -> label_pos = 0.5
     """
 
 
@@ -65,11 +64,11 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
 
     ## Graph
     # pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
-    # pos = nx.spiral_layout(G, equidistant = True, resolution = 3.00) # Higher resolution value less compact spiral
-    pos = nx.circular_layout(G)
-
-
+    pos = nx.spiral_layout(G, equidistant = True, resolution = 3.00) # Higher resolution value less compact spiral
+    # pos = nx.circular_layout(G)
     # pos = nx.kamada_kawai_layout(G)
+
+
 
 
 
@@ -202,8 +201,8 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
         # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
 
     # Adding edge labels corresponding to the their weight
-    nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8) # For the peaks models
-    # nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.5, font_size = 8)
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8) # For the peaks models
+    nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.5, font_size = 8)
 
 
 
