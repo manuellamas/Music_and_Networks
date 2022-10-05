@@ -148,7 +148,7 @@ def average_clustering(G):
 # Modularity
 
 
-def modularity_louvain(G):
+def modularity_louvain(G, list_communities = False):
     """ Returns modularity value from communities (Louvain Algorithm) """
 
     G_undirected = nx.to_undirected(G) # Using an undirected version of the graph
@@ -161,5 +161,8 @@ def modularity_louvain(G):
     # Modularity value based on those communities
     modularity = nx_comm.modularity(G_undirected, communities)
 
-    return modularity, len(communities)
+    if list_communities:
+        return modularity, communities
+    else:
+        return modularity, len(communities)
 # Then return this as a feature in SongGroupAnalysis

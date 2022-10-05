@@ -108,6 +108,9 @@ if __name__ == "__main__":
             G, notes, notes_duration = graph_note_pairs_weighted(mid_file, track_index = track_index)
             create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory)
 
+            # Creating the same graphs but coloring the nodes by community
+            create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory, communities_coloring = True)
+
             # Time series representation
             plot_all_tracks(mid_file, with_rests = True, full_analysis = files_directory)
 
