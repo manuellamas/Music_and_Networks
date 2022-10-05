@@ -32,7 +32,7 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average In-degree Weighted
     feature_list.append(Graph_metrics.average_indegree(G, normalize = False, weighted = True)) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name = "Avg.\nIn-degree W"
+    feature_name = "Avg. W.\nIn-Degree"
     feature_name_list.append(feature_name)
     features_to_normalize.append(feature_name)
 
@@ -42,7 +42,7 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Betweenness Centrality Weighted
     feature_list.append(Graph_metrics.average_betweenness(G, normalize = False, weighted =  True))
-    feature_name = "Avg. Betweenness\nCoef. W"
+    feature_name = "Avg. W.\nBetweenness Cent."
     feature_name_list.append(feature_name)
     features_to_normalize.append(feature_name)
 
@@ -52,7 +52,7 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Closeness Centrality (Normalized by default) Weighted
     feature_list.append(Graph_metrics.average_closeness(G, weighted = True))
-    feature_name = "Avg. Closeness\nCoef. W"
+    feature_name = "Avg. W.\nCloseness Cent."
     feature_name_list.append(feature_name)
     features_to_normalize.append(feature_name)
 
@@ -68,7 +68,7 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Shortest Path Length (Normalized) Weighted
     feature_list.append(nx.average_shortest_path_length(G, weight = "weight")) # Normalizing bellow min/max corresponding to the whole dataset
-    feature_name = "Avg. Shortest Path\nLengths W"
+    feature_name = "Avg. Shortest\nW. Path Length"
     feature_name_list.append(feature_name)
     features_to_normalize.append(feature_name)
 
