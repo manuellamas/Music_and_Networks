@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
         filename = midi_filename(mid_file)
         midi_file_overview(mid_file, filename)
-        
+
         # midi_get_track(mid_file)
         midi_split_tracks(mid_file)
     else: # Run for all MIDI in a folder
@@ -113,9 +113,8 @@ if __name__ == "__main__":
             mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
         
             # midi_get_track(mid_file)
-            midi_split_tracks(mid_file, folder_path = folder_path)
+            midi_split_tracks(mid_file, full_analysis = files_directory)
 
     # except:
     #     print("No path to a MIDI or Folder was provided")
-    #     # print("Check if 'Melody_Tracks' folder exists at Root")
     #     print("Check if 'Split_Tracks' folder exists at Root")

@@ -207,6 +207,9 @@ def graph_note_pairs_weighted(mid_file, eps = -1, ticks = False, track_index = N
     notes, total_ticks = get_notes(mid_file, ticks =  True, track_index = track_index) # Obtaining a list of notes, each entry of the list is of the form
     # [note, start_time, end_time]
 
+    if len(notes) == 1: # If there's only one node, since it won't create edges, create the single node
+        G.add_node(notes[0][0])
+
     # Working with all tracks by "merging" the notes into a single (ordered) list
     # notes = merge_tracks(mid_file)
 

@@ -155,54 +155,55 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
     # Drawing Edges #
     #################
 
+    if len(G.edges) != 0: # If the graph doesn't have 0 edges
 
-    # https://www.color-hex.com/color-palette/2539
-    # Bright to Dark
-    red_shades = ["#ffbaba","#ff7b7b","#ff5252","#ff0000","#a70000"]
-    num_edge_divisions = len(red_shades)
-
-
-    # Dictionary that maps edge tuple to its weight
-    edge_weights = nx.get_edge_attributes(G, "weight") # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.get_edge_attributes.html
-
-    # [Shades of Red Color Palette](https://www.color-hex.com/color-palette/2539)
-    # [get_edge_attributes — NetworkX 2.8.5 documentation](https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.get_edge_attributes.html)
+        # https://www.color-hex.com/color-palette/2539
+        # Bright to Dark
+        red_shades = ["#ffbaba","#ff7b7b","#ff5252","#ff0000","#a70000"]
+        num_edge_divisions = len(red_shades)
 
 
-    ## Creating the list that will allow "mapping" each edge, given its weight, to a specific color
-    # Initializing min and max value as the weight of the "first" edge when considering the list of edges
-    min_edge_weight_value = edge_weights[list(G.edges)[0]]
-    max_edge_weight_value = edge_weights[list(G.edges)[0]]
+        # Dictionary that maps edge tuple to its weight
+        edge_weights = nx.get_edge_attributes(G, "weight") # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.get_edge_attributes.html
 
-    for edge in G.edges:
-        edge_weight = edge_weights[edge]
-        min_edge_weight_value = min(min_edge_weight_value, edge_weight)
-        max_edge_weight_value = max(max_edge_weight_value, edge_weight)
+        # [Shades of Red Color Palette](https://www.color-hex.com/color-palette/2539)
+        # [get_edge_attributes — NetworkX 2.8.5 documentation](https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.get_edge_attributes.html)
 
-    edge_interval_length = (max_edge_weight_value - min_edge_weight_value) / num_edge_divisions # The length of each division
 
-    edge_weight_divisons = [] # The list to be used to check to which division/color the edge belongs given its weight
-    
-    edge_weight_divisons = [min_edge_weight_value + i*edge_interval_length for i in range(num_edge_divisions - 1)]
-    edge_weight_divisons.append(max_edge_weight_value)
+        ## Creating the list that will allow "mapping" each edge, given its weight, to a specific color
+        # Initializing min and max value as the weight of the "first" edge when considering the list of edges
+        min_edge_weight_value = edge_weights[list(G.edges)[0]]
+        max_edge_weight_value = edge_weights[list(G.edges)[0]]
 
-    ## -----
+        for edge in G.edges:
+            edge_weight = edge_weights[edge]
+            min_edge_weight_value = min(min_edge_weight_value, edge_weight)
+            max_edge_weight_value = max(max_edge_weight_value, edge_weight)
 
-    for edge in G.edges:
-        # Finding the color given its weight. There are num_edge_divisions colors. S
-        edge_color = -1
-        edge_weight = edge_weights[edge]
-        for i in range(len(edge_weight_divisons)):
-            if edge_weight < edge_weight_divisons[i]:
-                edge_color = i - 1
-                break
-        # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
-        nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.15") # node_size isn't used to draw here but to determine edge position
-        # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
+        edge_interval_length = (max_edge_weight_value - min_edge_weight_value) / num_edge_divisions # The length of each division
 
-    # Adding edge labels corresponding to the their weight
-    # nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8) # For the peaks models
-    nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.5, font_size = 8)
+        edge_weight_divisons = [] # The list to be used to check to which division/color the edge belongs given its weight
+        
+        edge_weight_divisons = [min_edge_weight_value + i*edge_interval_length for i in range(num_edge_divisions - 1)]
+        edge_weight_divisons.append(max_edge_weight_value)
+
+        ## -----
+
+        for edge in G.edges:
+            # Finding the color given its weight. There are num_edge_divisions colors. S
+            edge_color = -1
+            edge_weight = edge_weights[edge]
+            for i in range(len(edge_weight_divisons)):
+                if edge_weight < edge_weight_divisons[i]:
+                    edge_color = i - 1
+                    break
+            # nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], edge_color = "red")
+            nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color = red_shades[edge_color], node_size = node_sizes, connectionstyle = "arc3, rad=0.15") # node_size isn't used to draw here but to determine edge position
+            # For connectionstyle options see https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionStyle.html#matplotlib.patches.ConnectionStyle
+
+        # Adding edge labels corresponding to the their weight
+        # nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8) # For the peaks models
+        nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.5, font_size = 8)
 
 
 
