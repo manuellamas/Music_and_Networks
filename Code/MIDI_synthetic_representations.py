@@ -113,8 +113,8 @@ def plot_track(mid_file, files_directory, with_rests = True, track_index = None,
 
 
     # Axis Labels
-    ax.set_xlabel('Order', fontsize = 14)
-    ax.set_ylabel('Note', fontsize = 14)
+    ax.set_xlabel('Ticks', fontsize = 14)
+    ax.set_ylabel('Notes', fontsize = 14)
 
 
     # Ticks Text Size

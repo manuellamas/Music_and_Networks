@@ -85,9 +85,9 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
 
     # Axis Labels
     ax.set_xlabel('Ticks', labelpad = 9) # labelpad padding between the label and the ticks
-    ax.set_ylabel('MIDI note codes', labelpad = 6)
+    ax.set_ylabel('Notes', labelpad = 6) # "MIDI note codes" seemed too long and unnecessary because it wasn't ambiguous
     # ax.set_xlabel('Ticks', labelpad = 9, fontsize = 14) # labelpad padding between the label and the ticks
-    # ax.set_ylabel('MIDI note codes', labelpad = 6, fontsize = 14)
+    # ax.set_ylabel('Notes', labelpad = 6, fontsize = 14)
 
     # Ticks Text Size
     # ax.tick_params(axis='both', which='major', labelsize = 14)
