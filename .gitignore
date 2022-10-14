@@ -57,3 +57,7 @@ pymnet
 
 # NetF
 Code/Music_NetF/NetF
+
+
+# Whitelisting split tracks of one specific dataset
+!Dataset_Analysis/HorrorVsRomance/Split_Tracks

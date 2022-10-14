@@ -104,15 +104,17 @@ if __name__ == "__main__":
             track_index = MIDI_general.track_from_dict(filename, tracks_indices)
             print_section_title(filename)
 
-            # Create the graph and its visualisation
+            # Create the graph
             G, notes, notes_duration = graph_note_pairs_weighted(mid_file, track_index = track_index)
-            create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory)
-
-            # Creating the same graphs but coloring the nodes by community
-            create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory, communities_coloring = True)
 
             # Time series representation
             plot_all_tracks(mid_file, with_rests = True, full_analysis = files_directory)
+
+            # Graph visualization
+            create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory)
+            # Creating the same graphs but coloring the nodes by community
+            if len(G.nodes) > 1: # Only creating for Graphs with more than one node
+                create_graph_vis(G, filename, track_index = track_index, full_analysis = files_directory, communities_coloring = True)
 
             # Split Tracks
             # midi_split_tracks(mid_file, full_analysis = files_directory)
