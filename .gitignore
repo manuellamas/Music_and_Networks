@@ -50,6 +50,9 @@ Split_Tracks
 
 **/Noise_added
 
+# Output from Scan Files
+**/*/_Num_notes.txt
+
 # Possible routes that are not to be considered for now
 Music_Mapping_Higher_Order.py
 Music_Mapping_Multilayer.py
