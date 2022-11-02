@@ -42,11 +42,16 @@ def music_number_of_notes(files_directory):
         # Get number of notes from each
         num_notes = len(notes)
 
-        list_notes.append([filename, num_notes])
+        list_notes.append([filename, num_notes, G.number_of_nodes()])
 
-    list_notes.sort(key = lambda s: s[1], reverse = True)
+    # list_notes.sort(key = lambda s: s[1], reverse = True)
+    list_notes_sorted =sorted(list_notes, key = lambda s: s[1], reverse = True)
 
-    file.write(tabulate(list_notes, headers=['Song', '# Notes']))
+    # file.write(tabulate(list_notes_sorted, headers=['Song', '# Notes']))
+    file.write(tabulate(list_notes_sorted, headers=['Song', '# Notes', '# Nodes']))
+    file.write("\n\n-----\n\n")
+    # file.write(tabulate(list_notes, headers=['Song', '# Notes']))
+    file.write(tabulate(list_notes, headers=['Song', '# Notes', '# Nodes']))
     file.close()
 
     return
