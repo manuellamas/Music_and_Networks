@@ -64,7 +64,9 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
 
     # Average Clustering Coefficient
     feature_list.append(Graph_metrics.average_clustering(G)) # Doesn't use weight and is normalized by default
-    feature_name_list.append("Avg. Clustering\nCoef.")
+    feature_name = "Avg. Clustering\nCoef."
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     # Average Shortest Path Length (Normalized) Weighted
     feature_list.append(nx.average_shortest_path_length(G, weight = "weight")) # Normalizing bellow min/max corresponding to the whole dataset
@@ -73,13 +75,35 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
     features_to_normalize.append(feature_name)
 
     feature_list.append(nx.density(G)) # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.density.html?highlight=density#networkx.classes.function.density
-    feature_name_list.append("Density")
+    feature_name = "Density"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
 
     modularity, num_communities = Graph_metrics.modularity_louvain(G)
     feature_list.append(modularity)
-    feature_name_list.append("Modularity")
+    feature_name = "Modularity"
+    feature_name_list.append(feature_name)
+    features_to_normalize.append(feature_name)
+
+
     # feature_list.append(num_communities)
     # feature_name_list.append("#Communities")
+
+
+    if num_notes is not None: # Only showing for Feature Table and not being used in SongGroupAnalysis
+        feature_list.append(G.number_of_nodes())
+        feature_name = "#Nodes"
+        feature_name_list.append(feature_name)
+        features_to_normalize.append(feature_name)
+
+
+        feature_list.append(num_notes)
+        feature_name = "#Notes"
+        feature_name_list.append(feature_name)
+        features_to_normalize.append(feature_name)
+
+
+
 
 
     # # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
@@ -179,7 +203,7 @@ def feature_analysis(files_directory, normalized = True):
     filenames_list = []
     # for network in networks:
     for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
-        features, feature_names, features_to_normalize = music_data(network)
+        features, feature_names, features_to_normalize = music_data(network, num_notes = len(notes))
         networks_feature_list.append(features)
         filenames_list.append(filename)
 
@@ -236,3 +260,4 @@ if __name__ == "__main__":
         exit()
 
     feature_analysis(files_directory)
+    feature_analysis(files_directory, normalized = False)
