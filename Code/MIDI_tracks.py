@@ -16,6 +16,7 @@ import config
 def midi_split_tracks(mid_file, folder_path = "", full_analysis = ""):
     """ Creates a MIDI file per non meta track in the original MIDI """
 
+    ticks_per_beat = mid_file.ticks_per_beat # The value of the original midi file
 
     # melody_track_index = melody_track(mid_file)
     # print("The chosen track was:", melody_track_index)
@@ -52,7 +53,7 @@ def midi_split_tracks(mid_file, folder_path = "", full_analysis = ""):
     print("Tracks split at", split_tracks_dir)
 
     for i, track in enumerate(mid_file.tracks):
-        new_mid = mido.MidiFile()
+        new_mid = mido.MidiFile(ticks_per_beat = ticks_per_beat)
 
         if check_is_track_meta(track): # If the track doesn't contain any note_on or note_off messages, the track will not be created as a separate MIDI
             continue
