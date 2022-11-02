@@ -31,9 +31,16 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     network_feature_list_text = [x[:] for x in network_feature_list] # For a deep copy we need to copy the nested lists and not just the "main" list
 
     for i in range(len(network_features)): # Going through every song
-        for j in range(1, len(network_feature_list_text[i])): # Rounding Values
+        # for j in range(1, len(network_feature_list_text[i])): # Rounding Values
+        #     network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
+        
+        # Round values to three decimal places
+        for j in range(1, len(network_feature_list_text[i]) - 2): # Rounding Values
             network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
 
+        # Leave values (that were already integers) as integers
+        for j in range(len(network_feature_list_text[i]) - 2, len(network_feature_list_text[i])): # Rounding Values
+            network_feature_list_text[i][j] = "{:.0f}".format(network_feature_list_text[i][j])
 
 
 

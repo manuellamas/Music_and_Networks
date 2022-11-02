@@ -63,8 +63,8 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
 
 
     ## Graph
-    # pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
-    pos = nx.spiral_layout(G, equidistant = True, resolution = 3.00) # Higher resolution value less compact spiral
+    pos = nx.fruchterman_reingold_layout(G, seed = 42, iterations = 50) # Choosing layout with fixed seed
+    # pos = nx.spiral_layout(G, equidistant = True, resolution = 3.00) # Higher resolution value less compact spiral
     # pos = nx.circular_layout(G)
     # pos = nx.kamada_kawai_layout(G)
 

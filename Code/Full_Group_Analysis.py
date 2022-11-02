@@ -132,8 +132,8 @@ if __name__ == "__main__":
         feature_analysis(files_directory, normalized = False)
 
         # Song Group Analysis (k-means)
-        # print_section_title("Song Group Analysis")
-        # main_analysis(files_directory)
+        print_section_title("Song Group Analysis")
+        main_analysis(files_directory)
 
         # Song Comparison Plots
         # print_section_title("Song Comparison Plots")

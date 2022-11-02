@@ -55,7 +55,8 @@ def main_analysis(files_directory):
     """
 
 
-    networks, max_num_nodes = create_networks(files_directory)
+    networks = create_networks(files_directory, max_nodes = False)
+    # networks, max_num_nodes = create_networks(files_directory)
 
 
 
