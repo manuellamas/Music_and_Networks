@@ -30,17 +30,27 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     # To round values in text to appear in the table
     network_feature_list_text = [x[:] for x in network_feature_list] # For a deep copy we need to copy the nested lists and not just the "main" list
 
+    num_features = len(network_feature_list_text[i])
+
     for i in range(len(network_features)): # Going through every song
+        # Round values to three decimal places
         # for j in range(1, len(network_feature_list_text[i])): # Rounding Values
         #     network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
         
-        # Round values to three decimal places
-        for j in range(1, len(network_feature_list_text[i]) - 2): # Rounding Values
-            network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
+        # for j in range(1, num_features - 2): # Rounding Values
+        for j in range(1, num_features): # Rounding Values
+            if j in [num_features - 4, num_features - 3]:
+                # Leave values (that were already integers) as integers
+                network_feature_list_text[i][j] = "{:.0f}".format(network_feature_list_text[i][j])
 
-        # Leave values (that were already integers) as integers
-        for j in range(len(network_feature_list_text[i]) - 2, len(network_feature_list_text[i])): # Rounding Values
-            network_feature_list_text[i][j] = "{:.0f}".format(network_feature_list_text[i][j])
+            else:
+                # Round values to three decimal places
+                network_feature_list_text[i][j] = "{:.3f}".format(network_feature_list_text[i][j])
+
+        # for j in range(len(network_feature_list_text[i]) - 2, len(network_feature_list_text[i])): # Rounding Values for last two values
+        # for j in [-3,-2]:
+        #     if type(network_feature_list_text[i][j]) is not str:
+        #         network_feature_list_text[i][j] = "{:.0f}".format(network_feature_list_text[i][j])
 
 
 
@@ -374,6 +384,11 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
     for i in range(num_columns):
         # cells[0,i].set(fc = "blue")
         cells[0,i].set(height = 2 * CELL_HEIGHT)
+
+    # To distinctively separate features from the other types of values added: #Nodes, #Notes,...
+    for i in range(num_columns-4, num_columns):
+        # cells[0,i].set(facecolor = "grey")
+        cells[0,i].set(facecolor = "0.6")
 
 
     return tab

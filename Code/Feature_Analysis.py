@@ -89,55 +89,37 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
     # feature_list.append(num_communities)
     # feature_name_list.append("#Communities")
 
+    ######################
+    # Non-feature values #
+    ######################
+    # These were added because they're important to understand the feature values
 
     if num_notes is not None: # Only showing for Feature Table and not being used in SongGroupAnalysis
+        # Number of Nodes
         feature_list.append(G.number_of_nodes())
         feature_name = "#Nodes"
         feature_name_list.append(feature_name)
         features_to_normalize.append(feature_name)
 
-
+        # Number of Notes
         feature_list.append(num_notes)
         feature_name = "#Notes"
         feature_name_list.append(feature_name)
         features_to_normalize.append(feature_name)
 
+        # Duration in seconds
+        feature_list.append(time_length)
+        feature_name = "Sec"
+        feature_name_list.append(feature_name)
+        features_to_normalize.append(feature_name)
+
+        # Notes per duration (seconds)
+        feature_list.append(num_notes/time_length)
+        feature_name = "#Notes\n/seconds"
+        feature_name_list.append(feature_name)
+        features_to_normalize.append(feature_name)
 
 
-
-
-    # # Nodes and Edges relative to duration - Adding 0 if the value doesn't exist to ensure that the feature vector (feature_list) has the same dimension for all songs. Needed for comparison and clustering
-    # if time_length != 0:
-    #     # Nodes per duration
-    #     if G.number_of_nodes() != 0:
-    #         feature_list.append(G.number_of_nodes() / time_length)
-    #     else:
-    #         feature_list.append(0)
-
-    #     # Edges per duration
-    #     if G.number_of_edges():
-    #         feature_list.append(G.number_of_edges() / time_length)
-    #     else:
-    #         feature_list.append(0)
-    # else:
-    #     feature_list.append(0)
-    #     feature_list.append(0)
-    # feature_name_list.append("Nodes per seconds")
-    # feature_name_list.append("Edges per seconds")
-
-    # # Notes per duration (ticks)
-    # if num_notes != 0:
-    #     feature_list.append(num_notes/total_ticks) # Length of music (number of notes in track)
-    # else:
-    #     feature_list.append(0)
-    # feature_name_list.append("Note per ticks")
-
-    # # Notes per duration (seconds)
-    # if num_notes_normalized != 0:
-    #     feature_list.append(num_notes_normalized) # Length of music (number of notes in track)
-    # else:
-    #     feature_list.append(0)
-    # feature_name_list.append("Note per seconds")
 
     return feature_list, feature_name_list, features_to_normalize
 
@@ -203,7 +185,7 @@ def feature_analysis(files_directory, normalized = True):
     filenames_list = []
     # for network in networks:
     for network, mid_file, filename, notes, notes_duration, total_ticks in networks:
-        features, feature_names, features_to_normalize = music_data(network, num_notes = len(notes))
+        features, feature_names, features_to_normalize = music_data(network, num_notes = len(notes), time_length = mid_file.length)
         networks_feature_list.append(features)
         filenames_list.append(filename)
 
