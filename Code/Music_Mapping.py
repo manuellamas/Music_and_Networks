@@ -2,7 +2,14 @@ import networkx as nx
 from MIDI_general import midi_filename, melody_track, SHORTREST_NOTE, LONGREST_NOTE
 
 
+# With value 1, there were too many rests which overshadowed the notes themselves
+# REST_THRESHOLD = 3 # Multipler of minimum and maximum note's duration
 
+SHORT_REST_THRESHOLD = 100000 # Multipler of minimum note's duration - Only count as rests intervals whose duration is above the minimum times this threshold and below the maximum times REST_MAX
+LONG_REST_THRESHOLD = 1 # Multipler of maximum note's duration - Only count as long rests intervals whose duration is above the maximum times this threshold
+REST_MAX = 5 # Multipler of maximum note's duration - Rests can only have at most maximum duration times this multiplier
+
+MINIMUM_DURATION_VALUE = 1 # To prevent it being 0 causing every interval to originate a rest
 
 # -------------------- Obtaining list of notes --------------------
 def get_notes(mid_file , get_track_program = False, track_index = None, ticks = False):
@@ -71,7 +78,7 @@ def get_notes_rest(mid_file, track_index = None):
         duration = note[2] - note[1] # Note's duration
         min_duration = min(min_duration, duration)
         max_duration = max(max_duration, duration)
-
+    min_duration = max(MINIMUM_DURATION_VALUE, min_duration) # It must be at least 1
 
 
     ## Going through the notes and adding rests
@@ -81,8 +88,8 @@ def get_notes_rest(mid_file, track_index = None):
 
         interval_duration = notes[i+1][1] - notes[i][2] # Obtaining the interval duration between consecutive notes
 
-        if interval_duration > min_duration:
-            if interval_duration > max_duration: # Long Rest
+        if interval_duration > min_duration * SHORT_REST_THRESHOLD and interval_duration < max_duration * REST_MAX:
+            if interval_duration > max_duration * LONG_REST_THRESHOLD: # Long Rest
                 final_notes.append(LONGREST_NOTE)
             else: # Short Rest
                 final_notes.append(SHORTREST_NOTE)
@@ -126,6 +133,7 @@ def get_note_pairs(notes, eps = -1, window = False):
 
         notes_duration.append(duration) # Creating a list with all notes durations to work with as a song's feature
 
+    minimum_duration = max(MINIMUM_DURATION_VALUE, minimum_duration) # It must be at least 1
 
     # ----- Working with Rests End -----
 
@@ -141,8 +149,8 @@ def get_note_pairs(notes, eps = -1, window = False):
         long_rest = False # If it exists a long rest between the two notes
 
         if eps == -1 or (notes[i+1][1] - notes[i][1] < eps): # Only notes that are separated by at most epsilon ticks
-            if interval_between_notes[i] > minimum_duration: # Will be considered as a rest
-                if interval_between_notes[i] < maximum_duration: # It's a Short Rest - Code 128
+            if interval_between_notes[i] > minimum_duration * SHORT_REST_THRESHOLD and interval_between_notes[i] < maximum_duration * REST_MAX: # Will be considered as a rest
+                if interval_between_notes[i] < maximum_duration * LONG_REST_THRESHOLD: # It's a Short Rest - Code 128
                     short_rest = True
                 else:
                     long_rest = True
