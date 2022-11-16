@@ -22,8 +22,12 @@ def check_dir(dir):
 
 
 
-def interval_mapping(value_from_source, source, image):
-    """ Maps (linearly) a value from interval source [a, b], to interval image [c,d] """
+def interval_mapping(value_from_source, source, image = [0,1]):
+    """
+    Maps (linearly) a value from interval source [a, b], to interval image [c,d]
+    defaults to image [0,1] if not specified
+    """
+
     a, b = source
     c, d = image
 

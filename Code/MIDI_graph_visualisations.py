@@ -5,7 +5,7 @@ from os import listdir
 import os.path
 
 import config
-from Plotting import check_dir
+from Plotting import check_dir, interval_mapping
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -69,6 +69,8 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
     # pos = nx.kamada_kawai_layout(G)
 
 
+    # edge_label_pos = 0.3
+    edge_label_pos = 0.5
 
 
 
@@ -108,6 +110,14 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
         modularity, communities = Graph_metrics.modularity_louvain(G, list_communities = True)
 
         list_colors =  ["C"+str(i) for i in range(len(communities))] # Using Matplotlib default color cycle
+    else:
+        bet_cent_values = nx.betweenness_centrality(G, weight = "weight").values()
+        min_node_bet = min(list(bet_cent_values))
+        max_node_bet = max(list(bet_cent_values))
+
+        Blues = plt.get_cmap('Blues')
+
+
 
 
 
@@ -129,7 +139,11 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
                 nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value, node_color = color, edgecolors = color) # node_color is the fill, edgecolor is the node border
             
             else:
-                nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
+                bet_value = nx.betweenness_centrality(G, weight = "weight")[node]
+                normalized_value = interval_mapping(bet_value, [min_node_bet, max_node_bet], [0,1])
+                color = Blues(normalized_value)
+                nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value, node_color = color, edgecolors = "#000000") # node_color is the fill, edgecolor is the node border
+                # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value)
                 # nx.draw_networkx_nodes(G, pos, nodelist = [node], node_size = relative_value, label = str(node))
 
         # nx.draw_networkx_labels(G, pos = pos)
@@ -203,7 +217,7 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
 
         # Adding edge labels corresponding to the their weight
         # nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.3, font_size = 8) # For the peaks models
-        nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = 0.5, font_size = 8)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels = edge_weights, label_pos = edge_label_pos, font_size = 8)
 
 
 
