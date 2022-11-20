@@ -194,7 +194,7 @@ def feature_analysis(files_directory, normalized = True):
     else:
         networks_features = networks_feature_list
 
-    feature_table(networks_features, feature_names, filenames_list, files_directory, model = None, normalized = normalized)
+    feature_table(networks_features, feature_names, filenames_list, files_directory, model = None, normalized = normalized, group_size = 4)
 
     return
 

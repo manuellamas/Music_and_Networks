@@ -8,7 +8,7 @@ import config
 
 
 
-def feature_table(network_features, feature_names, file_names, files_directory, model = None, normalized = True):
+def feature_table(network_features, feature_names, file_names, files_directory, model = None, normalized = True, group_size = None):
     """ Plots a table with all features being analyzed """
 
 
@@ -96,7 +96,9 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
 
 
 
-
+    ##############
+    # Color List #
+    ##############
 
     # A Matrix with len(network_feature_list) + 1 rows and len(columns) columns
     cell_colors = [[[] for j in range(len(columns))] for i in range(len(network_feature_list) + 1)]
@@ -104,7 +106,21 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     for col_index in range(len(columns)): # Features
         for row_index in range(1, len(network_feature_list) + 1): # Songs
             if col_index == 0:
-                cell_colors[row_index][col_index] = "white"
+
+                if group_size is None:
+                    cell_colors[row_index][col_index] = "white"
+
+                else:
+                # Color first column rows alternating white and grey between groups of size group_size
+                    if row_index == 0: # Header on first column
+                        cell_colors[row_index][col_index] = "white"
+                    else:
+                        if ( (row_index-1) // group_size) % 2 == 0: # row_index - 1 to ignore the header row
+                            color = "white"
+                        else:
+                            color = "0.6" # Grey obtained from giving a value of 0,1 in a white to black scale
+                        cell_colors[row_index][col_index] = color
+
 
             else:
                 # Mapping the value from [min,max] to [1,0] because for (1,1,1) we get white (min_value) and for (1,1,0) we get "full" red (max_value)
