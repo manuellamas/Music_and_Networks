@@ -107,17 +107,18 @@ def music_data(G, num_notes_normalized = None, num_notes = None, time_length = N
         feature_name_list.append(feature_name)
         features_to_normalize.append(feature_name)
 
-        # Duration in seconds
-        feature_list.append(time_length)
-        feature_name = "Sec"
-        feature_name_list.append(feature_name)
-        features_to_normalize.append(feature_name)
+        # Used preliminary for first tests
+        # # Duration in seconds
+        # feature_list.append(time_length)
+        # feature_name = "Sec"
+        # feature_name_list.append(feature_name)
+        # features_to_normalize.append(feature_name)
 
-        # Notes per duration (seconds)
-        feature_list.append(num_notes/time_length)
-        feature_name = "#Notes\n/seconds"
-        feature_name_list.append(feature_name)
-        features_to_normalize.append(feature_name)
+        # # Notes per duration (seconds)
+        # feature_list.append(num_notes/time_length)
+        # feature_name = "#Notes\n/seconds"
+        # feature_name_list.append(feature_name)
+        # features_to_normalize.append(feature_name)
 
 
 

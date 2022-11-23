@@ -402,7 +402,8 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
         cells[0,i].set(height = 2 * CELL_HEIGHT)
 
     # To distinctively separate features from the other types of values added: #Nodes, #Notes,...
-    for i in range(num_columns-4, num_columns):
+    number_of_column_headers_to_grey = 2 # Starting from the end
+    for i in range(num_columns - number_of_column_headers_to_grey, num_columns):
         # cells[0,i].set(facecolor = "grey")
         cells[0,i].set(facecolor = "0.6")
 
