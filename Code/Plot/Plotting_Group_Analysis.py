@@ -39,7 +39,7 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
         
         # for j in range(1, num_features - 2): # Rounding Values
         for j in range(1, num_features): # Rounding Values
-            if j in [num_features - 4, num_features - 3]:
+            if j in [num_features - 2, num_features - 1]:
                 # Leave values (that were already integers) as integers
                 network_feature_list_text[i][j] = "{:.0f}".format(network_feature_list_text[i][j])
 
