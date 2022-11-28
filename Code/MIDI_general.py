@@ -259,12 +259,11 @@ def track_from_dict(filename, tracks_indices):
     """ Getting the track index from the file "Chosen_Tracks.txt" if it exists, else going for None (melody track) and warning the user """
 
     if filename in tracks_indices:
-        print(filename, tracks_indices[filename])
+        # print(filename, tracks_indices[filename])
         return tracks_indices[filename]
 
     else:
-        # print(filename, "No track assigned")
-        print(filename, "NONE")
+        # print(filename, "NONE")
         return None # WHich will default to the "melody track"
 
     # return

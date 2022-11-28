@@ -137,7 +137,36 @@ def create_networks(files_directory, max_nodes = True):
     # Obtain a list of the file names of all MIDI files in the directory (SongArena by Default). Only those in the "root" and not in a subdirectory
     list_files = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-3:].lower() == "mid")]
 
-    list_files.sort() # Sorts the list alphabetically
+    files_order = [f for f in listdir(files_directory) if (os.path.isfile(os.path.join(files_directory, f)) and f[-14:].lower() == "_file_order.md")]
+
+
+    print("\n-----\n")
+
+    if len(files_order) !=0: # Sort files as listed in file "_file_order.mid" of the same directory as the songs file_directory (if such file exists)
+        md_file_order = files_order[0]
+        file = open(files_directory + "\\" + md_file_order, "r")
+        lines = file.readlines()
+        lines = [line.strip() for line in lines] # Remove all whitespaces (and specifically the ones at the end of the line)
+
+        dict_order = {}
+        for i, line in enumerate(lines):
+            dict_order[line] = i
+
+        print(dict_order)
+        print("list_files", list_files)
+
+
+        for file in list_files:
+            print(file, dict_order[file])
+
+        list_files.sort(key = lambda e: dict_order[e])
+
+        print("list_files", list_files)
+        print(lines)
+        # print(md_file_order)
+    else:
+        list_files.sort() # Sorts the list alphabetically
+
 
     if len(list_files) == 0:
         print("The folder is empty")
@@ -154,7 +183,7 @@ def create_networks(files_directory, max_nodes = True):
 
     tracks_indices = MIDI_general.get_chosen_tracks() # A dictionary mapping MIDI filenames to a track chosen by hand beforehand
 
-    print("\n-----\nChosen Tracks:\n")
+    # print("\n-----\nChosen Tracks:\n")
 
     for mid in list_files:
         mid_file = mido.MidiFile(files_directory + "\\" + mid, clip = True)
@@ -169,6 +198,7 @@ def create_networks(files_directory, max_nodes = True):
         networks.append([network, mid_file, filename, notes, notes_duration, total_ticks])
 
         max_num_nodes = max(max_num_nodes, network.number_of_nodes())
+    
 
     if max_nodes:
         return networks, max_num_nodes
@@ -196,6 +226,7 @@ def feature_analysis(files_directory, normalized = True):
         networks_features = networks_feature_list
 
     feature_table(networks_features, feature_names, filenames_list, files_directory, model = None, normalized = normalized, group_size = 4)
+    # feature_table(networks_features, feature_names, filenames_list, files_directory, model = None, normalized = normalized) # For synthetic dataset
 
     return
 
