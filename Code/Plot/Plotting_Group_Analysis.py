@@ -118,7 +118,7 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
                         if ( (row_index-1) // group_size) % 2 == 0: # row_index - 1 to ignore the header row
                             color = "white"
                         else:
-                            color = "0.6" # Grey obtained from giving a value of 0,1 in a white to black scale
+                            color = "0.7" # Grey obtained from giving a value of 0,1 in a black to white scale
                         cell_colors[row_index][col_index] = color
 
 
@@ -132,7 +132,7 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
 
 
 
-    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), cell_colors = cell_colors)
+    tab = modify_table(tab, num_rows = len(network_feature_list), num_columns =  len(columns), cell_colors = cell_colors, number_of_column_headers_to_grey = 2)
 
     # To alternate colors for readability
     # row_colors = ["white" if i%2 == 0 else "#BFBFBF"  for i in range(len(network_feature_list) + 1)] # A list with alternating colors
@@ -365,7 +365,7 @@ def clustering_table(networks, cluster_predictions, model, files_directory, labe
 # Support Functions #
 #####################
 
-def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = None):
+def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = None, number_of_column_headers_to_grey = None):
     cells = tab.properties()["celld"]
 
     # cell_colors has indices [0, num_rows + 1][0, num_columns] So, including header
@@ -402,10 +402,11 @@ def modify_table(tab, num_rows, num_columns, row_colors = None, cell_colors = No
         cells[0,i].set(height = 2 * CELL_HEIGHT)
 
     # To distinctively separate features from the other types of values added: #Nodes, #Notes,...
-    number_of_column_headers_to_grey = 2 # Starting from the end
-    for i in range(num_columns - number_of_column_headers_to_grey, num_columns):
-        # cells[0,i].set(facecolor = "grey")
-        cells[0,i].set(facecolor = "0.6")
+    if number_of_column_headers_to_grey is not None:
+        # number_of_column_headers_to_grey = 2 # Starting from the end
+        for i in range(num_columns - number_of_column_headers_to_grey, num_columns):
+            # cells[0,i].set(facecolor = "grey")
+            cells[0,i].set(facecolor = "0.6")
 
 
     return tab
