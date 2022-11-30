@@ -18,7 +18,7 @@ from Feature_Analysis import normalize_min_max, music_data, create_networks
 
 def kmeans_analysis(networks_features):
     """ Apply kmeans to the vector of features obtained from the network of the song """
-    num_clusters = np.arange(2, min(5, len(networks_features))) # The 5 here where did it come from?
+    num_clusters = np.arange(2, min(6, len(networks_features) + 1)) # The 5 is to limit
     results = {}
     for size in num_clusters:
         kmeans = KMeans(n_clusters = size).fit(networks_features) # The algorithm used by default is Lloyd's https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
