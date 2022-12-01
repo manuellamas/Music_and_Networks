@@ -1,59 +1,29 @@
-#### Requirements
-[NetF](https://github.com/vanessa-silva/NetF) on the Code\Music_NetF folder.
+The datasets used in the thesis are present in the `Thesis_Datasets` directory.
+
+### Main files
+**Overview**
+To get an overview of a specific MIDI file run `py Code\MIDI_general.py <path-to-song>`
+A file will be created (or modified if it already exists) `MIDI_file_info.txt` and it'll show all messages (per track) of the MIDI file.
 
 
-
-### Music mapping (to a graph)
-#### First version
-The graph is being created by looking only at each note's start. Meaning *I'm currently ignoring the velocity and duration*.
-A note x comes after another note y if it's start comes immediately after it. If that happens there will be a directed link from note x -> y.
-
-I'm reverting to using a "Simple" Digraph, meaning not a multidigraph as several algorithms don't work with it.
-#### Timestamps
-For the use of the "sliding window", I'll have an ordered list of each edge, where each entry will also have when time edge starts and ends. Which will correspond to the first note's starting time and last note's ending time.
-
-# Usage
-**Note** 30/11/2021: As of now, it'll probably not work on all files. And even in those that it does the created graph is still crude. It only looks at a single track and therefore the graph isn't by any means a faithful representation of the song.
-
-It currently only looks at the track with the most nodes (if there are multiple tracks with that number of notes then it chooses the first)
-
-File Input Style:
-- `py Code/Graph.py <file>`
-
-Command Input Style:
-- `[m/M] <max_time_between_notes>` where `<max_time_between_notes>` is optional (and is in *ticks* which is a bit tricky to define in seconds, as the ticks can change throughout the song)
-- `[w/W]`
-
-### Basic Usage
-Running `Graph.py` file from the project root folder (`<root>`). (So `py Code/Graph.py`)
-This will work on a sample MIDI file.
-
-You'll be prompted with *"MultiDiGraph (timestamped and unweighted) or Digraph Weighted? M/W"*.
-- `m` will create a MultiDiGraph where each instance of pair of notes found will form an edge with two timestamp attributes (`start` and `end`, the starting time of the first note and end time of the second note).
-- `w` will create a DiGraph where between two (ordered) nodes (and thus notes) there can only be at most one edge
-
-The reply is case-insensitive, `m` and `M` will give the same result.
-An empty reply defaults to the `m` case.
+**Analysis**
+Running the command `py Code\Full_Group_Analysis.py <path-to-songs-directory>` where `<path-to-songs-directory>` is a directory with MIDI files will:
+- (A series of subfolders will be created in the specified directory)
+- Create a graph from each MIDI file, if the MIDI file contains several tracks, the track with the higher number notes will be chosen
+  - The specific track can be chosen beforehand by writing the filename and track number separated by a space in the file `Chosen_Tracks.txt` (located on the root of the project folder)
+  - The created graphs will be exported to graphml (which can then be used in specific programs to handle networks such as Gephi) on the subfolder `graphml_files`
+- Create feature analysis (table with feature values of the graphs mapped from the MIDI) present in the subfolder `FeatureAnalysis`
+  - can be invoked by itself with `py Code\Feature_Analysis.py <path-to-songs-directory>`
+- Create both time series and graph representations of each file of the chosen directory, in subfolders named respectively `Time_Series_Representation` and `Graph_Visualisations`
+  - can be invoked by itself with `py Code\MIDI_synthetic_representations.py <path-to-songs-directory>` for time series representation
+  - can be invoked by itself with `py Code\MIDI_graph_visualisations.py <path-to-songs-directory>` for graph representation
+- Create a table presenting clustering results (from *k*-means) in subfolder `SongGroupAnalysis`
+  - as well as create a degree distribution plot and edge rank table for each song in `SongGroupAnalysis\Single`
+  - can be invoked by itself with `py Code\SongGroupAnalysis.py <path-to-songs-directory>`
 
 
-It'll:
-- Create a (NetworkX) `graph` object
-- Export `graph` to a `<root>\graphml_files\Song_Graph.graphml` file, to be used with Gephi (for example)
-- Create a `<root>\MIDI_file_info.txt` which contains basic MIDI file info as well as all the tracks and messages
-- Create a `<root>\Plots\Degree_Distribution_ScatterPlot_<file_name>.png` image which contains the degree distribution of the created `graph` object
+#### Extra
+Many of the present MIDI files (and even Code sections or files) ended up not being used for the results present in the thesis.
+One of which was `Code\SongGroupAnalysisNetF.py` that resorted to a different set of features created using the tool [NetF](https://github.com/vanessa-silva/NetF)
+To run that script the NetF code present on the mentioned repository must exist as a subfolder on the `Code\Music_NetF` folder.
 
-#### Other files
-If an argument is given, it'll create the graph for the specified MIDI file
-`py Code/Graph.py <path_to_file>`
-
-
-
-
-
-
-# Notes
-*How should I approach rounding when calculating Betwenness and Closeness centrality?*
-If I don't round almost all values are different, but if I round too much I lose too much information.
-
-Check betwenness centrality, using or not `"weight"` attribute.
-Similarly in closeness centrality with the `distance = "weight"`
