@@ -163,10 +163,12 @@ def feature_table(network_features, feature_names, file_names, files_directory, 
     # Setting the plot file name and the full path of the file to be created with it
     plot_filename = group_name + features_type
     if normalized: plot_filename += "_norm"
+    export_directory_svg = export_directory + "\\" + plot_filename + ".svg"
     export_directory += "\\" + plot_filename + ".png"
 
     # Saving and closing the file
     plt.savefig(export_directory, bbox_inches='tight')
+    plt.savefig(export_directory_svg, bbox_inches='tight')
     plt.close()
     print("Plot at", export_directory)
 
@@ -262,9 +264,11 @@ def cluster_feature_table(networks, cluster_predictions, model, network_features
     check_dir(export_directory)
 
     plot_filename = group_name + "_" + model + "_clusteringAndFeatures.png"
+    plot_filename_svg = group_name + "_" + model + "_clusteringAndFeatures.svg"
 
 
     plt.savefig(export_directory + "\\" + plot_filename, bbox_inches =  "tight")
+    plt.savefig(export_directory + "\\" + plot_filename_svg, bbox_inches =  "tight")
     plt.close()
     print("Plot at", export_directory + "\\" + plot_filename)
     
