@@ -228,6 +228,7 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
         filename += "_communities"
 
     plot_filename = filename + ".png"
+    plot_filename_svg = filename + ".svg"
     # if full_analysis == "":
     #     if folder_name == "":
     #         representations_dir = config.ROOT + "\\Music_Graph_Visualisations"
@@ -252,6 +253,7 @@ def create_graph_vis(G, filename, track_index = None, full_analysis = "", single
 
 
     plt.savefig(representations_dir + "\\" + plot_filename)
+    plt.savefig(representations_dir + "\\" + plot_filename_svg)
     plt.close()
     print("Plot at", representations_dir + "\\" + plot_filename)
 

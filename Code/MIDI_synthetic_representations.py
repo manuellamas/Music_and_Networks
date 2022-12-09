@@ -127,6 +127,7 @@ def plot_track(mid_file, files_directory, with_rests = True, track_index = None,
 
 
     plot_filename = filename + ".png"
+    plot_filename_svg = filename + ".svg"
 
     if full_analysis == "":
         if folder_name == "":
@@ -142,10 +143,11 @@ def plot_track(mid_file, files_directory, with_rests = True, track_index = None,
     check_dir(representations_dir) # Checking if directory folder exists
 
 
-    ## Exporting to PNG
+    ## Exporting to PNG (and SVG)
 
 
     plt.savefig(representations_dir + "\\" + plot_filename)
+    plt.savefig(representations_dir + "\\" + plot_filename_svg)
     plt.close()
     print("Plot at", representations_dir + "\\" + plot_filename)
 
