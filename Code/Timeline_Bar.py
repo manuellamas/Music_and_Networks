@@ -83,14 +83,18 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
     # Yticks
     ax.set_yticks(list_notes)
 
+
+
+    ### ---------- For larger fonts ---------- ###
     # Axis Labels
-    ax.set_xlabel('Ticks', labelpad = 9) # labelpad padding between the label and the ticks
-    ax.set_ylabel('Notes', labelpad = 6) # "MIDI note codes" seemed too long and unnecessary because it wasn't ambiguous
-    # ax.set_xlabel('Ticks', labelpad = 9, fontsize = 14) # labelpad padding between the label and the ticks
-    # ax.set_ylabel('Notes', labelpad = 6, fontsize = 14)
+    # ax.set_xlabel('Ticks', labelpad = 9) # labelpad padding between the label and the ticks
+    # ax.set_ylabel('Notes', labelpad = 6) # "MIDI note codes" seemed too long and unnecessary because it wasn't ambiguous
+    ax.set_xlabel('Ticks', labelpad = 9, fontsize = 14) # labelpad padding between the label and the ticks
+    ax.set_ylabel('Notes', labelpad = 6, fontsize = 14)
 
     # Ticks Text Size
-    # ax.tick_params(axis='both', which='major', labelsize = 14)
+    ax.tick_params(axis='both', which='major', labelsize = 14)
+    ### ---------- For larger fonts ---------- ###
 
     ax.spines[['top', 'right']].set_visible(False) # Hides right and top axis
 
@@ -102,10 +106,12 @@ def create_timeline_bar(mid_file, track_index, files_directory, filename):
     export_directory = files_directory + "\\Timeline_Bar"
     check_dir(export_directory)
 
+    export_directory_svg = export_directory + "\\" + filename + "_timeline_bar" + ".svg"
     export_directory += "\\" + filename + "_timeline_bar" + ".png"
 
     # plt.savefig(export_directory, bbox_inches='tight')
     plt.savefig(export_directory)
+    plt.savefig(export_directory_svg)
     plt.close()
     print("Plot at", export_directory)
 
