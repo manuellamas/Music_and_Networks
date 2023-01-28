@@ -1,3 +1,6 @@
+The thesis can be found at [Characterizing Music through Complex Networks](https://hdl.handle.net/10216/147309).
+
+
 ### Datasets
 The datasets used in the thesis are present in the `Thesis_Datasets` directory.
 
